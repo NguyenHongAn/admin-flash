@@ -1,3 +1,23 @@
+.loginPage {
+  min-height: 100vh;
+  background: linear-gradient(to right bottom, #2196f3, #e9f5fe);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginFrame {
+  background: white;
+  min-height: 50vh;
+  width: 30%;
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px #888888;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 20px;
+}
+
 .container {
   min-height: 100vh;
   padding: 0 0.5rem;

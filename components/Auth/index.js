@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 
-export default function App() {
+function Auth() {
   const router = useRouter();
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
@@ -14,3 +14,4 @@ export default function App() {
 
   return <></>;
 }
+export default Auth;
