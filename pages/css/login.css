@@ -16,3 +16,10 @@
   margin-top: 20px !important;
   width: 50%;
 }
+
+.login__spinner {
+  display: block;
+  z-index: 100;
+  margin: 0px auto;
+  position: absolute;
+}

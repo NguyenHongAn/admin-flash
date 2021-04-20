@@ -1,6 +1,7 @@
 import React from "react";
+import Dashboard from "../../components/Layout";
 
 function GeneralStatistic() {
-  return <div> </div>;
+  return <Dashboard>{<div></div>}</Dashboard>;
 }
-export default general - statistic;
+export default GeneralStatistic;
