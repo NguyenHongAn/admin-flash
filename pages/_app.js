@@ -1,6 +1,8 @@
 import "../styles/globals.css";
 import "./css/login.css";
 import "./css/sidebar.css";
+import "./css/notification.css";
+import "./css/statistics.css";
 
 import { Provider } from "react-redux";
 import store from "../store";

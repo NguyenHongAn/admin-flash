@@ -6,7 +6,7 @@ import { TextField, Typography, Grid, Button } from "@material-ui/core";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import loadingAction from "../store/action/loading.A";
+import loadingAction from "../store/actions/loading.A";
 import Loading from "../components/Loading";
 import { useRouter } from "next/router";
 
@@ -42,7 +42,7 @@ function signin() {
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
-      router.push("/general-statistic", undefined, { shallow: true });
+      router.push("/general-statistics", undefined, { shallow: true });
     }
   }, [loading]);
 

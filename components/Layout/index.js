@@ -7,11 +7,14 @@ import Sidebar from "../Sidebar";
 function Layout({ children }) {
   return (
     <Grid container className={styles.dashboard}>
-      <Grid md={3} className={styles.sidebar}>
+      <Grid item md={3} className={styles.sidebar}>
         <Sidebar></Sidebar>
       </Grid>
-      <Grid md={9} style={{ backgroundColor: "white" }}>
-        <Notification></Notification>
+      <Grid item md={9} className={styles.pageContent}>
+        <div className={styles.notification}>
+          <Notification></Notification>
+        </div>
+
         {children}
       </Grid>
     </Grid>
