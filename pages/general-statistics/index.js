@@ -10,6 +10,7 @@ import arrowGrowth from "@iconify/icons-uil/arrow-growth";
 import { useRouter } from "next/router";
 import { Grid } from "@material-ui/core";
 import { Bar } from "react-chartjs-2";
+import Head from "next/head";
 
 const TEMPLATE_DATA = [
   {
@@ -63,13 +64,16 @@ function GeneralStatistic() {
 
   return (
     <Layout>
+      <Head>
+        <title>Admin Flash - General Statistics</title>
+      </Head>
       {
         <div className={styles.container}>
           {/* <div className="container__title"> Thống kê chung</div> */}
           <Grid container>
             <Grid container className="container__grid">
               {TEMPLATE_DATA.map((data) => (
-                <Grid item md={3} key={data.icon}>
+                <Grid item md={3} key={data.link}>
                   <SatitisticsBox
                     icon={data.icon}
                     handleClick={() => route.push(data.link)}

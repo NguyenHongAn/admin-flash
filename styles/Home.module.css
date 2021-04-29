@@ -68,6 +68,16 @@
   overflow: hidden;
 }
 
+.containerTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 2px solid black;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
 .total {
   color: #b1aeae;
   margin-left: 20px;
@@ -80,4 +90,12 @@
   border-radius: 25px;
   justify-content: space-between;
   padding-left: 10px;
+}
+
+.tableContainer {
+  width: 100%;
+  padding: 10px;
+  min-height: 71vh;
+  display: flex;
+  flex-direction: column;
 }

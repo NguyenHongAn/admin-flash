@@ -10,114 +10,109 @@ import roundDirectionsBike from "@iconify/icons-ic/round-directions-bike";
 import licenseIcon from "@iconify/icons-carbon/license";
 import roundReport from "@iconify/icons-ic/round-report";
 import authAction from "../../store/actions/auth.A";
+import Link from "next/link";
 
 function Sidebar() {
   //const user = useSelector((state) => state.auth);
   const route = useRouter();
   const dispatch = useDispatch();
-  console.log(route.pathname);
+
   return (
     <>
-      <Head>
-        <title>Flash Admin - General Statistics</title>
-      </Head>
       <div>
         <div className="sidebar__name"> Admin Dashboard</div>
         <ul className="sidebar__list">
-          <li
-            className={`sidebar__list-item ${
-              route.pathname === "/general-statistics"
-                ? "sidebar__list-item-active"
-                : ""
-            }`}
-            onClick={() => route.push("/general-statistics")}
-          >
-            <Icon
-              icon={lineChartOutlined}
-              style={{ fontSize: "24px", marginRight: 15 }}
-            />
-            <span>Thống kê chung</span>
-          </li>
-          <li
-            className={`sidebar__list-item ${
-              route.pathname === "/restaurants-management"
-                ? "sidebar__list-item-active"
-                : ""
-            }`}
-            onClick={() => {
-              route.push("/restaurants-management");
-            }}
-          >
-            <Icon
-              icon={storeIcon}
-              style={{ fontSize: "24px", marginRight: 15 }}
-            />
+          <Link href="/general-statistics">
+            <li
+              className={`sidebar__list-item ${
+                route.pathname === "/general-statistics"
+                  ? "sidebar__list-item-active"
+                  : ""
+              }`}
+            >
+              <Icon
+                icon={lineChartOutlined}
+                style={{ fontSize: "24px", marginRight: 15 }}
+              />
+              <span>Thống kê chung</span>
+            </li>
+          </Link>
+          <Link href="/restaurants-management">
+            <li
+              className={`sidebar__list-item ${
+                route.pathname === "/restaurants-management"
+                  ? "sidebar__list-item-active"
+                  : ""
+              }`}
+            >
+              <Icon
+                icon={storeIcon}
+                style={{ fontSize: "24px", marginRight: 15 }}
+              />
 
-            <span>Quản lý nhà hàng</span>
-          </li>
-
-          <li
-            className={`sidebar__list-item ${
-              route.pathname === "/users-management"
-                ? "sidebar__list-item-active"
-                : ""
-            }`}
-            onClick={() => route.push("/users-management")}
-          >
-            <Icon
-              icon={multipleUsers}
-              style={{ fontSize: "24px", marginRight: 15 }}
-            />
-            <span>Quản lý người dùng</span>
-          </li>
-          <li
-            className={`sidebar__list-item ${
-              route.pathname === "/drivers-management"
-                ? "sidebar__list-item-active"
-                : ""
-            }`}
-            onClick={() => {
-              route.push("/drivers-management");
-            }}
-          >
-            <Icon
-              icon={roundDirectionsBike}
-              style={{ fontSize: "24px", marginRight: 15 }}
-            />
-            <span>Quản lý tài xế</span>
-          </li>
-          <li
-            className={`sidebar__list-item warning ${
-              route.pathname === "/list-report"
-                ? "sidebar__list-item-active"
-                : ""
-            }`}
-            onClick={() => {
-              route.push("/list-report");
-            }}
-          >
-            <Icon
-              icon={roundReport}
-              style={{ fontSize: "24px", marginRight: 15 }}
-            />
-            <span>Khiếu nại/ Góp ý</span>
-          </li>
-          <li
-            className={`sidebar__list-item ${
-              route.pathname === "/restaurants-lincese"
-                ? "sidebar__list-item-active"
-                : ""
-            }`}
-            onClick={() => {
-              route.push("/restaurants-lincese");
-            }}
-          >
-            <Icon
-              icon={licenseIcon}
-              style={{ fontSize: "24px", marginRight: 15 }}
-            />
-            <span>Cấp quyền nhà hàng</span>
-          </li>
+              <span>Quản lý nhà hàng</span>
+            </li>
+          </Link>
+          <Link href="/users-management">
+            <li
+              className={`sidebar__list-item ${
+                route.pathname === "/users-management"
+                  ? "sidebar__list-item-active"
+                  : ""
+              }`}
+            >
+              <Icon
+                icon={multipleUsers}
+                style={{ fontSize: "24px", marginRight: 15 }}
+              />
+              <span>Quản lý người dùng</span>
+            </li>
+          </Link>
+          <Link href="/drivers-management">
+            <li
+              className={`sidebar__list-item ${
+                route.pathname === "/drivers-management"
+                  ? "sidebar__list-item-active"
+                  : ""
+              }`}
+            >
+              <Icon
+                icon={roundDirectionsBike}
+                style={{ fontSize: "24px", marginRight: 15 }}
+              />
+              <span>Quản lý tài xế</span>
+            </li>
+          </Link>
+          <Link href="/list-report">
+            <li
+              className={`sidebar__list-item warning ${
+                route.pathname === "/list-report"
+                  ? "sidebar__list-item-active"
+                  : ""
+              }`}
+            >
+              <Icon
+                icon={roundReport}
+                style={{ fontSize: "24px", marginRight: 15 }}
+              />
+              <span>Khiếu nại/ Góp ý</span>
+            </li>
+          </Link>
+          <Link href="/restaurants-lincese">
+            <li
+              className={`sidebar__list-item ${
+                route.pathname === "/restaurants-lincese"
+                  ? "sidebar__list-item-active"
+                  : ""
+              }`}
+            >
+              <Icon
+                icon={licenseIcon}
+                style={{ fontSize: "24px", marginRight: 15 }}
+              />
+              <span>Cấp quyền nhà hàng</span>
+            </li>
+          </Link>
         </ul>
       </div>
 

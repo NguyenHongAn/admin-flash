@@ -1,9 +1,10 @@
 import "../styles/globals.css";
-import "./css/login.css";
-import "./css/sidebar.css";
-import "./css/notification.css";
-import "./css/statistics.css";
-import "./css/restaurant.css";
+import "../styles/login.css";
+import "../styles/sidebar.css";
+import "../styles/notification.css";
+import "../styles/restaurant.css";
+import "../styles/statistics.css";
+import "../styles/user.css";
 
 import { Provider } from "react-redux";
 import store from "../store";

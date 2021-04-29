@@ -53,7 +53,8 @@ function signin() {
       }
     >
       <Head>
-        <title>Flash Admin - Login</title>
+        <title>Admin Flash - Login</title>
+        <link rel="icon" href="/Logo.png"></link>
       </Head>
       {loading ? (
         <Loading></Loading>

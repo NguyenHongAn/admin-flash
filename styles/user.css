@@ -1,0 +1,27 @@
+.user-table__head tr th {
+  color: white;
+  padding: 10px;
+}
+
+.user-table__body tr td {
+  padding: 10px;
+}
+
+.paging-item {
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  font-size: 0.9rem !important;
+  margin: 0px 10px !important;
+  background: #e9f5fe !important;
+}
+
+.paging-item__active {
+  background: #b6d7f0 !important;
+}
+
+.block-user {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+}

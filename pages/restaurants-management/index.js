@@ -19,8 +19,100 @@ import add12Filled from "@iconify/icons-fluent/add-12-filled";
 import reloadIcon from "@iconify/icons-oi/reload";
 import Head from "next/head";
 import searchIcon from "@iconify/icons-fe/search";
+import { useSelector, useDispatch } from "react-redux";
+import RestaurantInfoDialog from "../../components/RestaurantInfoDialog";
+
+function createRandomAvgScore(min, max) {
+  return (Math.random() * (max - min) + min).toPrecision(3);
+}
+
+function genarateFakeNumber(start, length) {
+  const seed = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  let temp = start;
+  for (let i = 0; i < length - start.length; i++) {
+    const index = Math.floor(Math.random() * seed.length);
+    temp += seed[index];
+  }
+  return temp;
+}
+
+const TEMPLATE_DATA = [
+  {
+    id: "a",
+    orders: Math.floor(Math.random() * 1000),
+    createdAt: new Date("03/21/2011"),
+    avgReview: createRandomAvgScore(3, 5),
+    reviews: Math.floor(Math.random() * 100),
+    contractID: genarateFakeNumber("0", 10),
+    email: "jipef40502@sejkt.com",
+    name: "Quán Ăn Tisu - Nui & Mì Xào Bò - Shop Online",
+    address: "25/2 Lý Tuệ, P. Tân Quý, Tân Phú, TP. HCM",
+  },
+  {
+    id: "b",
+    orders: Math.floor(Math.random() * 1000),
+    createdAt: new Date("03/21/2011"),
+    avgReview: createRandomAvgScore(3, 5),
+    reviews: Math.floor(Math.random() * 100),
+    contractID: genarateFakeNumber("0", 10),
+    email: "somerandome@gmail.com",
+    name: "Món Quảng Xuyên Việt",
+    address: "39/10/11 Hoàng Bật Đạt, P. 15, Tân Bình, TP. HCM",
+  },
+  {
+    id: "c",
+    orders: Math.floor(Math.random() * 1000),
+    createdAt: new Date("03/21/2011"),
+    avgReview: createRandomAvgScore(3, 5),
+    reviews: Math.floor(Math.random() * 100),
+    contractID: genarateFakeNumber("0", 10),
+    email: "somerandome@gmail.com",
+    name: "Sunny House - Sinh Tố & Nước Ép",
+    address: "499/24 Quang Trung, P. 10, Gò Vấp, TP. HCM",
+  },
+  {
+    id: "d",
+    orders: Math.floor(Math.random() * 1000),
+    createdAt: new Date("03/21/2011"),
+    avgReview: createRandomAvgScore(3, 5),
+    reviews: Math.floor(Math.random() * 100),
+    contractID: genarateFakeNumber("0", 10),
+    email: "somerandome@gmail.com",
+    name: "Bún Bò Đất Thánh - Shop Online",
+    address: "221/16 Đất Thánh, P. 6, Tân Bình, TP. HCM",
+  },
+  {
+    id: "e",
+    orders: Math.floor(Math.random() * 1000),
+    createdAt: new Date("03/21/2011"),
+    avgReview: createRandomAvgScore(3, 5),
+    reviews: Math.floor(Math.random() * 100),
+    contractID: genarateFakeNumber("0", 10),
+    email: "somerandome@gmail.com",
+    name: "Quán Bún Dì Vân",
+    address: "66/32 Trần Văn Quang, P. 10, Tân Bình, TP. HCM",
+  },
+  {
+    id: "f",
+    orders: Math.floor(Math.random() * 1000),
+    createdAt: new Date("03/21/2011"),
+    avgReview: createRandomAvgScore(3, 5),
+    reviews: Math.floor(Math.random() * 100),
+    contractID: genarateFakeNumber("0", 10),
+    email: "somerandome@gmail.com",
+    name: "Rules Of Tea - Trà Sữa Đế Vương - Nguyễn Văn Cừ",
+    address: "213D Nguyễn Văn Cừ, P. 3, Quận 5, TP. HCM",
+  },
+];
 
 function RestaurantsManagement() {
+  // const {email, contractID} = useSelector(state=>({
+  //   email: state.restaurant.email,
+  //   contractID: state.restaurant.contractID,
+  // }));
+  // const dispatch =useDispatch();
+  const [email, setEmail] = useState("");
+  const [contractID, setContractID] = useState("");
   const [totalRestuarant, setTotalRestaurant] = useState(121);
   const [adminRestaurants, setAdminRestaurants] = useState([]);
   const [seftRestaurant, setSeftRestaurants] = useState([]);
@@ -28,19 +120,34 @@ function RestaurantsManagement() {
   const [pagingList, setPagingList] = useState([]);
   const [totalAdminRes, setTotalAdminRes] = useState(27);
   const [totalSeftRes, setTotalSeftRes] = useState(94);
+  const [isOpenContract, setIsOpenContract] = useState(false);
 
+  const handleCloseContractDialog = () => setIsOpenContract(false);
+  const handleOpenContractDialog = (contract, resEmail) => {
+    setContractID(contract);
+    setEmail(resEmail);
+    setIsOpenContract(true);
+  };
   return (
     <Layout>
       <Head>
-        <title> Flash Admin - Restaurants</title>
+        <title>Admin Flash - Restaurants</title>
       </Head>
+      <RestaurantInfoDialog
+        open={isOpenContract}
+        email={email}
+        contractID={contractID}
+        handleClose={handleCloseContractDialog}
+      ></RestaurantInfoDialog>
       {
         <div className={styles.container}>
-          <div className="container__title">
+          <div className={styles.containerTitle}>
             <div>
               {" "}
               <span>Quản lý nhà hàng</span>
-              <span className={styles.total}>Tổng cộng: {totalRestuarant}</span>
+              <span className={styles.total}>
+                Tổng cộng: {totalRestuarant} nhà hàng
+              </span>
             </div>
             <TextField
               // variant="outlined"
@@ -72,7 +179,9 @@ function RestaurantsManagement() {
                     className="restaurant-table-filter"
                     defaultValue={-1}
                   >
-                    <option value="-1">Khu vực</option>
+                    <option value="-1" disabled>
+                      Khu vực
+                    </option>
                     {districts.map((district) => (
                       <option value={district.ID}>{district.Name}</option>
                     ))}
@@ -94,13 +203,45 @@ function RestaurantsManagement() {
                       <TableCell align="center">Tên nhà hàng</TableCell>
                       <TableCell align="center">Địa chỉ</TableCell>
                       <TableCell align="center">Thời gian tạo</TableCell>
-                      <TableCell align="center">Số lượng đơn hàng</TableCell>
+                      <TableCell align="center"> Đơn hàng</TableCell>
                       <TableCell align="center">Đánh giá</TableCell>
 
                       <TableCell align="center"></TableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody></TableBody>
+                  <TableBody className="restaurant-table__body">
+                    {TEMPLATE_DATA.map((restaurant, i) => (
+                      <TableRow key={restaurant.id}>
+                        <TableCell align="center">{i + 1}</TableCell>
+                        <TableCell align="center">{restaurant.name}</TableCell>
+                        <TableCell align="center">
+                          {restaurant.address}
+                        </TableCell>
+                        <TableCell align="center">
+                          {restaurant.createdAt.toLocaleDateString()}
+                        </TableCell>
+                        <TableCell align="center">
+                          {restaurant.orders}
+                        </TableCell>
+                        <TableCell align="center">
+                          {restaurant.avgReview}/{restaurant.reviews} đánh giá
+                        </TableCell>
+                        <TableCell align="center">
+                          <div
+                            className="contract-restaurant-link"
+                            onClick={() => {
+                              handleOpenContractDialog(
+                                restaurant.contractID,
+                                restaurant.email
+                              );
+                            }}
+                          >
+                            Liên hệ
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
                 </Table>
               </TableContainer>
 
@@ -124,7 +265,9 @@ function RestaurantsManagement() {
                     className="restaurant-table-filter"
                     defaultValue={-1}
                   >
-                    <option value="-1">Khu vực</option>
+                    <option value="-1" disabled>
+                      Khu vực
+                    </option>
                     {districts.map((district) => (
                       <option value={district.ID}>{district.Name}</option>
                     ))}
@@ -145,7 +288,7 @@ function RestaurantsManagement() {
                       <TableCell align="center"></TableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody></TableBody>
+                  <TableBody className="restaurant-table__body"></TableBody>
                 </Table>
               </TableContainer>
 
