@@ -121,8 +121,8 @@ function UsersManagement() {
   const [isOpenBlockDialog, setIsOpenBlockDialog] = useState(false);
   const [email, setEmail] = useState("");
 
-  const handleOpenBlockDialog = (isOpen, account) => {
-    setIsOpenBlockDialog(isOpen);
+  const handleOpenBlockDialog = (account) => {
+    setIsOpenBlockDialog(true);
     setEmail(account);
   };
   const handleCloseBlockDialog = () => {
@@ -188,7 +188,7 @@ function UsersManagement() {
                           <div
                             className="block-user"
                             onClick={() => {
-                              handleOpenBlockDialog(true, user.email);
+                              handleOpenBlockDialog(user.email);
                             }}
                           >
                             Khóa{" "}
@@ -201,7 +201,7 @@ function UsersManagement() {
               </TableContainer>
               <div
                 style={{
-                  padding: 10,
+                  padding: 8,
                   textAlign: "center",
                 }}
               >
