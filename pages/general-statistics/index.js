@@ -66,6 +66,7 @@ function GeneralStatistic() {
     <Layout>
       <Head>
         <title>Admin Flash - General Statistics</title>
+        <link href="/Logo.png" rel="icon" />
       </Head>
       {
         <div className={styles.container}>

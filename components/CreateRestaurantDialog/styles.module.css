@@ -1,0 +1,24 @@
+.formContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 0px;
+  padding: 10px !important;
+}
+
+.error {
+  color: red;
+  font-weight: 300;
+}
+
+.input {
+  padding: 8px 0px !important;
+}
+
+.formAction {
+  margin: 10px 0px !important;
+}
+
+.submit {
+  background-color: #2196f3 !important;
+}

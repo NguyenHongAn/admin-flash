@@ -54,7 +54,7 @@ function signin() {
     >
       <Head>
         <title>Admin Flash - Login</title>
-        <link rel="icon" href="/Logo.png"></link>
+        <link href="/Logo.png" rel="icon" />
       </Head>
       {loading ? (
         <Loading></Loading>

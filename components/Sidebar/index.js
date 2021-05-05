@@ -98,10 +98,10 @@ function Sidebar() {
               <span>Khiếu nại/ Góp ý</span>
             </li>
           </Link>
-          <Link href="/restaurants-lincese">
+          <Link href="/restaurants-license">
             <li
               className={`sidebar__list-item ${
-                route.pathname === "/restaurants-lincese"
+                route.pathname === "/restaurants-license"
                   ? "sidebar__list-item-active"
                   : ""
               }`}

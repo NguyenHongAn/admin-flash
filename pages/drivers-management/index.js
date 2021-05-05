@@ -145,6 +145,7 @@ function DriversManagement() {
     <Layout>
       <Head>
         <title>Flash Admin - Drivers</title>
+        <link href="/Logo.png" rel="icon" />
       </Head>
       <BlockUserDialog
         open={isOpenBlockDialog}
@@ -178,7 +179,7 @@ function DriversManagement() {
                         Sđt <input type="text"></input>
                       </TableCell>
                       <TableCell align="center">Lượt báo cáo</TableCell>
-                      <TableCell align="center">Báo cáo</TableCell>
+                      <TableCell align="center">Đánh giá</TableCell>
                       <TableCell align="center">Trạng thái</TableCell>
                       <TableCell align="center"></TableCell>
                     </TableRow>

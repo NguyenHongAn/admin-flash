@@ -21,6 +21,7 @@ import Head from "next/head";
 import searchIcon from "@iconify/icons-fe/search";
 import { useSelector, useDispatch } from "react-redux";
 import RestaurantInfoDialog from "../../components/RestaurantInfoDialog";
+import CreateRestaurantDialog from "../../components/CreateRestaurantDialog";
 
 function createRandomAvgScore(min, max) {
   return (Math.random() * (max - min) + min).toPrecision(3);
@@ -117,10 +118,11 @@ function RestaurantsManagement() {
   const [adminRestaurants, setAdminRestaurants] = useState([]);
   const [seftRestaurant, setSeftRestaurants] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [pagingList, setPagingList] = useState([]);
+  // const [pagingList, setPagingList] = useState([]);
   const [totalAdminRes, setTotalAdminRes] = useState(27);
   const [totalSeftRes, setTotalSeftRes] = useState(94);
   const [isOpenContract, setIsOpenContract] = useState(false);
+  const [isOpenNewRestaurant, setIsOpenNewRestaurant] = useState(false);
 
   const handleCloseContractDialog = () => setIsOpenContract(false);
   const handleOpenContractDialog = (contract, resEmail) => {
@@ -128,10 +130,18 @@ function RestaurantsManagement() {
     setEmail(resEmail);
     setIsOpenContract(true);
   };
+
+  // const handleCloseNewResDialog = () => setIsOpenNewRestaurant(false);
+  // const handleOpenNewResDialog = () => {
+  //   // setContractID(contract);
+  //   // setEmail(resEmail);
+  //   setIsOpenNewRestaurant(true);
+  //};
   return (
     <Layout>
       <Head>
         <title>Admin Flash - Restaurants</title>
+        <link href="/Logo.png" rel="icon" />
       </Head>
       <RestaurantInfoDialog
         open={isOpenContract}
@@ -139,6 +149,10 @@ function RestaurantsManagement() {
         contractID={contractID}
         handleClose={handleCloseContractDialog}
       ></RestaurantInfoDialog>
+      <CreateRestaurantDialog
+        open={isOpenNewRestaurant}
+        handleClose={setIsOpenNewRestaurant}
+      ></CreateRestaurantDialog>
       {
         <div className={styles.container}>
           <div className={styles.containerTitle}>
@@ -187,7 +201,10 @@ function RestaurantsManagement() {
                     ))}
                   </select>
                 </div>
-                <button onClick={() => {}} className="add-restaurant-btn">
+                <button
+                  onClick={() => setIsOpenNewRestaurant(true)}
+                  className="add-restaurant-btn"
+                >
                   <Icon
                     icon={add12Filled}
                     style={{ color: "#2196f3", fontSize: "24px" }}

@@ -162,6 +162,7 @@ function ListReport() {
     <Layout>
       <Head>
         <title>Flash Admin - Reports</title>
+        <link href="/Logo.png" rel="icon" />
       </Head>
       {
         <div className={styles.container}>
@@ -199,7 +200,10 @@ function ListReport() {
                         </TableCell>
                         <TableCell align="center">
                           <div className="report-table-image">
-                            <img src={report.imageLinks[0]} alt="image"></img>
+                            <img
+                              src={report.imageLinks && report.imageLinks[0]}
+                              alt="image"
+                            ></img>
                             <span className="info-overlay">
                               + {report.imageLinks.length}
                             </span>

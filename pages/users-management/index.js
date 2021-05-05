@@ -133,6 +133,7 @@ function UsersManagement() {
     <Layout>
       <Head>
         <title> Admin Flash - Users</title>
+        <link href="/Logo.png" rel="icon" />
       </Head>
       <BlockUserDialog
         open={isOpenBlockDialog}
