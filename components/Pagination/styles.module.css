@@ -1,20 +1,10 @@
-.user-table__head tr th {
-  color: white;
-  padding: 10px;
-}
-
-.user-table__body tr td {
-  padding: 10px;
-  word-wrap: break-word;
-}
-
 .pagination {
   display: flex;
   justify-content: center;
   list-style: none;
 }
 
-.paging-item {
+.pagingItem {
   width: 25px;
   height: 25px;
   display: flex;
@@ -26,20 +16,14 @@
   background: white;
 }
 
-.paging-item:first-child {
+.pagingItem:first-child {
   border-radius: 2px 0 0 2px;
 }
-.paging-item__arrow {
+.pagingItemArrow {
   margin: 0px 5px;
 }
 
-.paging-item__active {
+.pagingItemActive {
   background: rgb(40, 97, 255);
   color: white;
-}
-
-.block-user {
-  text-decoration: underline;
-  color: blue;
-  cursor: pointer;
 }

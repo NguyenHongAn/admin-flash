@@ -13,7 +13,10 @@ import {
   IconButton,
 } from "@material-ui/core";
 import BlockUserDialog from "../../components/BlockUserDialog";
-
+import ReactPaginate from "react-paginate";
+import outlineKeyboardArrowLeft from "@iconify/icons-ic/outline-keyboard-arrow-left";
+import baselineKeyboardArrowRight from "@iconify/icons-ic/baseline-keyboard-arrow-right";
+import { Icon } from "@iconify/react";
 function createRandomAvgScore(min, max) {
   return (Math.random() * (max - min) + min).toPrecision(3);
 }
@@ -129,6 +132,7 @@ function DriversManagement() {
   const [totalDrvers, setTotlDrivers] = useState(94);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageList, setPageList] = useState([1, 2, 3]);
+  const [pageCount, setPageCount] = useState(10);
   const [driversPresent, setDriversPresent] = useState(10);
   const [isOpenBlockDialog, setIsOpenBlockDialog] = useState(false);
   const [email, setEmail] = useState("");
@@ -215,12 +219,32 @@ function DriversManagement() {
                   </TableBody>
                 </Table>
               </TableContainer>
-              <div
-                style={{
-                  padding: 8,
-                  textAlign: "center",
-                }}
-              >
+              <ReactPaginate
+                previousLabel={
+                  <Icon
+                    icon={outlineKeyboardArrowLeft}
+                    className="paging-item paging-item__arrow"
+                  />
+                }
+                nextLabel={
+                  <Icon
+                    icon={baselineKeyboardArrowRight}
+                    className="paging-item paging-item__arrow"
+                  />
+                }
+                breakLabel={"..."}
+                breakClassName={"break-me"}
+                activeClassName={"paging-item__active"}
+                pageClassName={"paging-item"}
+                containerClassName={"pagination"}
+                subContainerClassName={"pages pagination"}
+                initialPage={currentPage}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                //onPageChange={pagginationHandler}
+              />
+              {/* <div className="pagination">
                 {pageList.map((page) => {
                   return (
                     <IconButton
@@ -234,7 +258,7 @@ function DriversManagement() {
                     </IconButton>
                   );
                 })}
-              </div>
+              </div> */}
             </Paper>
           </div>
         </div>

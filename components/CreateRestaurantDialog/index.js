@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import innerStyle from "./styles.module.css";
 import { useFormik } from "formik";
 import service from "./services";
-
+import { useDispatch } from "react-redux";
+import loadingAction from "../../store/actions/loading.A";
+import { toast, ToastContainer } from "react-toastify";
 import {
   Dialog,
   DialogContent,
@@ -18,18 +20,23 @@ import {
   MenuItem,
   InputLabel,
 } from "@material-ui/core";
+import ErrorCollection from "../../config";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function CreateRestaurantDialog({ open, handleClose }) {
+function CreateRestaurantDialog({ open, handleClose, location }) {
   const [errorMsg, setErrorMsg] = useState("");
+  const [districts, setDistricts] = useState(null);
+  const [wards, setWards] = useState(null);
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
       email: "",
       phone: "",
+      restaurantName: "",
       address: "",
       ward: "",
       district: "",
@@ -39,11 +46,86 @@ function CreateRestaurantDialog({ open, handleClose }) {
       transport: "",
     },
     validationSchema: service.validationSchema,
-    onSubmit: async (value, { resetForm }) => {},
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        dispatch(loadingAction.turnOnLoading());
+        const {
+          email,
+          phone,
+          restaurantName,
+          address,
+          city,
+          ward,
+          district,
+          openTime,
+          closeTime,
+          transport,
+        } = values;
+        const { errorCode, data } = await service.createNewRestaurant(
+          email,
+          phone,
+          restaurantName,
+          address,
+          city,
+          ward,
+          district,
+          openTime,
+          closeTime,
+          transport
+        );
+        console.log(data);
+        if (errorCode === 0) {
+          toast.success("Tạo nhà hàng mới thành công!!", {
+            position: "top-right",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          resetForm();
+          setErrorMsg("");
+        }
+      } catch (error) {
+        console.log(error.response.status);
+        setErrorMsg(ErrorCollection.SERVER[error.response.status]);
+      }
+      dispatch(loadingAction.turnOffLoading());
+    },
   });
+
+  const handleSelectedCity = (e) => {
+    const temp = location.filter((city) => city.Name === e.target.value)[0]
+      .Districts;
+    setDistricts(temp);
+    formik.setFieldValue("city", e.target.value);
+    formik.setFieldValue("district", "");
+    formik.setFieldValue("ward", "");
+  };
+
+  const handleSelectedDsitrcts = (e) => {
+    const temp = districts.filter(
+      (district) => district.Name === e.target.value
+    )[0].Wards;
+    setWards(temp);
+    formik.setFieldValue("district", e.target.value);
+    formik.setFieldValue("ward", "");
+  };
 
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -67,7 +149,7 @@ function CreateRestaurantDialog({ open, handleClose }) {
                 {errorMsg}
               </Typography>
             )}
-            <form>
+            <form onSubmit={formik.handleSubmit}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={12} className={innerStyle.input}>
                   <TextField
@@ -79,7 +161,7 @@ function CreateRestaurantDialog({ open, handleClose }) {
                     name="email"
                     value={formik.values.email}
                     onChange={formik.handleChange}
-                    error={formik.touched.email && formik.errors.email}
+                    error={formik.errors.email && true}
                     label={formik.errors.email}
                   ></TextField>
                 </Grid>
@@ -94,103 +176,25 @@ function CreateRestaurantDialog({ open, handleClose }) {
                     name="phone"
                     onChange={formik.handleChange}
                     value={formik.values.phone}
-                    error={formik.touched.phone && formik.errors.phone}
+                    error={formik.errors.phone && true}
                     label={formik.errors.phone}
                   ></TextField>
                 </Grid>
-
                 <Grid item xs={12} sm={12} className={innerStyle.input}>
                   <TextField
                     fullWidth
                     variant="outlined"
-                    placeholder="Địa chỉ"
+                    placeholder="Tên nhà hàng"
                     required
-                    id="address"
-                    name="address"
+                    id="restaurantName"
+                    name="restaurantName"
                     onChange={formik.handleChange}
-                    value={formik.values.address}
-                    error={formik.touched.address && formik.errors.address}
-                    label={formik.errors.address}
+                    value={formik.values.restaurantName}
+                    error={formik.errors.restaurantName && true}
+                    label={formik.errors.restaurantName}
                   ></TextField>
                 </Grid>
-
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="ward-label">Chọn Phường/ Xã</InputLabel>
-                      <Select
-                        labelId="ward-label"
-                        id="ward"
-                        value={formik.values.ward}
-                        onChange={formik.handleChange}
-                        error={formik.touched.ward && formik.errors.ward}
-                        label={formik.errors.ward}
-                      >
-                        <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="district-label">
-                        Chọn Quận/ Huyện
-                      </InputLabel>
-                      <Select
-                        labelId="distrcit-label"
-                        id="district"
-                        value={formik.values.district}
-                        onChange={formik.handleChange}
-                        error={
-                          formik.touched.district && formik.errors.district
-                        }
-                        label={formik.errors.district}
-                      >
-                        <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="city-label">Chọn Thành phố</InputLabel>
-                      <Select
-                        labelId="city-label"
-                        id="city"
-                        value={formik.values.city}
-                        onChange={formik.handleChange}
-                        error={formik.touched.city && formik.errors.city}
-                        label={formik.errors.city}
-                      >
-                        <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="transport-label">
-                        Chọn Phương thức giao hàng
-                      </InputLabel>
-                      <Select
-                        labelId="transport-label"
-                        id="transport"
-                        value={formik.values.transport}
-                        onChange={formik.handleChange}
-                        error={
-                          formik.touched.transport && formik.errors.transport
-                        }
-                        label={formik.errors.transport}
-                      >
-                        <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
                       id="openTime"
@@ -201,7 +205,7 @@ function CreateRestaurantDialog({ open, handleClose }) {
                       value={formik.values.openTime}
                       variant="outlined"
                       onChange={formik.handleChange}
-                      error={formik.touched.openTime && formik.errors.openTime}
+                      error={formik.errors.openTime && true}
                       label={formik.errors.openTime}
                       InputLabelProps={{
                         shrink: true,
@@ -221,9 +225,7 @@ function CreateRestaurantDialog({ open, handleClose }) {
                       value={formik.values.closeTime}
                       variant="outlined"
                       onChange={formik.handleChange}
-                      error={
-                        formik.touched.closetime && formik.errors.closeTime
-                      }
+                      error={formik.errors.closeTime && true}
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -232,6 +234,118 @@ function CreateRestaurantDialog({ open, handleClose }) {
                       }}
                     />
                   </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="city-label">
+                        {formik.errors.city
+                          ? formik.errors.city
+                          : `Chọn Thành phố`}
+                      </InputLabel>
+                      <Select
+                        labelId="city-label"
+                        id="city"
+                        name="city"
+                        value={formik.values.city}
+                        onChange={handleSelectedCity}
+                        error={formik.errors.city && true}
+                        label={formik.errors.city}
+                      >
+                        {location &&
+                          location.map((city) => (
+                            <MenuItem value={city.Name} key={city.Id}>
+                              {city.Name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="district-label">
+                        {formik.errors.district
+                          ? formik.errors.district
+                          : ` Chọn Quận/ Huyện`}
+                      </InputLabel>
+                      <Select
+                        labelId="distrcit-label"
+                        id="district"
+                        name="district"
+                        disabled={formik.values.city === ""}
+                        value={formik.values.district}
+                        onChange={handleSelectedDsitrcts}
+                        error={formik.errors.district && true}
+                        label={formik.errors.district}
+                      >
+                        {districts &&
+                          districts.map((district) => (
+                            <MenuItem value={district.Name} key={district.Id}>
+                              {district.Name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="ward-label">
+                        {formik.errors.ward
+                          ? formik.errors.ward
+                          : `Chọn Phường/ xã`}
+                      </InputLabel>
+                      <Select
+                        labelId="ward-label"
+                        id="ward"
+                        name="ward"
+                        disabled={formik.values.district === ""}
+                        value={formik.values.ward}
+                        onChange={formik.handleChange}
+                        error={formik.errors.ward && true}
+                        label={formik.errors.ward}
+                      >
+                        {wards &&
+                          wards.map((ward) => (
+                            <MenuItem key={ward.Id} value={ward.Name}>
+                              {ward.Name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="transport-label">
+                        {formik.errors.transport
+                          ? formik.errors.transport
+                          : `Chọn Phương thức giao hàng`}
+                      </InputLabel>
+                      <Select
+                        labelId="transport-label"
+                        id="transport"
+                        value={formik.values.transport}
+                        onChange={formik.handleChange}
+                        error={formik.errors.transport && true}
+                        label={formik.errors.transport}
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12} sm={12} className={innerStyle.input}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    placeholder="Địa chỉ"
+                    required
+                    id="address"
+                    name="address"
+                    onChange={formik.handleChange}
+                    value={formik.values.address}
+                    error={formik.errors.address && true}
+                    label={formik.errors.address}
+                  ></TextField>
                 </Grid>
                 <Grid
                   container

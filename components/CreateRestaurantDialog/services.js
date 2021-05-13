@@ -1,4 +1,6 @@
 import * as yup from "yup";
+import axiosClient from "../../api";
+import URL from "../../api/URL";
 const service = {
   validationSchema: yup.object({
     email: yup
@@ -9,11 +11,37 @@ const service = {
       .string()
       .matches(/^[0-9]*$/gm, "Số điện thoại không chứa các ký tự")
       .required("Không được để trống"),
+    restaurantName: yup.string().required("Không được để trống"),
     address: yup.string().required("Không được để trống"),
-    ward: yup.number().required("Không được để trống"),
-    district: yup.number().required("Không được để trống"),
-    city: yup.number().required("Không được để trống"),
+    ward: yup.string().required("Không được để trống"),
+    district: yup.string().required("Không được để trống"),
+    city: yup.string().required("Không được để trống"),
   }),
+  createNewRestaurant: (
+    email,
+    phone,
+    restaurantName,
+    address,
+    city,
+    ward,
+    district,
+    openTime,
+    closeTime,
+    transport
+  ) => {
+    return axiosClient.post(URL.ADMIN.CREATE_RESTAURANT, {
+      email,
+      contractID: phone,
+      name: restaurantName,
+      address,
+      city,
+      ward,
+      district,
+      openTime,
+      closeTime,
+      transport,
+    });
+  },
 };
 
 export default service;

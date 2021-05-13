@@ -1,3 +1,15 @@
+.report-table__head tr th {
+  color: white;
+  padding: 10px;
+  max-width: 250px;
+}
+
+.report-table__body tr td {
+  padding: 10px;
+  max-width: 250px;
+  word-wrap: break-word;
+}
+
 .report-table-image {
   cursor: pointer;
   width: 160px;

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import loadingAction from "../store/actions/loading.A";
 import Loading from "../components/Loading";
 import { useRouter } from "next/router";
+import authAction from "../store/actions/auth.A";
 
 function signin() {
   const [error, setError] = useState("");
@@ -33,7 +34,7 @@ function signin() {
       //setError("Có gì đó nó sai sai");
 
       localStorage.setItem("jwt", "something");
-      //dispatch(userAction.signIn(token, {}));
+      dispatch(authAction.signIn(token));
       dispatch(loadingAction.turnOffLoading());
     },
   });

@@ -12,6 +12,7 @@ import {
   TableCell,
   IconButton,
 } from "@material-ui/core";
+import ReportDetailDialog from "../../components/ReportDetailDialog";
 
 function genarateFakeNumber(start, length) {
   const seed = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -37,6 +38,7 @@ const TEMPLATE_DATA = [
     createdAt: new Date(),
     reported: "Mekong Gourment",
     status: Math.floor(Math.random() * 10) % 2,
+    orderID: "#28SSA442",
   },
   {
     id: "b",
@@ -51,6 +53,7 @@ const TEMPLATE_DATA = [
     createdAt: new Date(),
     reported: "Mekong Gourment",
     status: Math.floor(Math.random() * 10) % 2,
+    orderID: "#28SSA442",
   },
   {
     id: "c",
@@ -65,6 +68,7 @@ const TEMPLATE_DATA = [
     createdAt: new Date(),
     reported: "Mekong Gourment",
     status: Math.floor(Math.random() * 10) % 2,
+    orderID: "#28SSA442",
   },
 
   {
@@ -79,6 +83,7 @@ const TEMPLATE_DATA = [
       "https://images.foody.vn/res/g102/1018583/prof/s280x175/foody-upload-api-foody-mobile-hmb-200410113701.jpg",
     ],
     reported: "Trà sữa Toco",
+    orderID: "#28SSA442",
     status: Math.floor(Math.random() * 10) % 2,
   },
   {
@@ -94,6 +99,7 @@ const TEMPLATE_DATA = [
     createdAt: new Date(),
     reported: "Thực Phẩm Quốc Tế Maison - Mai Văn Vĩnh",
     status: Math.floor(Math.random() * 10) % 2,
+    orderID: "#28SSA442",
   },
   {
     id: "f",
@@ -108,10 +114,12 @@ const TEMPLATE_DATA = [
     createdAt: new Date(),
     reported: "Thực Phẩm Quốc Tế Maison - Mai Văn Vĩnh",
     status: Math.floor(Math.random() * 10) % 2,
+    orderID: "#28SSA442",
   },
   {
     id: "g",
-    content: "random@gmail.com",
+    content:
+      "random@gmail.com https://images.foody.vn/res/g92/911715/prof/s280x175/foody-upload-api-foody-mobile-32-190508144839.jpg https://images.foody.vn/res/g92/911715/prof/s280x175/foody-upload-api-foody-mobile-32-190508144839.jpg https://images.foody.vn/res/g92/911715/prof/s280x175/foody-upload-api-foody-mobile-32-190508144839.jpg",
     annunciator: genarateFakeNumber("+84", 10),
     createdAt: new Date(),
     reported: "FoodcoMart - Hai Bà Trưng",
@@ -122,6 +130,7 @@ const TEMPLATE_DATA = [
       "https://images.foody.vn/res/g102/1018583/prof/s280x175/foody-upload-api-foody-mobile-hmb-200410113701.jpg",
     ],
     status: Math.floor(Math.random() * 10) % 2,
+    orderID: "#28SSA442",
   },
   {
     id: "h",
@@ -136,6 +145,7 @@ const TEMPLATE_DATA = [
     createdAt: new Date(),
     reported: "FoodcoMart - Hai Bà Trưng",
     status: Math.floor(Math.random() * 10) % 2,
+    orderID: "#28SSA442",
   },
   {
     id: "i",
@@ -150,6 +160,7 @@ const TEMPLATE_DATA = [
     createdAt: new Date(),
     reported: "FoodcoMart - Hai Bà Trưng",
     status: Math.floor(Math.random() * 10) % 2,
+    orderID: "#28SSA442",
   },
 ];
 
@@ -158,12 +169,25 @@ function ListReport() {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageList, setPageList] = useState([1, 2, 3]);
   const [reportsPresent, setReportsPresent] = useState(10);
+  const [isOpenDetailDialog, setIsOpenDetailDialog] = useState(false);
+  const [report, setReport] = useState({});
+
+  const handleOpenDetailDialog = (info) => {
+    setReport(info);
+    setIsOpenDetailDialog(true);
+  };
+
   return (
     <Layout>
       <Head>
         <title>Flash Admin - Reports</title>
         <link href="/Logo.png" rel="icon" />
       </Head>
+      <ReportDetailDialog
+        open={isOpenDetailDialog}
+        handleClose={setIsOpenDetailDialog}
+        report={report}
+      ></ReportDetailDialog>
       {
         <div className={styles.container}>
           <div className={styles.containerTitle}>
@@ -179,7 +203,7 @@ function ListReport() {
               <TableContainer>
                 <Table>
                   <TableHead
-                    className="user-table__head"
+                    className="report-table__head"
                     style={{ background: "#FFCE31" }}
                   >
                     <TableRow>
@@ -192,14 +216,19 @@ function ListReport() {
                       <TableCell align="center">Trạng thái</TableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody className="user-table__body">
+                  <TableBody className="report-table__body">
                     {TEMPLATE_DATA.map((report, i) => (
                       <TableRow key={report.id}>
                         <TableCell align="center">
                           {i + 1 + currentPage * reportsPresent}
                         </TableCell>
                         <TableCell align="center">
-                          <div className="report-table-image">
+                          <div
+                            className="report-table-image"
+                            onClick={() => {
+                              handleOpenDetailDialog(report);
+                            }}
+                          >
                             <img
                               src={report.imageLinks && report.imageLinks[0]}
                               alt="image"

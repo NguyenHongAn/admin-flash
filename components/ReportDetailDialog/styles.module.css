@@ -1,0 +1,12 @@
+.info {
+  display: flex;
+}
+
+.infoTitle {
+  width: 30%;
+  font-weight: 600;
+}
+
+.infoContent {
+  width: 70%;
+}

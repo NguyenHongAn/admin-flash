@@ -6,6 +6,7 @@ import "../styles/restaurant.css";
 import "../styles/statistics.css";
 import "../styles/user.css";
 import "../styles/listReport.css";
+import "swiper/swiper-bundle.css";
 
 import { Provider } from "react-redux";
 import store from "../store";

@@ -9,6 +9,7 @@
 .error {
   color: red;
   font-weight: 300;
+  padding: 10px 0px;
 }
 
 .input {

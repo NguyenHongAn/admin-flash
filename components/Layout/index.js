@@ -3,10 +3,12 @@ import { Grid } from "@material-ui/core";
 import styles from "../../styles/Home.module.css";
 import Notification from "../Notification";
 import Sidebar from "../Sidebar";
+import Loading from "../Loading";
 
 function Layout({ children }) {
   return (
     <Grid container className={styles.dashboard}>
+      <Loading></Loading>
       <Grid item md={3} className={styles.sidebar}>
         <Sidebar></Sidebar>
       </Grid>
