@@ -1,11 +1,11 @@
 const TAG = {
   LOADING: {
     VISIBLE: "WAITING_RESPONSE",
-    INVISIBLE: "FREE",
+    INVISIBLE: "GET_RESPONSE",
   },
   AUTH: {
-    SIGNIN: "ADMIN_SIGNIN",
-    SIGNOUT: "ADMIN_SIGNOUT",
+    SIGN_IN: "ADMIN_SIGNIN",
+    SIGN_OUT: "ADMIN_SIGNOUT",
   },
 };
 export default TAG;

@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   list-style: none;
+  margin: 5px auto;
 }
 
 .pagingItem {
@@ -26,4 +27,8 @@
 .pagingItemActive {
   background: rgb(40, 97, 255);
   color: white;
+}
+
+.pagingItemDisable {
+  color: rgb(40, 97, 255, 0.3);
 }

@@ -10,28 +10,10 @@ import arrowGrowth from "@iconify/icons-uil/arrow-growth";
 import { useRouter } from "next/router";
 import { Grid } from "@material-ui/core";
 import { Bar } from "react-chartjs-2";
-import Head from "next/head";
-
-const TEMPLATE_DATA = [
-  {
-    icon: storeIcon,
-    link: "/restaurants-management",
-    backgroundColor: "#ffff00",
-    content: "128 nhà hàng, quán ăn",
-  },
-  {
-    icon: multipleUsers,
-    link: "/users-management",
-    backgroundColor: "#0288D1",
-    content: "1047 người dùng",
-  },
-  {
-    icon: roundDirectionsBike,
-    link: "/drivers-management",
-    backgroundColor: "#44C019",
-    content: "94 tài xế",
-  },
-];
+import Meta from "../../components/Meta";
+import Service from "./services";
+import ErrorCollection from "../../config";
+import Toast from "../../components/Toast";
 
 const DATASET = {
   labels: ["Mon", "Tues", "Wednes", "Thus", "Fri", "Sat", "Sun"],
@@ -59,30 +41,85 @@ const DATASET = {
   ],
 };
 
-function GeneralStatistic() {
+export async function getServerSideProps() {
+  try {
+    const { errorCode, data } = await Service.getGeneralStatistics();
+
+    if (errorCode === 0) {
+      return {
+        props: {
+          totalRestaurants: data.totalRestaurants,
+          totalUsers: data.totalUsers,
+        },
+      };
+    } else {
+      return {
+        props: {
+          errorType: "error",
+          errorMsg: ErrorCollection.SERVER[errorCode],
+        },
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    if (error.response.status === 401) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+    return {
+      props: {
+        errorType: "error",
+        errorMsg: ErrorCollection.SERVER[error.response.status],
+      },
+    };
+  }
+}
+
+function GeneralStatistic({
+  totalRestaurants,
+  totalUsers,
+  errorType,
+  errorMsg,
+}) {
   const route = useRouter();
 
   return (
     <Layout>
-      <Head>
-        <title>Admin Flash - General Statistics</title>
-        <link href="/Logo.png" rel="icon" />
-      </Head>
+      <Meta title="Admin Flash - General Statistics"></Meta>
+      {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
       {
         <div className={styles.container}>
           {/* <div className="container__title"> Thống kê chung</div> */}
           <Grid container>
             <Grid container className="container__grid">
-              {TEMPLATE_DATA.map((data) => (
-                <Grid item md={3} key={data.link}>
-                  <SatitisticsBox
-                    icon={data.icon}
-                    handleClick={() => route.push(data.link)}
-                    backgroundColor={data.backgroundColor}
-                    content={data.content}
-                  />
-                </Grid>
-              ))}
+              <Grid item md={3} key="/restaurants-management">
+                <SatitisticsBox
+                  icon={storeIcon}
+                  handleClick={() => route.push("/restaurants-management")}
+                  backgroundColor={"#ffff00"}
+                  content={totalRestaurants + " nhà hàng, quán ăn"}
+                />
+              </Grid>
+              <Grid item md={3} key={"/users-management"}>
+                <SatitisticsBox
+                  icon={multipleUsers}
+                  handleClick={() => route.push("/users-management")}
+                  backgroundColor={"#0288D1"}
+                  content={totalUsers + " người dùng"}
+                />
+              </Grid>
+              <Grid item md={3} key={"/drivers-management"}>
+                <SatitisticsBox
+                  icon={roundDirectionsBike}
+                  handleClick={() => route.push("/drivers-management")}
+                  backgroundColor={"#44C019"}
+                  content={"94 tài xế"}
+                />
+              </Grid>
             </Grid>
             <Grid container>
               <Grid item md={6} xs={6}>

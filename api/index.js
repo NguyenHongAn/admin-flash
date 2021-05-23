@@ -3,7 +3,7 @@ import queryString from "query-string";
 import store from "../store";
 
 const axiosClient = axios.create({
-  //baseURL: process.env.SERVER_URL,
+  baseURL: process.env.SERVER_URL,
   headers: {
     "content-type": "application/json; charset=utf-8",
   },

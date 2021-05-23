@@ -29,7 +29,7 @@ const service = {
     closeTime,
     transport
   ) => {
-    return axiosClient.post(URL.ADMIN.CREATE_RESTAURANT, {
+    return axiosClient.post(URL.CREATE_RESTAURANT, {
       email,
       contractID: phone,
       name: restaurantName,

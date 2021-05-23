@@ -1,5 +1,5 @@
 module.exports = {
-  env: { SERVER_URL: "http://localhost:8000/admin" },
+  env: { SERVER_URL: "http://localhost:8001/" },
   async rewrites() {
     return [
       {

@@ -85,9 +85,9 @@ const TEMPLATE_DATA = [
 ];
 
 const Service = {
-  getRestaurantMangagementInfo: (city, search, page) => {
-    return axiosClient.get(URL.ADMIN.GET_RESTAURANTS_INFO, {
-      params: { city: city, search: search, page: page },
+  getRestaurantMangagementInfo: (city, search, page, district) => {
+    return axiosClient.get(URL.GET_RESTAURANTS_INFO, {
+      params: { city: city, search: search, page: page, district },
     });
   },
 };

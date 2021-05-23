@@ -29,13 +29,20 @@ function signin() {
     }),
     onSubmit: (values) => {
       const { email, password } = values;
-      dispatch(loadingAction.turnOnLoading());
-      console.log({ email, password });
-      //setError("Có gì đó nó sai sai");
+      try {
+        dispatch(loadingAction.turnOnLoading());
+        console.log({ email, password });
+        //setError("Có gì đó nó sai sai");
 
-      localStorage.setItem("jwt", "something");
-      dispatch(authAction.signIn(token));
-      dispatch(loadingAction.turnOffLoading());
+        localStorage.setItem("jwt", "something");
+        dispatch(authAction.signIn("something"));
+      } catch (error) {
+        console.log(error);
+      }
+      setTimeout(() => {
+        dispatch(loadingAction.turnOffLoading());
+        console.log("turn Off loading");
+      }, 500);
     },
   });
 

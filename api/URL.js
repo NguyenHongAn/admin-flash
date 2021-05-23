@@ -1,11 +1,8 @@
 const URL = {
-  CLIENT: {
-    GET_CITY: "http://localhost:8000/cities",
-  },
-  ADMIN: {
-    GET_RESTAURANTS_INFO: "http://localhost:8001/restaurants",
-    CREATE_RESTAURANT: "http://localhost:8001/restaurants",
-  },
+  GET_RESTAURANTS_INFO: "/restaurants",
+  CREATE_RESTAURANT: "/restaurants",
+  GET_USERS: "/users",
+  GET_GENERAL_INFO: "/",
 };
 
 export default URL;

@@ -16,44 +16,57 @@ import {
 import { Icon } from "@iconify/react";
 import add12Filled from "@iconify/icons-fluent/add-12-filled";
 import searchIcon from "@iconify/icons-fe/search";
-import { useSelector, useDispatch } from "react-redux";
 import RestaurantInfoDialog from "../../components/RestaurantInfoDialog";
 import CreateRestaurantDialog from "../../components/CreateRestaurantDialog";
 import Service from "./services.js";
 import { useRouter } from "next/router";
 import Pagination from "../../components/Pagination";
 import Meta from "../../components/Meta";
+import ErrorCollection from "../../config";
+import clearObject from "../../utils/clearObject";
+import Toast from "../../components/Toast";
 
 export const getServerSideProps = async ({ query }) => {
   const { city, search, page } = query;
-
-  const { errorCode, data, pagingInfo } =
-    await Service.getRestaurantMangagementInfo(city, search, page);
-
-  if (errorCode === 0) {
+  try {
+    const { errorCode, data, pagingInfo } =
+      await Service.getRestaurantMangagementInfo(city, search, page);
+    if (errorCode === 0) {
+      return {
+        props: {
+          cities: data.cities,
+          districts: data.districts,
+          adminRestaurants: data.adminRestaurants,
+          seftRestaurants: data.seftRestaurants,
+          totalRestaurants: data.totalRestaurants,
+          perPage: pagingInfo.perPage,
+          totalPage: pagingInfo.totalPage,
+          currentPage: pagingInfo.currentPage,
+        },
+      };
+    }
     return {
       props: {
-        cities: data.cities,
-        districts: data.districts,
-        adminRestaurants: data.adminRestaurants,
-        seftRestaurants: data.seftRestaurants,
-        perPage: pagingInfo.perPage,
-        totalPage: pagingInfo.totalPage,
-        currentPage: pagingInfo.currentPage,
+        errorType: "error",
+        errorMsg: ErrorCollection.EXECUTION[errorCode],
+      },
+    };
+  } catch (error) {
+    if (error.response.status === 401) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+    return {
+      props: {
+        errorType: "error",
+        errorMsg: ErrorCollection.SERVER[error.response.status],
       },
     };
   }
-  return {
-    props: {
-      cities: [],
-      districts: [],
-      seftRestaurants: [],
-      adminRestaurants: [],
-      perPage: 0,
-      totalPage: 0,
-      currentPage: 0,
-    },
-  };
 };
 
 function RestaurantsManagement({
@@ -64,18 +77,21 @@ function RestaurantsManagement({
   perPage,
   totalPage,
   currentPage,
+  totalRestaurants,
+  errorType,
+  errorMsg,
 }) {
   const [email, setEmail] = useState("");
   const [contractID, setContractID] = useState("");
-  const totalRestaurants = adminRestaurants.length + seftRestaurants.length;
 
   const router = useRouter();
-  const { city, search, page } = router.query;
+  const { city, search, page, district } = router.query;
   const [isOpenContract, setIsOpenContract] = useState(false);
   const [isOpenNewRestaurant, setIsOpenNewRestaurant] = useState(false);
   const typingTimeoutRef = useRef(null);
   const [searchString, setSearchString] = useState(search);
   const handleCloseContractDialog = () => setIsOpenContract(false);
+
   const handleOpenContractDialog = (contract, resEmail) => {
     setContractID(contract);
     setEmail(resEmail);
@@ -84,8 +100,8 @@ function RestaurantsManagement({
 
   const handleCityChange = (e) => {
     router.push({
-      pathname: "/restaurants-management",
-      query: { city: e.target.value, search, page },
+      pathname: `/restaurants-management`,
+      query: clearObject({ city: e.target.value, search, page, district }),
     });
   };
 
@@ -98,23 +114,29 @@ function RestaurantsManagement({
     typingTimeoutRef.current = setTimeout(() => {
       router.push({
         pathname: "/restaurants-management",
-        query: { search: e.target.value, city, page },
+        query: clearObject({ search: e.target.value, city, page, district }),
       });
     }, 700);
   };
 
-  const handlePageChange = (data) => {
-    const selected = parseInt(data.selected) + 1;
-
+  const handlePageChange = (selected) => {
     router.push({
       pathname: "/restaurants-management",
-      query: { page: selected, search, city },
+      query: clearObject({ page: selected, search, city, district }),
+    });
+  };
+
+  const handleDistrictChange = (e) => {
+    router.push({
+      pathname: "/restaurants-management",
+      query: clearObject({ city, search, page, district: e.target.value }),
     });
   };
 
   return (
     <Layout>
       <Meta title="Admin Flash - Restaurants"></Meta>
+      {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
       <RestaurantInfoDialog
         open={isOpenContract}
         email={email}
@@ -133,11 +155,11 @@ function RestaurantsManagement({
               {" "}
               <span>Quản lý nhà hàng</span>
               <span className={styles.total}>
-                Tổng cộng: {totalRestaurants} nhà hàng
+                Tổng cộng: {totalRestaurants ? totalRestaurants : 0} nhà hàng
                 <select
                   name="city"
                   className="city-filter"
-                  defaultValue={city ? city : -1}
+                  value={city ? city : -1}
                   onChange={handleCityChange}
                 >
                   <option value="-1" disabled>
@@ -179,13 +201,15 @@ function RestaurantsManagement({
               >
                 <div style={{ display: "flex" }}>
                   <div>
-                    Nhà hàng do Admin quản lý: {adminRestaurants.length} nhà
-                    hàng
+                    Nhà hàng do Admin quản lý
+                    {/* : {adminRestaurants.length} nhà
+                    hàng */}
                   </div>
                   <select
                     name="area"
                     className="restaurant-table-filter"
-                    defaultValue={-1}
+                    value={district ? district : -1}
+                    onChange={handleDistrictChange}
                   >
                     <option value="-1" disabled>
                       Khu vực
@@ -245,7 +269,8 @@ function RestaurantsManagement({
                             {restaurant.orders}
                           </TableCell>
                           <TableCell align="center">
-                            {restaurant.avgReview}/{restaurant.reviews} đánh giá
+                            {restaurant.avgReview}/{restaurant.reviews}
+                            đánh giá
                           </TableCell>
                           <TableCell align="center">
                             <div
@@ -266,17 +291,11 @@ function RestaurantsManagement({
                 </Table>
               </TableContainer>
               <Pagination
-                currentPage={page}
+                currentPage={currentPage}
                 pageCount={totalPage}
                 handler={handlePageChange}
+                pageDisplay={3}
               ></Pagination>
-              {/* <div className="restaurant-table-show-more" onClick={() => {}}>
-                <Icon
-                  icon={reloadIcon}
-                  style={{ color: "#0288d1", margin: "2px" }}
-                />
-                Xem thêm
-              </div> */}
             </Paper>
             {/* <Paper style={{ marginTop: "10px" }}>
               <div

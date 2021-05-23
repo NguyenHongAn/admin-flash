@@ -4,7 +4,6 @@ import { useFormik } from "formik";
 import service from "./services";
 import { useDispatch } from "react-redux";
 import loadingAction from "../../store/actions/loading.A";
-import { toast, ToastContainer } from "react-toastify";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +20,7 @@ import {
   InputLabel,
 } from "@material-ui/core";
 import ErrorCollection from "../../config";
+import Toast from "../Toast";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -31,6 +31,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
   const [districts, setDistricts] = useState(null);
   const [wards, setWards] = useState(null);
   const dispatch = useDispatch();
+  const [successMsg, setSuccessMsg] = useState("");
 
   const formik = useFormik({
     initialValues: {
@@ -73,22 +74,17 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
           closeTime,
           transport
         );
-        console.log(data);
+
         if (errorCode === 0) {
-          toast.success("Tạo nhà hàng mới thành công!!", {
-            position: "top-right",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          resetForm();
-          setErrorMsg("");
+          setSuccessMsg("Tạo nhà hàng mới thành công");
+        } else {
+          setErrorMsg(ErrorCollection.EXECUTION[errorCode]);
         }
+
+        resetForm();
+        setErrorMsg("");
+        handleClose(false);
       } catch (error) {
-        console.log(error.response.status);
         setErrorMsg(ErrorCollection.SERVER[error.response.status]);
       }
       dispatch(loadingAction.turnOffLoading());
@@ -115,17 +111,9 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
 
   return (
     <div>
-      <ToastContainer
-        position="top-right"
-        autoClose={1500}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      {successMsg === "" ? null : (
+        <Toast type="info" content={successMsg}></Toast>
+      )}
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -165,7 +153,6 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                     label={formik.errors.email}
                   ></TextField>
                 </Grid>
-
                 <Grid item xs={12} sm={12} className={innerStyle.input}>
                   <TextField
                     fullWidth
@@ -210,9 +197,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      inputProps={{
-                        step: 300, // 5 min
-                      }}
+                      inputProps={{ step: 300 }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -229,9 +214,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      inputProps={{
-                        step: 300, // 5 min
-                      }}
+                      inputProps={{ step: 300 }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>

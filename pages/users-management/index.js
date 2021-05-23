@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Layout from "../../components/Layout";
 import styles from "../../styles/Home.module.css";
 import Head from "next/head";
@@ -10,26 +10,29 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  IconButton,
 } from "@material-ui/core";
 import { Icon } from "@iconify/react";
+import personLock16Regular from "@iconify/icons-fluent/person-lock-16-regular";
 import BlockUserDialog from "../../components/BlockUserDialog";
-
-function genarateFakeNumber(start, length) {
-  const seed = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  let temp = start;
-  for (let i = 0; i < length - start.length; i++) {
-    const index = Math.floor(Math.random() * seed.length);
-    temp += seed[index];
-  }
-  return temp;
-}
+import Service from "./services";
+import Pagination from "../../components/Pagination";
+import { useRouter } from "next/router";
+import clearObject from "../../utils/clearObject";
+import ErrorCollection from "../../config";
+import Meta from "../../components/Meta";
 
 function getStatus(num) {
   switch (num) {
+    case -2:
+      return (
+        <Icon
+          icon={personLock16Regular}
+          style={{ color: "black", fontSize: "24px" }}
+        ></Icon>
+      );
+    case -1:
+      return "Chưa xác thực";
     case 0:
-      return "Khóa";
-    case 1:
       return "Bình thường";
 
     default:
@@ -37,108 +40,120 @@ function getStatus(num) {
   }
 }
 
-const TEMPLATE_DATA = [
-  {
-    id: "a",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    point: Math.floor(Math.random() * 1000),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "b",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    point: Math.floor(Math.random() * 1000),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "c",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    point: Math.floor(Math.random() * 1000),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
+export const getServerSideProps = async ({ query }) => {
+  const { page, phone, email } = query;
+  try {
+    const { errorCode, data, pagingInfo } = await Service.getUserManagement(
+      page,
+      email,
+      phone
+    );
 
-  {
-    id: "d",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    point: Math.floor(Math.random() * 1000),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "e",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    point: Math.floor(Math.random() * 1000),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "f",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    point: Math.floor(Math.random() * 1000),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "g",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    point: Math.floor(Math.random() * 1000),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "h",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    point: Math.floor(Math.random() * 1000),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "i",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    point: Math.floor(Math.random() * 1000),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-];
+    if (errorCode === 0) {
+      return {
+        props: {
+          totalUsers: data.totalUsers,
+          users: data.users,
+          totalPage: pagingInfo.totalPage,
+          currentPage: pagingInfo.currentPage,
+          perPage: pagingInfo.perPage,
+        },
+      };
+    } else {
+      return {
+        props: {
+          errorType: "error",
+          errorMsg: ErrorCollection.EXECUTION[errorCode],
+        },
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    if (error.response.status === 401) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+    return {
+      props: {
+        errorType: "error",
+        errorMsg: ErrorCollection.SERVER[error.response.status],
+      },
+    };
+  }
+};
 
-function UsersManagement() {
-  const [totalUser, setTotalUser] = useState(1065);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [pageList, setPageList] = useState([1, 2, 3]);
-  const [usersPresent, setUsersPresent] = useState(10);
+function UsersManagement({
+  totalUsers,
+  users,
+  currentPage,
+  totalPage,
+  perPage,
+  errorType,
+  errorMsg,
+}) {
   const [isOpenBlockDialog, setIsOpenBlockDialog] = useState(false);
-  const [email, setEmail] = useState("");
-
+  const [userEmail, setUserEmail] = useState("");
+  const router = useRouter();
+  const { page, phone, email } = router.query;
+  const [emailFilter, setEmailFilter] = useState(email);
+  const [phoneFilter, setPhoneFilter] = useState(phone);
+  const typingTimeoutRef = useRef(null);
   const handleOpenBlockDialog = (account) => {
     setIsOpenBlockDialog(true);
-    setEmail(account);
+    setUserEmail(account);
   };
+
   const handleCloseBlockDialog = () => {
     setIsOpenBlockDialog(false);
   };
 
+  const handlePageChange = (selected) => {
+    router.push({
+      pathname: `/users-management`,
+      query: clearObject({ page: selected, email, phone }),
+    });
+  };
+
+  const handleEmailFilterChange = (e) => {
+    setEmailFilter(e.target.value);
+    //
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      router.push({
+        pathname: "/users-management",
+        query: clearObject({ page: page, email: e.target.value, phone }),
+      });
+    }, 700);
+  };
+
+  const handlePhoneFilterChange = (e) => {
+    setPhoneFilter(e.target.value);
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      router.push({
+        pathname: "/users-management",
+        query: clearObject({ page, email, phone: e.target.value }),
+      });
+    }, 700);
+  };
+
   return (
     <Layout>
-      <Head>
-        <title> Admin Flash - Users</title>
-        <link href="/Logo.png" rel="icon" />
-      </Head>
+      <Meta title="Admin Flash - Users"></Meta>
+      {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
       <BlockUserDialog
         open={isOpenBlockDialog}
         handleClose={handleCloseBlockDialog}
-        info={email}
+        info={userEmail}
       ></BlockUserDialog>
       {
         <div className={styles.container}>
@@ -146,7 +161,7 @@ function UsersManagement() {
             <div>
               <span>Quản lý người dùng</span>
               <span className={styles.total}>
-                Tổng cộng: {totalUser} người dùng
+                Tổng cộng: {totalUsers ? totalUsers : 0} người dùng
               </span>
             </div>
           </div>
@@ -161,10 +176,20 @@ function UsersManagement() {
                     <TableRow>
                       <TableCell align="center">STT</TableCell>
                       <TableCell align="center">
-                        Email <input type="text"></input>
+                        Email{" "}
+                        <input
+                          type="text"
+                          value={emailFilter}
+                          onChange={handleEmailFilterChange}
+                        ></input>
                       </TableCell>
                       <TableCell align="center">
-                        Sđt <input type="text"></input>
+                        Sđt{" "}
+                        <input
+                          type="text"
+                          value={phoneFilter}
+                          onChange={handlePhoneFilterChange}
+                        ></input>
                       </TableCell>
                       <TableCell align="center">Lượt báo cáo</TableCell>
                       <TableCell align="center">Điểm</TableCell>
@@ -173,53 +198,44 @@ function UsersManagement() {
                     </TableRow>
                   </TableHead>
                   <TableBody className="user-table__body">
-                    {TEMPLATE_DATA.map((user, i) => (
-                      <TableRow key={user.id}>
-                        <TableCell align="center">
-                          {i + 1 + currentPage * usersPresent}
-                        </TableCell>
-                        <TableCell align="center">{user.email}</TableCell>
-                        <TableCell align="center">{user.phone}</TableCell>
-                        <TableCell align="center">{user.reports}</TableCell>
-                        <TableCell align="center">{user.point}</TableCell>
-                        <TableCell align="center">
-                          {getStatus(user.status)}
-                        </TableCell>
-                        <TableCell align="center">
-                          <div
-                            className="block-user"
-                            onClick={() => {
-                              handleOpenBlockDialog(user.email);
-                            }}
-                          >
-                            Khóa{" "}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {users &&
+                      users.map((user, i) => (
+                        <TableRow key={user._id}>
+                          <TableCell align="center">
+                            {i + 1 + (currentPage - 1) * perPage}
+                          </TableCell>
+                          <TableCell align="center">{user.email}</TableCell>
+                          <TableCell align="center">{user.phone}</TableCell>
+                          <TableCell align="center">{user.reports}</TableCell>
+                          <TableCell align="center">{user.point}</TableCell>
+                          <TableCell align="center">
+                            {getStatus(user.status)}
+                          </TableCell>
+                          <TableCell align="center">
+                            <div
+                              className="block-user"
+                              onClick={() => {
+                                handleOpenBlockDialog(user.email);
+                              }}
+                            >
+                              {user.status === -2
+                                ? "Mở khóa"
+                                : user.status === 0
+                                ? "Khóa"
+                                : null}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
               </TableContainer>
-              <div
-                style={{
-                  padding: 8,
-                  textAlign: "center",
-                }}
-              >
-                {pageList.map((page) => {
-                  return (
-                    <IconButton
-                      key={page}
-                      className={`paging-item ${
-                        parseInt(currentPage) + 1 === parseInt(page) &&
-                        "paging-item__active"
-                      }`}
-                    >
-                      {page}
-                    </IconButton>
-                  );
-                })}
-              </div>
+              <Pagination
+                currentPage={currentPage}
+                pageCount={totalPage}
+                handler={handlePageChange}
+                pageDisplay={3}
+              ></Pagination>
             </Paper>
           </div>
         </div>

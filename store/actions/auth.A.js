@@ -2,11 +2,11 @@ import TAG from "../TAG";
 
 const authAction = {
   signIn: (token) => ({
-    type: TAG.AUTH.VISIBLE,
+    type: TAG.AUTH.SIGN_IN,
     payload: token,
   }),
   signOut: () => ({
-    type: TAG.AUTH.SIGNOUT,
+    type: TAG.AUTH.SIGN_OUT,
   }),
 };
 
