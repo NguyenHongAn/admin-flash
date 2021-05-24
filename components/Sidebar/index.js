@@ -68,10 +68,10 @@ function Sidebar() {
               <span>Quản lý người dùng</span>
             </li>
           </Link>
-          <Link href="/drivers-management">
+          <Link href="/shippers-management">
             <li
               className={`sidebar__list-item ${
-                route.pathname === "/drivers-management"
+                route.pathname === "/shippers-management"
                   ? "sidebar__list-item-active"
                   : ""
               }`}

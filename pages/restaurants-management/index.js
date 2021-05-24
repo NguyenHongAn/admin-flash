@@ -27,10 +27,10 @@ import clearObject from "../../utils/clearObject";
 import Toast from "../../components/Toast";
 
 export const getServerSideProps = async ({ query }) => {
-  const { city, search, page } = query;
+  const { city, search, page, district } = query;
   try {
     const { errorCode, data, pagingInfo } =
-      await Service.getRestaurantMangagementInfo(city, search, page);
+      await Service.getRestaurantMangagementInfo(city, search, page, district);
     if (errorCode === 0) {
       return {
         props: {
@@ -52,7 +52,7 @@ export const getServerSideProps = async ({ query }) => {
       },
     };
   } catch (error) {
-    if (error.response.status === 401) {
+    if (error && error.response.status === 401) {
       return {
         redirect: {
           destination: "/",

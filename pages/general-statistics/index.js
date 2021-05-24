@@ -16,27 +16,10 @@ import ErrorCollection from "../../config";
 import Toast from "../../components/Toast";
 
 const DATASET = {
-  labels: ["Mon", "Tues", "Wednes", "Thus", "Fri", "Sat", "Sun"],
   datasets: [
     {
       label: "số đơn",
       data: [12, 19, 3, 5, 2, 3, 7],
-      backgroundColor: [
-        "rgba(255, 99, 132, 0.2)",
-        "rgba(54, 162, 235, 0.2)",
-        "rgba(255, 206, 86, 0.2)",
-        "rgba(75, 192, 192, 0.2)",
-        "rgba(153, 102, 255, 0.2)",
-        "rgba(255, 159, 64, 0.2)",
-      ],
-      borderColor: [
-        "rgba(255, 99, 132, 1)",
-        "rgba(54, 162, 235, 1)",
-        "rgba(255, 206, 86, 1)",
-        "rgba(75, 192, 192, 1)",
-        "rgba(153, 102, 255, 1)",
-        "rgba(255, 159, 64, 1)",
-      ],
     },
   ],
 };
@@ -50,13 +33,17 @@ export async function getServerSideProps() {
         props: {
           totalRestaurants: data.totalRestaurants,
           totalUsers: data.totalUsers,
+          totalOrders: data.totalOrders,
+          totalPayment: data.totalPayment,
+          numberOrderArr: data.numberOfOrderInWeek,
+          paymentOrderArr: data.payOfOrderInWeek,
         },
       };
     } else {
       return {
         props: {
           errorType: "error",
-          errorMsg: ErrorCollection.SERVER[errorCode],
+          errorMsg: ErrorCollection.EXECUTION[errorCode],
         },
       };
     }
@@ -82,11 +69,23 @@ export async function getServerSideProps() {
 function GeneralStatistic({
   totalRestaurants,
   totalUsers,
+  totalOrders,
+  totalPayment,
+  numberOrderArr,
+  paymentOrderArr,
   errorType,
   errorMsg,
 }) {
   const route = useRouter();
-
+  const labels = ["Mon", "Tues", "Wednes", "Thus", "Fri", "Sat", "Sun"];
+  const backgroundColor = [
+    "rgba(255, 99, 132, 0.2)",
+    "rgba(54, 162, 235, 0.2)",
+    "rgba(255, 206, 86, 0.2)",
+    "rgba(75, 192, 192, 0.2)",
+    "rgba(153, 102, 255, 0.2)",
+    "rgba(255, 159, 64, 0.2)",
+  ];
   return (
     <Layout>
       <Meta title="Admin Flash - General Statistics"></Meta>
@@ -126,21 +125,59 @@ function GeneralStatistic({
                 <div className="statistics-chart">
                   <div className="statistics-chart__general">
                     <div className="statistics-chart__general-info">
-                      Số đơn đặt hàng trong tuần: 2367
+                      Số đơn đặt hàng trong tuần:{" "}
+                      {totalOrders ? totalOrders : 0}
                     </div>
                     <div className="statistics-chart__general-percent">
-                      <Icon
+                      {/* <Icon
                         icon={arrowGrowth}
                         style={{ fontSize: "40px" }}
                       ></Icon>
-                      14%
+                      14% */}
                     </div>
                   </div>
-                  <Bar data={DATASET}></Bar>
+                  <Bar
+                    data={{
+                      labels,
+                      datasets: [
+                        {
+                          backgroundColor,
+                          label: "Số đơn",
+                          data: numberOrderArr,
+                        },
+                      ],
+                    }}
+                  ></Bar>
                 </div>
               </Grid>
               <Grid item md={6} xs={6}>
-                <div className="statistics-chart"></div>
+                <div className="statistics-chart">
+                  <div className="statistics-chart__general">
+                    <div className="statistics-chart__general-info">
+                      Tổng thanh toán trong tuần:{" "}
+                      {totalPayment ? totalPayment : 0}
+                    </div>
+                    <div className="statistics-chart__general-percent">
+                      {/* <Icon
+                        icon={arrowGrowth}
+                        style={{ fontSize: "40px" }}
+                      ></Icon>
+                      14% */}
+                    </div>
+                  </div>
+                  <Bar
+                    data={{
+                      labels,
+                      datasets: [
+                        {
+                          backgroundColor,
+                          label: "Thanh toán",
+                          data: paymentOrderArr,
+                        },
+                      ],
+                    }}
+                  ></Bar>
+                </div>
               </Grid>
             </Grid>
           </Grid>
