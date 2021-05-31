@@ -40,19 +40,3 @@
   margin-left: 20px;
   font-size: 1rem;
 }
-
-.searchBox {
-  display: flex;
-  border: 1px solid black;
-  border-radius: 25px;
-  justify-content: space-between;
-  padding-left: 10px;
-}
-
-.tableContainer {
-  width: 100%;
-  padding: 10px;
-  min-height: 71vh;
-  display: flex;
-  flex-direction: column;
-}

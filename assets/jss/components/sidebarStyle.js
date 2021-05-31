@@ -170,14 +170,7 @@ const sidebarStyle = (theme) => ({
   whiteFont: {
     color: whiteColor,
   },
-  purple: {
-    backgroundColor: primaryColor[0],
-    ...primaryBoxShadow,
-    "&:hover,&:focus": {
-      backgroundColor: primaryColor[0],
-      ...primaryBoxShadow,
-    },
-  },
+
   blue: {
     backgroundColor: infoColor[0],
     boxShadow:
@@ -200,72 +193,7 @@ const sidebarStyle = (theme) => ({
         ",.2)",
     },
   },
-  green: {
-    backgroundColor: successColor[0],
-    boxShadow:
-      "0 12px 20px -10px rgba(" +
-      hexToRgb(successColor[0]) +
-      ",.28), 0 4px 20px 0 rgba(" +
-      hexToRgb(blackColor) +
-      ",.12), 0 7px 8px -5px rgba(" +
-      hexToRgb(successColor[0]) +
-      ",.2)",
-    "&:hover,&:focus": {
-      backgroundColor: successColor[0],
-      boxShadow:
-        "0 12px 20px -10px rgba(" +
-        hexToRgb(successColor[0]) +
-        ",.28), 0 4px 20px 0 rgba(" +
-        hexToRgb(blackColor) +
-        ",.12), 0 7px 8px -5px rgba(" +
-        hexToRgb(successColor[0]) +
-        ",.2)",
-    },
-  },
-  orange: {
-    backgroundColor: warningColor[0],
-    boxShadow:
-      "0 12px 20px -10px rgba(" +
-      hexToRgb(warningColor[0]) +
-      ",.28), 0 4px 20px 0 rgba(" +
-      hexToRgb(blackColor) +
-      ",.12), 0 7px 8px -5px rgba(" +
-      hexToRgb(warningColor[0]) +
-      ",.2)",
-    "&:hover,&:focus": {
-      backgroundColor: warningColor[0],
-      boxShadow:
-        "0 12px 20px -10px rgba(" +
-        hexToRgb(warningColor[0]) +
-        ",.28), 0 4px 20px 0 rgba(" +
-        hexToRgb(blackColor) +
-        ",.12), 0 7px 8px -5px rgba(" +
-        hexToRgb(warningColor[0]) +
-        ",.2)",
-    },
-  },
-  red: {
-    backgroundColor: dangerColor[0],
-    boxShadow:
-      "0 12px 20px -10px rgba(" +
-      hexToRgb(dangerColor[0]) +
-      ",.28), 0 4px 20px 0 rgba(" +
-      hexToRgb(blackColor) +
-      ",.12), 0 7px 8px -5px rgba(" +
-      hexToRgb(dangerColor[0]) +
-      ",.2)",
-    "&:hover,&:focus": {
-      backgroundColor: dangerColor[0],
-      boxShadow:
-        "0 12px 20px -10px rgba(" +
-        hexToRgb(dangerColor[0]) +
-        ",.28), 0 4px 20px 0 rgba(" +
-        hexToRgb(blackColor) +
-        ",.12), 0 7px 8px -5px rgba(" +
-        hexToRgb(dangerColor[0]) +
-        ",.2)",
-    },
-  },
+
   sidebarWrapper: {
     position: "relative",
     height: "calc(100vh - 75px)",

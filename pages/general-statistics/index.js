@@ -209,17 +209,17 @@ function GeneralStatistic({
                           />
                           {numberPercent}
                         </span>
-                        {"% tăng so với tuần trước"}
+                        {" % tăng so với tuần trước"}
                       </p>
                     ) : (
                       <p className={classes.cardCategory}>
-                        <span className={classes.successText}>
+                        <span className={classes.warningText}>
                           <ArrowDownward
                             className={classes.upArrowCardCategory}
                           />
                           {numberPercent}
                         </span>
-                        {"% giảm so với tuần trước"}
+                        {" % giảm so với tuần trước"}
                       </p>
                     )}
                   </CardBody>
@@ -256,17 +256,17 @@ function GeneralStatistic({
                           />
                           {paymentPercent}
                         </span>
-                        {"% tăng so với tuần trước"}
+                        {" % tăng so với tuần trước"}
                       </p>
                     ) : (
                       <p className={classes.cardCategory}>
-                        <span className={classes.successText}>
+                        <span className={classes.warningText}>
                           <ArrowDownward
                             className={classes.upArrowCardCategory}
                           />
                           {paymentPercent}
                         </span>
-                        {"% giảm so với tuần trước"}
+                        {" % giảm so với tuần trước"}
                       </p>
                     )}
                   </CardBody>

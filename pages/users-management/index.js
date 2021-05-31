@@ -1,7 +1,5 @@
 import React, { useState, useRef } from "react";
 import Layout from "../../components/Layout";
-import styles from "../../assets/css/Home.module.css";
-import Head from "next/head";
 import {
   Paper,
   TableContainer,
@@ -20,6 +18,11 @@ import { useRouter } from "next/router";
 import clearObject from "../../utils/clearObject";
 import ErrorCollection from "../../config";
 import Meta from "../../components/Meta";
+import Card from "../../components/Card/Card";
+import CardHeader from "../../components/Card/CardHeader";
+import CardBody from "../../components/Card/CardBody";
+import { makeStyles } from "@material-ui/core/styles";
+import styles from "../../assets/jss/views/TableList";
 
 function getStatus(num) {
   switch (num) {
@@ -88,6 +91,8 @@ export const getServerSideProps = async ({ query }) => {
   }
 };
 
+const useStyles = makeStyles(styles);
+
 function UsersManagement({
   totalUsers,
   users,
@@ -103,6 +108,7 @@ function UsersManagement({
   const { page, phone, email } = router.query;
   const [emailFilter, setEmailFilter] = useState(email);
   const [phoneFilter, setPhoneFilter] = useState(phone);
+  const classes = useStyles();
 
   const typingTimeoutRef = useRef(null);
   const handleOpenBlockDialog = (account) => {
@@ -159,87 +165,83 @@ function UsersManagement({
         info={user}
       ></BlockUserDialog>
       {
-        <div className={styles.container}>
-          <div className={styles.containerTitle}>
-            <div>
-             
-              <span className={styles.total}>
-                Tổng cộng: {totalUsers ? totalUsers : 0} người dùng
-              </span>
-            </div>
-          </div>
-          <div className={styles.tableContainer}>
-            <Paper>
-              <TableContainer>
-                <Table>
-                  <TableHead
-                    className="user-table__head"
-                    style={{ background: "#2196F3" }}
-                  >
-                    <TableRow>
-                      <TableCell align="center">STT</TableCell>
-                      <TableCell align="center">
-                        Email{" "}
-                        <input
-                          type="text"
-                          value={emailFilter}
-                          onChange={handleEmailFilterChange}
-                        ></input>
-                      </TableCell>
-                      <TableCell align="center">
-                        Sđt{" "}
-                        <input
-                          type="text"
-                          value={phoneFilter}
-                          onChange={handlePhoneFilterChange}
-                        ></input>
-                      </TableCell>
-                      <TableCell align="center">Lượt báo cáo</TableCell>
-                      <TableCell align="center">Điểm</TableCell>
-                      <TableCell align="center">Trạng thái</TableCell>
-                      <TableCell align="center"></TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className="user-table__body">
-                    {users &&
-                      users.map((user, i) => (
-                        <TableRow key={user._id}>
-                          <TableCell align="center">
-                            {i + 1 + (currentPage - 1) * perPage}
-                          </TableCell>
-                          <TableCell align="center">{user.email}</TableCell>
-                          <TableCell align="center">{user.phone}</TableCell>
-                          <TableCell align="center">{user.reports}</TableCell>
-                          <TableCell align="center">{user.point}</TableCell>
-                          <TableCell align="center">
-                            {getStatus(user.status)}
-                          </TableCell>
-                          <TableCell align="center">
-                            <div
-                              className="block-user"
-                              onClick={() => {
-                                handleOpenBlockDialog(user);
-                              }}
-                            >
-                              {user.status === -2
-                                ? "Mở khóa"
-                                : user.status === 0
-                                ? "Khóa"
-                                : null}
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <Pagination
-                currentPage={currentPage}
-                pageCount={totalPage}
-                handler={handlePageChange}
-                pageDisplay={3}
-              ></Pagination>
-            </Paper>
+        <div>
+          <div className={classes.tableContainer}>
+            <Card>
+              <CardHeader color="success">
+                <h4 className={classes.cardTitleWhite}>
+                  Tổng cộng: {totalUsers ? totalUsers : 0} người dùng
+                </h4>
+              </CardHeader>
+              <CardBody>
+                <TableContainer>
+                  <Table>
+                    <TableHead className="user-table__head">
+                      <TableRow>
+                        <TableCell align="center">STT</TableCell>
+                        <TableCell align="center">
+                          Email{" "}
+                          <input
+                            type="text"
+                            value={emailFilter}
+                            onChange={handleEmailFilterChange}
+                          ></input>
+                        </TableCell>
+                        <TableCell align="center">
+                          Sđt{" "}
+                          <input
+                            type="text"
+                            value={phoneFilter}
+                            onChange={handlePhoneFilterChange}
+                          ></input>
+                        </TableCell>
+                        <TableCell align="center">Lượt báo cáo</TableCell>
+                        <TableCell align="center">Điểm</TableCell>
+                        <TableCell align="center">Trạng thái</TableCell>
+                        <TableCell align="center"></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody className="user-table__body">
+                      {users &&
+                        users.map((user, i) => (
+                          <TableRow key={user._id}>
+                            <TableCell align="center">
+                              {i + 1 + (currentPage - 1) * perPage}
+                            </TableCell>
+                            <TableCell align="center">{user.email}</TableCell>
+                            <TableCell align="center">{user.phone}</TableCell>
+                            <TableCell align="center">{user.reports}</TableCell>
+                            <TableCell align="center">{user.point}</TableCell>
+                            <TableCell align="center">
+                              {getStatus(user.status)}
+                            </TableCell>
+                            <TableCell align="center">
+                              <div
+                                className="block-user"
+                                onClick={() => {
+                                  handleOpenBlockDialog(user);
+                                }}
+                              >
+                                {user.status === -2
+                                  ? "Mở khóa"
+                                  : user.status === 0
+                                  ? "Khóa"
+                                  : null}
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Pagination
+                  currentPage={currentPage}
+                  pageCount={totalPage}
+                  handler={handlePageChange}
+                  pageDisplay={3}
+                ></Pagination>
+              </CardBody>
+            </Card>
           </div>
         </div>
       }

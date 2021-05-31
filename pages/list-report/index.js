@@ -1,18 +1,21 @@
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
-import styles from "../../assets/css/Home.module.css";
-import Head from "next/head";
 import {
   TableBody,
   Table,
   TableContainer,
-  Paper,
   TableHead,
   TableRow,
   TableCell,
-  IconButton,
 } from "@material-ui/core";
 import ReportDetailDialog from "../../components/ReportDetailDialog";
+import Meta from "../../components/Meta";
+import Card from "../../components/Card/Card";
+import CardHeader from "../../components/Card/CardHeader";
+import CardBody from "../../components/Card/CardBody";
+import Pagination from "../../components/Pagination";
+import { makeStyles } from "@material-ui/core/styles";
+import styles from "../../assets/jss/views/TableList";
 
 function genarateFakeNumber(start, length) {
   const seed = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -164,13 +167,15 @@ const TEMPLATE_DATA = [
   },
 ];
 
+const useStyles = makeStyles(styles);
+
 function ListReport() {
   const [unSolveReports, setUnSolveResports] = useState(6);
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageList, setPageList] = useState([1, 2, 3]);
   const [reportsPresent, setReportsPresent] = useState(10);
   const [isOpenDetailDialog, setIsOpenDetailDialog] = useState(false);
   const [report, setReport] = useState({});
+  const classes = useStyles();
 
   const handleOpenDetailDialog = (info) => {
     setReport(info);
@@ -179,109 +184,96 @@ function ListReport() {
 
   return (
     <Layout>
-      <Head>
-        <title>Flash Admin - Reports</title>
-        <link href="/Logo.png" rel="icon" />
-      </Head>
+      <Meta title="Flash Admin - Reports"></Meta>
+
       <ReportDetailDialog
         open={isOpenDetailDialog}
         handleClose={setIsOpenDetailDialog}
         report={report}
       ></ReportDetailDialog>
       {
-        <div className={styles.container}>
-          <div className={styles.containerTitle}>
-            <div>
-              <span className={styles.total}>
-                Hiện có {unSolveReports} khiếu nại chưa giải quyết
-              </span>
-            </div>
-          </div>
-          <div className={styles.tableContainer}>
-            <Paper>
-              <TableContainer>
-                <Table>
-                  <TableHead
-                    className="report-table__head"
-                    style={{ background: "#FFCE31" }}
-                  >
-                    <TableRow>
-                      <TableCell align="center">STT</TableCell>
-                      <TableCell align="center">Hình ảnh</TableCell>
-                      <TableCell align="center">Nội dung</TableCell>
-                      <TableCell align="center">Thời gian</TableCell>
-                      <TableCell align="center">Người báo cáo</TableCell>
-                      <TableCell align="center">Đối tượng báo cáo</TableCell>
-                      <TableCell align="center">Trạng thái</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className="report-table__body">
-                    {TEMPLATE_DATA.map((report, i) => (
-                      <TableRow key={report.id}>
-                        <TableCell align="center">
-                          {i + 1 + currentPage * reportsPresent}
-                        </TableCell>
-                        <TableCell align="center">
-                          <div
-                            className="report-table-image"
-                            onClick={() => {
-                              handleOpenDetailDialog(report);
-                            }}
-                          >
-                            <img
-                              src={report.imageLinks && report.imageLinks[0]}
-                              alt="image"
-                            ></img>
-                            <span className="info-overlay">
-                              + {report.imageLinks.length}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell align="center">{report.content}</TableCell>
-                        <TableCell align="center">
-                          {report.createdAt.toLocaleDateString()}
-                        </TableCell>
-                        <TableCell align="center">
-                          {report.annunciator}
-                        </TableCell>
-                        <TableCell align="center">{report.reported}</TableCell>
-                        <TableCell align="center">
-                          {report.status ? (
-                            <input
-                              type="checkbox"
-                              onChange={() => {}}
-                              checked
-                            ></input>
-                          ) : (
-                            <input type="checkbox" onChange={() => {}}></input>
-                          )}
-                        </TableCell>
+        <div>
+          <div className={classes.tableContainer}>
+            <Card>
+              <CardHeader color="info">
+                <h4 className={classes.cardTitleWhite}>
+                  {" "}
+                  Tổng cộng: {unSolveReports} chưa giải quyết
+                </h4>
+              </CardHeader>
+              <CardBody>
+                <TableContainer>
+                  <Table>
+                    <TableHead className="report-table__head">
+                      <TableRow>
+                        <TableCell align="center">STT</TableCell>
+                        <TableCell align="center">Hình ảnh</TableCell>
+                        <TableCell align="center">Nội dung</TableCell>
+                        <TableCell align="center">Thời gian</TableCell>
+                        <TableCell align="center">Người báo cáo</TableCell>
+                        <TableCell align="center">Đối tượng báo cáo</TableCell>
+                        <TableCell align="center">Trạng thái</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <div
-                style={{
-                  padding: 10,
-                  textAlign: "center",
-                }}
-              >
-                {pageList.map((page) => {
-                  return (
-                    <IconButton
-                      key={page}
-                      className={`paging-item ${
-                        parseInt(currentPage) + 1 === parseInt(page) &&
-                        "paging-item__active"
-                      }`}
-                    >
-                      {page}
-                    </IconButton>
-                  );
-                })}
-              </div>
-            </Paper>
+                    </TableHead>
+                    <TableBody className="report-table__body">
+                      {TEMPLATE_DATA.map((report, i) => (
+                        <TableRow key={report.id}>
+                          <TableCell align="center">
+                            {i + 1 + currentPage * reportsPresent}
+                          </TableCell>
+                          <TableCell align="center">
+                            <div
+                              className="report-table-image"
+                              onClick={() => {
+                                handleOpenDetailDialog(report);
+                              }}
+                            >
+                              <img
+                                src={report.imageLinks && report.imageLinks[0]}
+                                alt="image"
+                              ></img>
+                              <span className="info-overlay">
+                                + {report.imageLinks.length}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell align="center">{report.content}</TableCell>
+                          <TableCell align="center">
+                            {report.createdAt.toLocaleDateString()}
+                          </TableCell>
+                          <TableCell align="center">
+                            {report.annunciator}
+                          </TableCell>
+                          <TableCell align="center">
+                            {report.reported}
+                          </TableCell>
+                          <TableCell align="center">
+                            {report.status ? (
+                              <input
+                                type="checkbox"
+                                onChange={() => {}}
+                                checked
+                              ></input>
+                            ) : (
+                              <input
+                                type="checkbox"
+                                onChange={() => {}}
+                              ></input>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Pagination
+                  // currentPage={currentPage}
+                  // pageCount={totalPage}
+                  // handler={handlePageChange}
+                  pageDisplay={3}
+                ></Pagination>
+              </CardBody>
+            </Card>
           </div>
         </div>
       }

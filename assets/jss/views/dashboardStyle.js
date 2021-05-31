@@ -1,4 +1,10 @@
-import { successColor, whiteColor, grayColor, hexToRgb } from "../index";
+import {
+  successColor,
+  whiteColor,
+  grayColor,
+  warningColor,
+  hexToRgb,
+} from "../index";
 
 const dashboardStyle = {
   cardContainer: {
@@ -12,6 +18,9 @@ const dashboardStyle = {
   },
   successText: {
     color: successColor[0],
+  },
+  warningText: {
+    color: warningColor[0],
   },
   upArrowCardCategory: {
     width: "16px",

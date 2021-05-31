@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
-import styles from "../../assets/css/Home.module.css";
+
 import {
-  Paper,
   Table,
   TableHead,
   TableBody,
   TableRow,
   TableCell,
   TableContainer,
-  IconButton,
 } from "@material-ui/core";
 import BlockUserDialog from "../../components/BlockUserDialog";
-import ReactPaginate from "react-paginate";
-import outlineKeyboardArrowLeft from "@iconify/icons-ic/outline-keyboard-arrow-left";
-import baselineKeyboardArrowRight from "@iconify/icons-ic/baseline-keyboard-arrow-right";
-import { Icon } from "@iconify/react";
 import Meta from "../../components/Meta";
+import Card from "../../components/Card/Card";
+import CardHeader from "../../components/Card/CardHeader";
+import CardBody from "../../components/Card/CardBody";
+import { makeStyles } from "@material-ui/core/styles";
+import styles from "../../assets/jss/views/TableList";
+
 function createRandomAvgScore(min, max) {
   return (Math.random() * (max - min) + min).toPrecision(3);
 }
@@ -128,6 +128,8 @@ const TEMPLATE_DATA = [
   },
 ];
 
+const useStyles = makeStyles(styles);
+
 function DriversManagement() {
   const [totalDrvers, setTotlDrivers] = useState(94);
   const [currentPage, setCurrentPage] = useState(0);
@@ -137,6 +139,7 @@ function DriversManagement() {
   const [isOpenBlockDialog, setIsOpenBlockDialog] = useState(false);
   const [email, setEmail] = useState("");
 
+  const classes = useStyles();
   const handleOpenBlockDialog = (account) => {
     setIsOpenBlockDialog(true);
     setEmail(account);
@@ -155,109 +158,66 @@ function DriversManagement() {
         info={email}
       ></BlockUserDialog>
       {
-        <div className={styles.container}>
-          <div className={styles.containerTitle}>
-            <div>
-             
-              <span className={styles.total}>
-                Tổng cộng: {totalDrvers} tài xế
-              </span>
-            </div>
-          </div>
-          <div className={styles.tableContainer}>
-            <Paper>
-              <TableContainer>
-                <Table>
-                  <TableHead
-                    className="user-table__head"
-                    style={{ background: "#2196F3" }}
-                  >
-                    <TableRow>
-                      <TableCell align="center">STT</TableCell>
-                      <TableCell align="center">
-                        Email <input type="text"></input>
-                      </TableCell>
-                      <TableCell align="center">
-                        Sđt <input type="text"></input>
-                      </TableCell>
-                      <TableCell align="center">Lượt báo cáo</TableCell>
-                      <TableCell align="center">Đánh giá</TableCell>
-                      <TableCell align="center">Trạng thái</TableCell>
-                      <TableCell align="center"></TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className="user-table__body">
-                    {TEMPLATE_DATA.map((driver, i) => (
-                      <TableRow key={driver.id}>
+        <div>
+          <div className={classes.tableContainer}>
+            <Card>
+              <CardHeader color="info">
+                <h4 className={classes.cardTitleWhite}>
+                  {" "}
+                  Tổng cộng: {totalDrvers} tài xế
+                </h4>
+              </CardHeader>
+              <CardBody>
+                <TableContainer>
+                  <Table>
+                    <TableHead className="user-table__head">
+                      <TableRow>
+                        <TableCell align="center">STT</TableCell>
                         <TableCell align="center">
-                          {i + 1 + currentPage * driversPresent}
-                        </TableCell>
-                        <TableCell align="center">{driver.email}</TableCell>
-                        <TableCell align="center">{driver.phone}</TableCell>
-                        <TableCell align="center">{driver.reports}</TableCell>
-                        <TableCell align="center">
-                          {" "}
-                          {driver.avgReview}/{driver.reviews} đánh giá
+                          Email <input type="text"></input>
                         </TableCell>
                         <TableCell align="center">
-                          {getStatus(driver.status)}
+                          Sđt <input type="text"></input>
                         </TableCell>
-                        <TableCell align="center">
-                          <div
-                            className="block-user"
-                            onClick={() => {
-                              handleOpenBlockDialog(true, driver.email);
-                            }}
-                          >
-                            Khóa{" "}
-                          </div>
-                        </TableCell>
+                        <TableCell align="center">Lượt báo cáo</TableCell>
+                        <TableCell align="center">Đánh giá</TableCell>
+                        <TableCell align="center">Trạng thái</TableCell>
+                        <TableCell align="center"></TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <ReactPaginate
-                previousLabel={
-                  <Icon
-                    icon={outlineKeyboardArrowLeft}
-                    className="paging-item paging-item__arrow"
-                  />
-                }
-                nextLabel={
-                  <Icon
-                    icon={baselineKeyboardArrowRight}
-                    className="paging-item paging-item__arrow"
-                  />
-                }
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                activeClassName={"paging-item__active"}
-                pageClassName={"paging-item"}
-                containerClassName={"pagination"}
-                subContainerClassName={"pages pagination"}
-                initialPage={currentPage}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                //onPageChange={pagginationHandler}
-              />
-              {/* <div className="pagination">
-                {pageList.map((page) => {
-                  return (
-                    <IconButton
-                      key={page}
-                      className={`paging-item ${
-                        parseInt(currentPage) + 1 === parseInt(page) &&
-                        "paging-item__active"
-                      }`}
-                    >
-                      {page}
-                    </IconButton>
-                  );
-                })}
-              </div> */}
-            </Paper>
+                    </TableHead>
+                    <TableBody className="user-table__body">
+                      {TEMPLATE_DATA.map((driver, i) => (
+                        <TableRow key={driver.id}>
+                          <TableCell align="center">
+                            {i + 1 + currentPage * driversPresent}
+                          </TableCell>
+                          <TableCell align="center">{driver.email}</TableCell>
+                          <TableCell align="center">{driver.phone}</TableCell>
+                          <TableCell align="center">{driver.reports}</TableCell>
+                          <TableCell align="center">
+                            {" "}
+                            {driver.avgReview}/{driver.reviews} đánh giá
+                          </TableCell>
+                          <TableCell align="center">
+                            {getStatus(driver.status)}
+                          </TableCell>
+                          <TableCell align="center">
+                            <div
+                              className="block-user"
+                              onClick={() => {
+                                handleOpenBlockDialog(true, driver.email);
+                              }}
+                            >
+                              Khóa{" "}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </CardBody>
+            </Card>
           </div>
         </div>
       }
