@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import Layout from "../../components/Layout";
-import styles from "../../styles/Home.module.css";
+import styles from "../../assets/css/Home.module.css";
 import {
   Paper,
   TableContainer,
@@ -44,6 +44,8 @@ export const getServerSideProps = async ({ query }) => {
           currentPage: pagingInfo.currentPage,
         },
       };
+    } else if (errorCode === ErrorCollection.INVALID_PARAM) {
+      return { notFound: true };
     }
     return {
       props: {
@@ -149,11 +151,9 @@ function RestaurantsManagement({
         location={cities}
       ></CreateRestaurantDialog>
       {
-        <div className={styles.container}>
+        <div>
           <div className={styles.containerTitle}>
             <div>
-              {" "}
-              <span>Quản lý nhà hàng</span>
               <span className={styles.total}>
                 Tổng cộng: {totalRestaurants ? totalRestaurants : 0} nhà hàng
                 <select

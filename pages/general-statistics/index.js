@@ -1,28 +1,30 @@
 import React from "react";
 import Layout from "../../components/Layout";
-import SatitisticsBox from "../../components/SatitisticsBox";
-import styles from "../../styles/Home.module.css";
+import InfoIcon from "@material-ui/icons/Info";
 import { Icon } from "@iconify/react";
 import storeIcon from "@iconify/icons-dashicons/store";
 import multipleUsers from "@iconify/icons-gridicons/multiple-users";
 import roundDirectionsBike from "@iconify/icons-ic/round-directions-bike";
-import arrowGrowth from "@iconify/icons-uil/arrow-growth";
+import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import { Grid } from "@material-ui/core";
-import { Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
+import ArrowUpward from "@material-ui/icons/ArrowUpward";
+//core compoments
 import Meta from "../../components/Meta";
 import Service from "./services";
 import ErrorCollection from "../../config";
 import Toast from "../../components/Toast";
+import Card from "../../components/Card/Card.js";
+import CardHeader from "../../components/Card/CardHeader.js";
+import CardIcon from "../../components/Card/CardIcon.js";
+import CardBody from "../../components/Card/CardBody.js";
+import CardFooter from "../../components/Card/CardFooter.js";
 
-const DATASET = {
-  datasets: [
-    {
-      label: "số đơn",
-      data: [12, 19, 3, 5, 2, 3, 7],
-    },
-  ],
-};
+import muiStyles from "../../assets/jss/views/dashboardStyle";
+import { ArrowDownward } from "@material-ui/icons";
+
+const useStyles = makeStyles(muiStyles);
 
 export async function getServerSideProps() {
   try {
@@ -33,10 +35,13 @@ export async function getServerSideProps() {
         props: {
           totalRestaurants: data.totalRestaurants,
           totalUsers: data.totalUsers,
+          totalShippers: data.totalShippers,
           totalOrders: data.totalOrders,
           totalPayment: data.totalPayment,
           numberOrderArr: data.numberOfOrderInWeek,
           paymentOrderArr: data.payOfOrderInWeek,
+          numberPercent: data.numberPercent,
+          paymentPercent: data.paymentPercent,
         },
       };
     } else {
@@ -49,7 +54,7 @@ export async function getServerSideProps() {
     }
   } catch (error) {
     console.log(error);
-    if (error.response.status === 401) {
+    if (error.response && error.response.status === 401) {
       return {
         redirect: {
           destination: "/",
@@ -70,114 +75,202 @@ function GeneralStatistic({
   totalRestaurants,
   totalUsers,
   totalOrders,
+  totalShippers,
   totalPayment,
   numberOrderArr,
   paymentOrderArr,
+  numberPercent,
+  paymentPercent,
   errorType,
   errorMsg,
 }) {
+  const classes = useStyles();
   const route = useRouter();
-  const labels = ["Mon", "Tues", "Wednes", "Thus", "Fri", "Sat", "Sun"];
-  const backgroundColor = [
-    "rgba(255, 99, 132, 0.2)",
-    "rgba(54, 162, 235, 0.2)",
-    "rgba(255, 206, 86, 0.2)",
-    "rgba(75, 192, 192, 0.2)",
-    "rgba(153, 102, 255, 0.2)",
-    "rgba(255, 159, 64, 0.2)",
-  ];
   return (
     <Layout>
       <Meta title="Admin Flash - General Statistics"></Meta>
       {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
       {
-        <div className={styles.container}>
-          {/* <div className="container__title"> Thống kê chung</div> */}
+        <div>
           <Grid container>
-            <Grid container className="container__grid">
-              <Grid item md={3} key="/restaurants-management">
-                <SatitisticsBox
-                  icon={storeIcon}
-                  handleClick={() => route.push("/restaurants-management")}
-                  backgroundColor={"#ffff00"}
-                  content={totalRestaurants + " nhà hàng, quán ăn"}
-                />
+            <Grid container>
+              <Grid
+                item
+                className={classes.cardContainer}
+                xs={12}
+                sm={6}
+                md={3}
+              >
+                <Card
+                  onClick={() => route.push("/restaurants-management")}
+                  className={classes.cardFrame}
+                >
+                  <CardHeader color="warning" stats icon>
+                    <CardIcon color="warning">
+                      <Icon icon={storeIcon}></Icon>
+                    </CardIcon>
+                    <p className={classes.cardCategory}>Nhà hàng, quán ăn</p>
+                    <h3 className={classes.cardTitle}>
+                      {totalRestaurants} nhà
+                    </h3>
+                  </CardHeader>
+                  <CardFooter stats>
+                    <div className={classes.stats}>
+                      <InfoIcon />
+                      Toàn hệ thống
+                    </div>
+                  </CardFooter>
+                </Card>
               </Grid>
-              <Grid item md={3} key={"/users-management"}>
-                <SatitisticsBox
-                  icon={multipleUsers}
-                  handleClick={() => route.push("/users-management")}
-                  backgroundColor={"#0288D1"}
-                  content={totalUsers + " người dùng"}
-                />
+
+              <Grid
+                item
+                className={classes.cardContainer}
+                xs={12}
+                sm={6}
+                md={3}
+              >
+                <Card
+                  onClick={() => route.push("/users-management")}
+                  className={classes.cardFrame}
+                >
+                  <CardHeader color="info" stats icon>
+                    <CardIcon color="info">
+                      <Icon icon={multipleUsers}></Icon>
+                    </CardIcon>
+                    <p className={classes.cardCategory}>Người dùng</p>
+                    <h3 className={classes.cardTitle}>
+                      {totalUsers} tài khoản
+                    </h3>
+                  </CardHeader>
+                  <CardFooter stats>
+                    <div className={classes.stats}>
+                      <InfoIcon></InfoIcon>
+                      Không tính tài xế
+                    </div>
+                  </CardFooter>
+                </Card>
               </Grid>
-              <Grid item md={3} key={"/drivers-management"}>
-                <SatitisticsBox
-                  icon={roundDirectionsBike}
-                  handleClick={() => route.push("/drivers-management")}
-                  backgroundColor={"#44C019"}
-                  content={"94 tài xế"}
-                />
+              <Grid
+                item
+                className={classes.cardContainer}
+                xs={12}
+                sm={6}
+                md={3}
+              >
+                <Card
+                  onClick={() => route.push("/drivers-management")}
+                  className={classes.cardFrame}
+                >
+                  <CardHeader color="success" stats icon>
+                    <CardIcon color="success">
+                      <Icon icon={roundDirectionsBike}></Icon>
+                    </CardIcon>
+                    <p className={classes.cardCategory}>Tài xế</p>
+                    <h3 className={classes.cardTitle}>{totalShippers}</h3>
+                  </CardHeader>
+                  <CardFooter stats>
+                    <div className={classes.stats}>
+                      <InfoIcon />
+                      Vừa cập nhật
+                    </div>
+                  </CardFooter>
+                </Card>
               </Grid>
             </Grid>
             <Grid container>
-              <Grid item md={6} xs={6}>
-                <div className="statistics-chart">
-                  <div className="statistics-chart__general">
-                    <div className="statistics-chart__general-info">
-                      Số đơn đặt hàng trong tuần:{" "}
-                      {totalOrders ? totalOrders : 0}
-                    </div>
-                    <div className="statistics-chart__general-percent">
-                      {/* <Icon
-                        icon={arrowGrowth}
-                        style={{ fontSize: "40px" }}
-                      ></Icon>
-                      14% */}
-                    </div>
-                  </div>
-                  <Bar
-                    data={{
-                      labels,
-                      datasets: [
-                        {
-                          backgroundColor,
-                          label: "Số đơn",
-                          data: numberOrderArr,
-                        },
-                      ],
-                    }}
-                  ></Bar>
-                </div>
+              <Grid item className={classes.cardContainer} md={6} xs={6}>
+                <Card chart>
+                  <CardHeader color="info">
+                    <Line
+                      data={{
+                        labels: Service.chartLabels,
+                        datasets: [
+                          {
+                            borderColor: Service.chartBorder,
+                            backgroundColor: Service.chartColor,
+                            label: "Số đơn",
+                            data: numberOrderArr,
+                          },
+                        ],
+                      }}
+                      options={Service.chartOptions}
+                    ></Line>
+                  </CardHeader>
+                  <CardBody>
+                    <h4 className={classes.cardTitle}>
+                      Tổng số đơn trong tuần {totalOrders ? totalOrders : 0}
+                    </h4>
+                    {numberPercent > 0 ? (
+                      <p className={classes.cardCategory}>
+                        <span className={classes.successText}>
+                          <ArrowUpward
+                            className={classes.upArrowCardCategory}
+                          />
+                          {numberPercent}
+                        </span>
+                        {"% tăng so với tuần trước"}
+                      </p>
+                    ) : (
+                      <p className={classes.cardCategory}>
+                        <span className={classes.successText}>
+                          <ArrowDownward
+                            className={classes.upArrowCardCategory}
+                          />
+                          {numberPercent}
+                        </span>
+                        {"% giảm so với tuần trước"}
+                      </p>
+                    )}
+                  </CardBody>
+                </Card>
               </Grid>
-              <Grid item md={6} xs={6}>
-                <div className="statistics-chart">
-                  <div className="statistics-chart__general">
-                    <div className="statistics-chart__general-info">
+              <Grid item className={classes.cardContainer} md={6} xs={6}>
+                <Card chart>
+                  <CardHeader color="rose">
+                    <Line
+                      data={{
+                        labels: Service.chartLabels,
+                        datasets: [
+                          {
+                            borderColor: Service.chartBorder,
+                            backgroundColor: Service.chartColor,
+                            label: "Thanh toán",
+                            data: paymentOrderArr,
+                          },
+                        ],
+                      }}
+                      options={Service.chartOptions}
+                    ></Line>
+                  </CardHeader>
+                  <CardBody>
+                    <h4 className={classes.cardTitle}>
                       Tổng thanh toán trong tuần:{" "}
                       {totalPayment ? totalPayment : 0}
-                    </div>
-                    <div className="statistics-chart__general-percent">
-                      {/* <Icon
-                        icon={arrowGrowth}
-                        style={{ fontSize: "40px" }}
-                      ></Icon>
-                      14% */}
-                    </div>
-                  </div>
-                  <Bar
-                    data={{
-                      labels,
-                      datasets: [
-                        {
-                          backgroundColor,
-                          label: "Thanh toán",
-                          data: paymentOrderArr,
-                        },
-                      ],
-                    }}
-                  ></Bar>
-                </div>
+                    </h4>
+                    {paymentPercent > 0 ? (
+                      <p className={classes.cardCategory}>
+                        <span className={classes.successText}>
+                          <ArrowUpward
+                            className={classes.upArrowCardCategory}
+                          />
+                          {paymentPercent}
+                        </span>
+                        {"% tăng so với tuần trước"}
+                      </p>
+                    ) : (
+                      <p className={classes.cardCategory}>
+                        <span className={classes.successText}>
+                          <ArrowDownward
+                            className={classes.upArrowCardCategory}
+                          />
+                          {paymentPercent}
+                        </span>
+                        {"% giảm so với tuần trước"}
+                      </p>
+                    )}
+                  </CardBody>
+                </Card>
               </Grid>
             </Grid>
           </Grid>

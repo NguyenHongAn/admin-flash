@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
-import styles from "../../styles/Home.module.css";
+import styles from "../../assets/css/Home.module.css";
 import Head from "next/head";
 import {
   TableBody,
@@ -192,7 +192,6 @@ function ListReport() {
         <div className={styles.container}>
           <div className={styles.containerTitle}>
             <div>
-              <span> Danh sách khiếu nại</span>
               <span className={styles.total}>
                 Hiện có {unSolveReports} khiếu nại chưa giải quyết
               </span>

@@ -18,33 +18,6 @@
   padding: 10px 20px;
 }
 
-.loadingPage {
-  position: relative;
-  background-color: rgba(0, 0, 0, 0.25);
-  width: 100%;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-}
-
-.dashboard {
-  min-height: 100vh;
-  background: #2196f3;
-}
-
-.sidebar {
-  min-height: 100vh;
-  box-sizing: border-box;
-  color: white;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
 .pageContent {
   min-height: 100vh;
   display: flex;
@@ -53,25 +26,9 @@
   align-items: center;
 }
 
-.notification {
-  background-color: #2196f3;
-  min-height: 10vh;
-  width: 100%;
-}
-
-.container {
-  min-height: 90vh;
-  display: flex;
-  align-items: flex-start;
-  width: 100%;
-  flex-direction: column;
-  overflow: hidden;
-}
-
 .containerTitle {
   font-size: 1.2rem;
   font-weight: 600;
-  border-bottom: 2px solid black;
   width: 100%;
   display: flex;
   justify-content: space-between;

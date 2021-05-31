@@ -5,7 +5,7 @@ function Meta({ title }) {
   return (
     <Head>
       <title>{title}</title>
-      <link href="/Logo.png" rel="icon" />
+      <link href="/img/Logo.png" rel="icon" />
     </Head>
   );
 }

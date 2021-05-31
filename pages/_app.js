@@ -1,11 +1,8 @@
-import "../styles/globals.css";
-import "../styles/login.css";
-import "../styles/sidebar.css";
-import "../styles/notification.css";
-import "../styles/restaurant.css";
-import "../styles/statistics.css";
-import "../styles/user.css";
-import "../styles/listReport.css";
+import "../assets/css/globals.css";
+import "../assets/css/login.css";
+import "../assets/css/restaurant.css";
+import "../assets/css/user.css";
+import "../assets/css/listReport.css";
 import "swiper/swiper-bundle.css";
 import "react-toastify/dist/ReactToastify.css";
 

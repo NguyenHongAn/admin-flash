@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import Layout from "../../components/Layout";
-import styles from "../../styles/Home.module.css";
+import styles from "../../assets/css/Home.module.css";
 import Head from "next/head";
 import {
   Paper,
@@ -59,6 +59,8 @@ export const getServerSideProps = async ({ query }) => {
           perPage: pagingInfo.perPage,
         },
       };
+    } else if (errorCode === ErrorCollection.INVALID_PARAM) {
+      return { notFound: true };
     } else {
       return {
         props: {
@@ -96,15 +98,16 @@ function UsersManagement({
   errorMsg,
 }) {
   const [isOpenBlockDialog, setIsOpenBlockDialog] = useState(false);
-  const [userEmail, setUserEmail] = useState("");
+  const [user, setUser] = useState({});
   const router = useRouter();
   const { page, phone, email } = router.query;
   const [emailFilter, setEmailFilter] = useState(email);
   const [phoneFilter, setPhoneFilter] = useState(phone);
+
   const typingTimeoutRef = useRef(null);
   const handleOpenBlockDialog = (account) => {
     setIsOpenBlockDialog(true);
-    setUserEmail(account);
+    setUser(account);
   };
 
   const handleCloseBlockDialog = () => {
@@ -153,13 +156,13 @@ function UsersManagement({
       <BlockUserDialog
         open={isOpenBlockDialog}
         handleClose={handleCloseBlockDialog}
-        info={userEmail}
+        info={user}
       ></BlockUserDialog>
       {
         <div className={styles.container}>
           <div className={styles.containerTitle}>
             <div>
-              <span>Quản lý người dùng</span>
+             
               <span className={styles.total}>
                 Tổng cộng: {totalUsers ? totalUsers : 0} người dùng
               </span>
@@ -215,7 +218,7 @@ function UsersManagement({
                             <div
                               className="block-user"
                               onClick={() => {
-                                handleOpenBlockDialog(user.email);
+                                handleOpenBlockDialog(user);
                               }}
                             >
                               {user.status === -2

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
+import styles from "../assets/css/Home.module.css";
 import Image from "next/image";
 import { TextField, Typography, Grid, Button } from "@material-ui/core";
 import { useFormik } from "formik";
@@ -10,6 +10,7 @@ import loadingAction from "../store/actions/loading.A";
 import Loading from "../components/Loading";
 import { useRouter } from "next/router";
 import authAction from "../store/actions/auth.A";
+import Meta from "../components/Meta";
 
 function signin() {
   const [error, setError] = useState("");
@@ -60,15 +61,13 @@ function signin() {
         loading ? styles.loadingPage && styles.loginPage : styles.loginPage
       }
     >
-      <Head>
-        <title>Admin Flash - Login</title>
-        <link href="/Logo.png" rel="icon" />
-      </Head>
+      <Meta title="Admin Flash - Login"></Meta>
+
       {loading ? (
         <Loading></Loading>
       ) : (
         <div className={styles.loginFrame}>
-          <Image src="/Logo.png" alt="logo" width="64" height="64"></Image>
+          <Image src="/img/Logo.png" alt="logo" width="64" height="64"></Image>
           <Typography component="h1" variant="h5" align="left">
             Đăng nhập
           </Typography>

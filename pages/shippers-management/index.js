@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
-import styles from "../../styles/Home.module.css";
-import Head from "next/head";
+import styles from "../../assets/css/Home.module.css";
 import {
   Paper,
   Table,
@@ -17,6 +16,7 @@ import ReactPaginate from "react-paginate";
 import outlineKeyboardArrowLeft from "@iconify/icons-ic/outline-keyboard-arrow-left";
 import baselineKeyboardArrowRight from "@iconify/icons-ic/baseline-keyboard-arrow-right";
 import { Icon } from "@iconify/react";
+import Meta from "../../components/Meta";
 function createRandomAvgScore(min, max) {
   return (Math.random() * (max - min) + min).toPrecision(3);
 }
@@ -147,10 +147,8 @@ function DriversManagement() {
   };
   return (
     <Layout>
-      <Head>
-        <title>Flash Admin - Drivers</title>
-        <link href="/Logo.png" rel="icon" />
-      </Head>
+      <Meta title="Flash Admin - Shipper"></Meta>
+
       <BlockUserDialog
         open={isOpenBlockDialog}
         handleClose={handleCloseBlockDialog}
@@ -160,7 +158,7 @@ function DriversManagement() {
         <div className={styles.container}>
           <div className={styles.containerTitle}>
             <div>
-              Quản lý tài xế
+             
               <span className={styles.total}>
                 Tổng cộng: {totalDrvers} tài xế
               </span>
