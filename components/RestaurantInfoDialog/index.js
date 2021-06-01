@@ -4,11 +4,17 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
+  TextField,
   DialogTitle,
   Slide,
   OutlinedInput,
+  Grid,
 } from "@material-ui/core";
 import React from "react";
+
+import { Icon, InlineIcon } from "@iconify/react";
+import emailLine from "@iconify/icons-clarity/email-line";
+import bxPhoneCall from "@iconify/icons-bx/bx-phone-call";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -17,7 +23,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function RestaurantInfoDialog({ open, handleClose, contractID, email }) {
   return (
     <div>
-      {" "}
       <Dialog
         open={open}
         maxWidth="xs"
@@ -35,43 +40,36 @@ function RestaurantInfoDialog({ open, handleClose, contractID, email }) {
           Thông tin liên hệ
         </DialogTitle>
         <DialogContent>
-          <DialogContentText style={{ textAlign: "center" }}>
-            {" "}
-            Số điện thoại
-          </DialogContentText>
-          <OutlinedInput
-            variant="outlined"
-            value={contractID}
-            fullWidth
-            readOnly
-          ></OutlinedInput>
-          <DialogContentText style={{ textAlign: "center" }}>
-            {" "}
-            Email
-          </DialogContentText>
-          <OutlinedInput
-            variant="outlined"
-            value={email}
-            fullWidth
-            readOnly
-          ></OutlinedInput>
+          <Grid container direction="column">
+            <Grid container spacing={1} alignItems="flex-end" justify="center">
+              <Grid item>
+                <InlineIcon
+                  icon={emailLine}
+                  style={{ fontSize: "24px" }}
+                ></InlineIcon>
+              </Grid>
+              <Grid item>
+                <TextField fullWidth defaultValue={email} readOnly />
+              </Grid>
+            </Grid>
+            <Grid container spacing={1} alignItems="flex-end" justify="center">
+              <Grid item>
+                <InlineIcon
+                  icon={bxPhoneCall}
+                  style={{ fontSize: "24px" }}
+                ></InlineIcon>
+              </Grid>
+              <Grid item>
+                <TextField fullWidth defaultValue={contractID} readOnly />
+              </Grid>
+            </Grid>
+          </Grid>
         </DialogContent>
-        {/* <DialogActions>
-          <Button
-            variant="contained"
-            onClick={handleClose}
-            style={{ width: 100 }}
-          >
-            Huỷ
+        <DialogActions>
+          <Button autoFocus onClick={handleClose} color="primary">
+            OK
           </Button>
-          <Button
-            variant="contained"
-            //onClick={handleDeleteCategory}
-            style={{ width: 100, color: "white", background: "green" }}
-          >
-            Xoá
-          </Button>
-        </DialogActions> */}
+        </DialogActions>
       </Dialog>
     </div>
   );

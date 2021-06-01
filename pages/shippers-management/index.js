@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Layout from "../../components/Layout";
 
 import {
@@ -8,6 +8,7 @@ import {
   TableRow,
   TableCell,
   TableContainer,
+  Button,
 } from "@material-ui/core";
 import BlockUserDialog from "../../components/BlockUserDialog";
 import RatingStar from "../../components/RatingStar";
@@ -19,6 +20,8 @@ import Pagination from "../../components/Pagination";
 //style
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
+import { useRouter } from "next/router";
+import clearObject from "../../utils/clearObject";
 
 function createRandomAvgScore(min, max) {
   return (Math.random() * (max - min) + min).toPrecision(3);
@@ -136,21 +139,65 @@ const useStyles = makeStyles(styles);
 function DriversManagement() {
   const [totalDrvers, setTotlDrivers] = useState(94);
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageList, setPageList] = useState([1, 2, 3]);
-  const [pageCount, setPageCount] = useState(10);
+  const router = useRouter();
+  const { page, phone, email } = router.query;
+  const [emailFilter, setEmailFilter] = useState(email);
+  const [phoneFilter, setPhoneFilter] = useState(phone);
   const [driversPresent, setDriversPresent] = useState(10);
   const [isOpenBlockDialog, setIsOpenBlockDialog] = useState(false);
-  const [email, setEmail] = useState("");
+  const [user, setUser] = useState({});
+  const typingTimeoutRef = useRef(null);
 
   const classes = useStyles();
+
   const handleOpenBlockDialog = (account) => {
     setIsOpenBlockDialog(true);
-    setEmail(account);
+    setUser(account);
   };
 
   const handleCloseBlockDialog = () => {
     setIsOpenBlockDialog(false);
+    router.push({
+      pathname: "/shippers-management",
+      query: clearObject({ page, email, phone }),
+    });
   };
+
+  const handlePageChange = (selected) => {
+    router.push({
+      pathname: `/shippers-management`,
+      query: clearObject({ page: selected, email, phone }),
+    });
+  };
+
+  const handleEmailFilterChange = (e) => {
+    setEmailFilter(e.target.value);
+    //
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      router.push({
+        pathname: "/shippers-management",
+        query: clearObject({ page: page, email: e.target.value, phone }),
+      });
+    }, 700);
+  };
+
+  const handlePhoneFilterChange = (e) => {
+    setPhoneFilter(e.target.value);
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      router.push({
+        pathname: "/shippers-management",
+        query: clearObject({ page, email, phone: e.target.value }),
+      });
+    }, 700);
+  };
+
   return (
     <Layout>
       <Meta title="Flash Admin - Shipper"></Meta>
@@ -158,7 +205,7 @@ function DriversManagement() {
       <BlockUserDialog
         open={isOpenBlockDialog}
         handleClose={handleCloseBlockDialog}
-        info={email}
+        info={user}
       ></BlockUserDialog>
       {
         <div>
@@ -176,10 +223,18 @@ function DriversManagement() {
                       <TableRow>
                         <TableCell align="center">STT</TableCell>
                         <TableCell align="center">
-                          Email <input type="text"></input>
+                          Email{" "}
+                          <input
+                            type="text"
+                            onChange={handleEmailFilterChange}
+                          ></input>
                         </TableCell>
                         <TableCell align="center">
-                          Sđt <input type="text"></input>
+                          Sđt{" "}
+                          <input
+                            type="text"
+                            onChange={handlePhoneFilterChange}
+                          ></input>
                         </TableCell>
                         <TableCell align="center">Lượt báo cáo</TableCell>
                         <TableCell align="center">Đánh giá</TableCell>
@@ -197,20 +252,37 @@ function DriversManagement() {
                           <TableCell align="center">{driver.phone}</TableCell>
                           <TableCell align="center">{driver.reports}</TableCell>
                           <TableCell align="center">
-                            <RatingStar value={driver.avgReview}></RatingStar>
+                            <RatingStar
+                              value={parseInt(driver.avgReview)}
+                            ></RatingStar>
                           </TableCell>
                           <TableCell align="center">
                             {getStatus(driver.status)}
                           </TableCell>
                           <TableCell align="center">
-                            <div
-                              className="block-user"
-                              onClick={() => {
-                                handleOpenBlockDialog(true, driver.email);
-                              }}
-                            >
-                              Khóa
-                            </div>
+                            {driver.status === -2 ? (
+                              <Button
+                                variant="outlined"
+                                color="primary"
+                                size="small"
+                                onClick={() => {
+                                  handleOpenBlockDialog(driver);
+                                }}
+                              >
+                                Mở khóa
+                              </Button>
+                            ) : driver.status === 0 ? (
+                              <Button
+                                variant="outlined"
+                                color="primary"
+                                size="small"
+                                onClick={() => {
+                                  handleOpenBlockDialog(driver);
+                                }}
+                              >
+                                Khóa
+                              </Button>
+                            ) : null}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -221,6 +293,7 @@ function DriversManagement() {
                   currentPage={1}
                   pageCount={1}
                   pageDisplay={3}
+                  handler={handlePageChange}
                 ></Pagination>
               </CardBody>
             </Card>

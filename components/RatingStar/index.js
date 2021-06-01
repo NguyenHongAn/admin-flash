@@ -6,7 +6,7 @@ function RatingStar({ value, ammount }) {
     <div>
       <Box align="left" mb={1} borderColor="transparent">
         <Rating
-          defaultValue={value}
+          value={value}
           name="rating"
           readOnly
           precision={0.5}

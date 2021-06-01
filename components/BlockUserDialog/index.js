@@ -43,7 +43,7 @@ function BlockUserDialog({ open, info, handleClose }) {
     try {
       dispatch(loadingAction.turnOnLoading());
       const { errorCode, data } = await Service.blockUserAccount(info._id);
-      console.log(data);
+
       if (errorCode === 0) {
         setSuccessMsg(
           `${data.Status === 0 ? "Mở khóa" : "Khóa"} tài khoản thành công`
@@ -54,7 +54,6 @@ function BlockUserDialog({ open, info, handleClose }) {
       handleClose();
     } catch (error) {
       console.log(error);
-
       error.response
         ? setErrorMsg(ErrorCollection.SERVER[error.response.status])
         : null;
@@ -64,9 +63,9 @@ function BlockUserDialog({ open, info, handleClose }) {
 
   return (
     <>
-      {successMsg === "" ? null : (
+      {/* {successMsg === "" ? null : (
         <Toast type="info" content={successMsg}></Toast>
-      )}
+      )} */}
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -128,8 +127,6 @@ function BlockUserDialog({ open, info, handleClose }) {
         </DialogContent>
         <DialogActions style={{ padding: "8px 24px!important" }}>
           <Button
-            variant="contained"
-            onClick={handleClose}
             style={{ width: 100 }}
             onClick={() => {
               setErrorMsg("");
@@ -138,11 +135,7 @@ function BlockUserDialog({ open, info, handleClose }) {
           >
             Huỷ
           </Button>
-          <Button
-            variant="contained"
-            style={{ width: 100, color: "white", background: "red" }}
-            onClick={handleBlockUserAccount}
-          >
+          <Button color="secondary" onClick={handleBlockUserAccount}>
             Xác nhận
           </Button>
         </DialogActions>

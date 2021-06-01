@@ -6,20 +6,23 @@ import {
   DialogContent,
   Slide,
   DialogActions,
-  Button,
   DialogTitle,
-  Typography,
   Grid,
 } from "@material-ui/core";
-import innerStyle from "./styles.module.css";
+import Button from "../../components/CustomButtons/Button";
+//styles
+import { makeStyles } from "@material-ui/core/styles";
+import styles from "../../assets/jss/components/reportDialogStyle";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 SwiperCore.use([Navigation, Pagination]);
+const useStyles = makeStyles(styles);
 
 function ReportDetailDialog({ report, handleClose, open }) {
+  const classes = useStyles();
   return (
     <Dialog
       open={open}
@@ -35,6 +38,7 @@ function ReportDetailDialog({ report, handleClose, open }) {
       </DialogTitle>
       <DialogContent>
         <Swiper
+          style={{ background: "#eeee" }}
           id="main"
           tag="section"
           wrapperTag="ul"
@@ -60,28 +64,28 @@ function ReportDetailDialog({ report, handleClose, open }) {
             ))}
         </Swiper>
         <Grid container direction="column">
-          <div className={innerStyle.info}>
-            <div className={innerStyle.infoTitle}>Người báo cáo: </div>
-            <div className={innerStyle.infoContent}>{report.annunciator}</div>
+          <div className={classes.info}>
+            <div className={classes.infoTitle}>Người báo cáo: </div>
+            <div className={classes.infoContent}>{report.annunciator}</div>
           </div>
-          <div className={innerStyle.info}>
-            <div className={innerStyle.infoTitle}>Đối tượng báo cáo: </div>
-            <div className={innerStyle.infoContent}>{report.reported}</div>
+          <div className={classes.info}>
+            <div className={classes.infoTitle}>Đối tượng báo cáo: </div>
+            <div className={classes.infoContent}>{report.reported}</div>
           </div>
-          <div className={innerStyle.info}>
-            <div className={innerStyle.infoTitle}>Nội dung</div>
-            <div className={innerStyle.infoContent}>{report.content}</div>
+          <div className={classes.info}>
+            <div className={classes.infoTitle}>Nội dung</div>
+            <div className={classes.infoContent}>{report.content}</div>
           </div>
-          <div className={innerStyle.info}>
-            <div className={innerStyle.infoTitle}>Tình trạng</div>
-            <div className={innerStyle.infoContent}>{report.status}</div>
+          <div className={classes.info}>
+            <div className={classes.infoTitle}>Tình trạng</div>
+            <div className={classes.infoContent}>{report.status}</div>
           </div>
         </Grid>
       </DialogContent>
       <DialogActions>
         <Button
           fullWidth
-          variant="contained"
+          variant="outlined"
           onClick={() => {
             handleClose(false);
           }}
@@ -90,11 +94,11 @@ function ReportDetailDialog({ report, handleClose, open }) {
         </Button>
         <Button
           fullWidth
-          variant="contained"
+          color="success"
+          variant="outlined"
           onClick={() => {
             handleClose(false);
           }}
-          style={{ background: "#3aeb34", color: "white" }}
         >
           Đã giải quyết
         </Button>

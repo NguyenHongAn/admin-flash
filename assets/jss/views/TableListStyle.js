@@ -12,10 +12,11 @@ const TableStyle = {
     },
   },
   cardTitleWhite: {
+    fontSize: "1.1rem",
     color: "#FFFFFF",
     marginTop: "0px",
     minHeight: "auto",
-    fontWeight: "500",
+    fontWeight: "400",
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     marginBottom: "3px",
     textDecoration: "none",
@@ -33,8 +34,8 @@ const TableStyle = {
     flexDirection: "column",
   },
   containerTitle: {
-    fontSize: "1.2rem",
-    fontWeight: "600",
+    fontSize: "1.1rem",
+    fontWeight: "500",
     width: "100%",
     display: "flex",
     justifyContent: "space-between",

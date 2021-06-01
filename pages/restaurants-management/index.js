@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import Layout from "../../components/Layout";
-
 import {
   TableContainer,
   TableHead,
@@ -10,6 +9,7 @@ import {
   TableRow,
   IconButton,
   TextField,
+  Button,
   InputAdornment,
 } from "@material-ui/core";
 import { Icon } from "@iconify/react";
@@ -207,7 +207,7 @@ function RestaurantsManagement({
             <Card>
               <CardHeader color="info" className={classes.restaurantTableHead}>
                 <div style={{ display: "flex" }}>
-                  <div>
+                  <div className={classes.cardTitleWhite}>
                     Nhà hàng do Admin quản lý
                     {/* : {adminRestaurants.length} nhà
                     hàng */}
@@ -278,13 +278,14 @@ function RestaurantsManagement({
                             </TableCell>
                             <TableCell align="center">
                               <RatingStar
-                                value={restaurant.avgReview}
+                                value={parseInt(restaurant.avgReview)}
                               ></RatingStar>
-                              {`(${restaurant.reviews})`}
                             </TableCell>
                             <TableCell align="center">
-                              <div
-                                className="contract-restaurant-link"
+                              <Button
+                                variant="outlined"
+                                color="primary"
+                                size="small"
                                 onClick={() => {
                                   handleOpenContractDialog(
                                     restaurant.contractID,
@@ -293,7 +294,7 @@ function RestaurantsManagement({
                                 }}
                               >
                                 Liên hệ
-                              </div>
+                              </Button>
                             </TableCell>
                           </TableRow>
                         ))}

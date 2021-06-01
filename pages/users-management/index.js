@@ -7,6 +7,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Button,
 } from "@material-ui/core";
 import { Icon } from "@iconify/react";
 import personLock16Regular from "@iconify/icons-fluent/person-lock-16-regular";
@@ -20,7 +21,7 @@ import Meta from "../../components/Meta";
 import Card from "../../components/Card/Card";
 import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
-import Button from "../../components/CustomButtons/Button";
+// import Button from "../../components/CustomButtons/Button";
 //styles
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
@@ -110,8 +111,9 @@ function UsersManagement({
   const [emailFilter, setEmailFilter] = useState(email);
   const [phoneFilter, setPhoneFilter] = useState(phone);
   const classes = useStyles();
-  const color ="success";
+  const color = "success";
   const typingTimeoutRef = useRef(null);
+
   const handleOpenBlockDialog = (account) => {
     setIsOpenBlockDialog(true);
     setUser(account);
@@ -119,6 +121,10 @@ function UsersManagement({
 
   const handleCloseBlockDialog = () => {
     setIsOpenBlockDialog(false);
+    router.push({
+      pathname: `/users-management`,
+      query: clearObject({ page, email, phone }),
+    });
   };
 
   const handlePageChange = (selected) => {
@@ -217,11 +223,11 @@ function UsersManagement({
                               {getStatus(user.status)}
                             </TableCell>
                             <TableCell align="center">
-                              {/* {user.status === -2 ? (
+                              {user.status === -2 ? (
                                 <Button
                                   variant="outlined"
-                                  color={color}
-                                  size="sm"
+                                  color="primary"
+                                  size="small"
                                   onClick={() => {
                                     handleOpenBlockDialog(user);
                                   }}
@@ -231,27 +237,15 @@ function UsersManagement({
                               ) : user.status === 0 ? (
                                 <Button
                                   variant="outlined"
-                                  color={color}
-                                  size="sm"
+                                  color="primary"
+                                  size="small"
                                   onClick={() => {
                                     handleOpenBlockDialog(user);
                                   }}
                                 >
-                                Khóa
+                                  Khóa
                                 </Button>
-                              ) : null} */}
-                              <div
-                                className={classes.tableBtn}
-                                onClick={() => {
-                                  handleOpenBlockDialog(user);
-                                }}
-                              >
-                                {user.status === -2
-                                  ? "Mở khóa"
-                                  : user.status === 0
-                                  ? "Khóa"
-                                  : null}
-                              </div>
+                              ) : null}
                             </TableCell>
                           </TableRow>
                         ))}
