@@ -15,7 +15,7 @@ import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
 import Pagination from "../../components/Pagination";
 import { makeStyles } from "@material-ui/core/styles";
-import styles from "../../assets/jss/views/TableList";
+import styles from "../../assets/jss/views/TableListStyle";
 
 function genarateFakeNumber(start, length) {
   const seed = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -267,9 +267,8 @@ function ListReport() {
                   </Table>
                 </TableContainer>
                 <Pagination
-                  // currentPage={currentPage}
-                  // pageCount={totalPage}
-                  // handler={handlePageChange}
+                  currentPage={1}
+                  pageCount={1}
                   pageDisplay={3}
                 ></Pagination>
               </CardBody>

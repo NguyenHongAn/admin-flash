@@ -1,5 +1,4 @@
 import "../assets/css/globals.css";
-import "../assets/css/login.css";
 import "../assets/css/restaurant.css";
 import "../assets/css/user.css";
 import "../assets/css/listReport.css";

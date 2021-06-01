@@ -48,6 +48,7 @@ export default function RegularButton(props) {
 }
 
 RegularButton.propTypes = {
+  variant: PropTypes.oneOf(["outlined", "text", "contained"]),
   color: PropTypes.oneOf([
     "primary",
     "info",

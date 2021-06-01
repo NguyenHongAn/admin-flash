@@ -10,12 +10,15 @@ import {
   TableContainer,
 } from "@material-ui/core";
 import BlockUserDialog from "../../components/BlockUserDialog";
+import RatingStar from "../../components/RatingStar";
 import Meta from "../../components/Meta";
 import Card from "../../components/Card/Card";
 import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
+import Pagination from "../../components/Pagination";
+//style
 import { makeStyles } from "@material-ui/core/styles";
-import styles from "../../assets/jss/views/TableList";
+import styles from "../../assets/jss/views/TableListStyle";
 
 function createRandomAvgScore(min, max) {
   return (Math.random() * (max - min) + min).toPrecision(3);
@@ -163,7 +166,6 @@ function DriversManagement() {
             <Card>
               <CardHeader color="info">
                 <h4 className={classes.cardTitleWhite}>
-                  {" "}
                   Tổng cộng: {totalDrvers} tài xế
                 </h4>
               </CardHeader>
@@ -195,8 +197,7 @@ function DriversManagement() {
                           <TableCell align="center">{driver.phone}</TableCell>
                           <TableCell align="center">{driver.reports}</TableCell>
                           <TableCell align="center">
-                            {" "}
-                            {driver.avgReview}/{driver.reviews} đánh giá
+                            <RatingStar value={driver.avgReview}></RatingStar>
                           </TableCell>
                           <TableCell align="center">
                             {getStatus(driver.status)}
@@ -208,7 +209,7 @@ function DriversManagement() {
                                 handleOpenBlockDialog(true, driver.email);
                               }}
                             >
-                              Khóa{" "}
+                              Khóa
                             </div>
                           </TableCell>
                         </TableRow>
@@ -216,6 +217,11 @@ function DriversManagement() {
                     </TableBody>
                   </Table>
                 </TableContainer>
+                <Pagination
+                  currentPage={1}
+                  pageCount={1}
+                  pageDisplay={3}
+                ></Pagination>
               </CardBody>
             </Card>
           </div>

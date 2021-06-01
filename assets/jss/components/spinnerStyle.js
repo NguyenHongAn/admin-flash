@@ -1,6 +1,10 @@
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
+const spinnerStyles = {
+  spinner: {
+    display: "block",
+    zIndex: "100",
+    margin: "0px auto",
+    position: "absolute",
+  },
   loadingPage: {
     position: "relative",
     backgroundColor: "rgba(0, 0, 0, 0.35)",
@@ -11,6 +15,5 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     zIndex: "10000",
   },
-}));
-
-export default useStyles;
+};
+export default spinnerStyles;

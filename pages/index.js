@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Head from "next/head";
-import styles from "../assets/css/Home.module.css";
 import Image from "next/image";
 import { TextField, Typography, Grid, Button } from "@material-ui/core";
 import { useFormik } from "formik";
@@ -11,11 +9,19 @@ import Loading from "../components/Loading";
 import { useRouter } from "next/router";
 import authAction from "../store/actions/auth.A";
 import Meta from "../components/Meta";
+//styles
+import styles from "../assets/jss/views/loginStyle";
+import { makeStyles } from "@material-ui/core/styles";
+import classNames from "classnames";
+
+const useStyles = makeStyles(styles);
 
 function signin() {
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading);
+
+  const classes = useStyles();
 
   const formik = useFormik({
     initialValues: {
@@ -57,23 +63,22 @@ function signin() {
 
   return (
     <div
-      className={
-        loading ? styles.loadingPage && styles.loginPage : styles.loginPage
-      }
+      className={classNames(classes.loginPage, {
+        [classes.loadingPage]: loading,
+      })}
     >
       <Meta title="Admin Flash - Login"></Meta>
-
       {loading ? (
         <Loading></Loading>
       ) : (
-        <div className={styles.loginFrame}>
+        <div className={classes.loginFrame}>
           <Image src="/img/Logo.png" alt="logo" width="64" height="64"></Image>
           <Typography component="h1" variant="h5" align="left">
             Đăng nhập
           </Typography>
-          <form className="login__form" onSubmit={formik.handleSubmit}>
+          <form className={classes.loginForm} onSubmit={formik.handleSubmit}>
             {error === "" ? null : (
-              <Typography className="login__error">* {error}</Typography>
+              <Typography className={classes.loginError}>* {error}</Typography>
             )}
 
             <TextField
@@ -91,7 +96,7 @@ function signin() {
               onBlur={formik.handleBlur}
             />
             {formik.touched.email && formik.errors.email ? (
-              <Typography className="login__error" align="left">
+              <Typography className={classes.loginError} align="left">
                 {formik.errors.email}
               </Typography>
             ) : null}
@@ -110,11 +115,11 @@ function signin() {
               onBlur={formik.handleBlur}
             />
             {formik.touched.password && formik.errors.password ? (
-              <Typography className="login__error" align="left">
+              <Typography className={classes.loginError} align="left">
                 {formik.errors.password}
               </Typography>
             ) : null}
-            <Grid item xs={6} className="login__submit">
+            <Grid item xs={6} className={classes.loginSubmit}>
               <Button
                 type="submit"
                 fullWidth

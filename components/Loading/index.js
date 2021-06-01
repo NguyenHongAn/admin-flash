@@ -1,8 +1,11 @@
 import React from "react";
 import MoonLoader from "react-spinners/MoonLoader";
-import useStyles from "./styles";
 import { useSelector } from "react-redux";
+//styles
+import { makeStyles } from "@material-ui/core/styles";
+import styles from "../../assets/jss/components/spinnerStyle";
 
+const useStyles = makeStyles(styles);
 function Loading() {
   const loading = useSelector((state) => state.loading);
   const classes = useStyles();
@@ -14,7 +17,7 @@ function Loading() {
           <MoonLoader
             loading={loading}
             size={120}
-            className="login__spinner"
+            className={classes.spinner}
           ></MoonLoader>
         </div>
       )}

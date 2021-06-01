@@ -1,8 +1,7 @@
 import React, { useState, useRef } from "react";
 import Layout from "../../components/Layout";
-import styles from "../../assets/css/Home.module.css";
+
 import {
-  Paper,
   TableContainer,
   TableHead,
   TableBody,
@@ -16,15 +15,24 @@ import {
 import { Icon } from "@iconify/react";
 import add12Filled from "@iconify/icons-fluent/add-12-filled";
 import searchIcon from "@iconify/icons-fe/search";
+//components
 import RestaurantInfoDialog from "../../components/RestaurantInfoDialog";
 import CreateRestaurantDialog from "../../components/CreateRestaurantDialog";
-import Service from "./services.js";
-import { useRouter } from "next/router";
+import RatingStar from "../../components/RatingStar";
 import Pagination from "../../components/Pagination";
 import Meta from "../../components/Meta";
+import Card from "../../components/Card/Card";
+import CardHeader from "../../components/Card/CardHeader";
+import CardBody from "../../components/Card/CardBody";
 import ErrorCollection from "../../config";
 import clearObject from "../../utils/clearObject";
 import Toast from "../../components/Toast";
+//styles
+import { makeStyles } from "@material-ui/core/styles";
+import styles from "../../assets/jss/views/TableListStyle";
+//functions
+import Service from "./services.js";
+import { useRouter } from "next/router";
 
 export const getServerSideProps = async ({ query }) => {
   const { city, search, page, district } = query;
@@ -71,6 +79,8 @@ export const getServerSideProps = async ({ query }) => {
   }
 };
 
+const useStyle = makeStyles(styles);
+
 function RestaurantsManagement({
   cities,
   districts,
@@ -85,7 +95,7 @@ function RestaurantsManagement({
 }) {
   const [email, setEmail] = useState("");
   const [contractID, setContractID] = useState("");
-
+  const classes = useStyle();
   const router = useRouter();
   const { city, search, page, district } = router.query;
   const [isOpenContract, setIsOpenContract] = useState(false);
@@ -152,9 +162,9 @@ function RestaurantsManagement({
       ></CreateRestaurantDialog>
       {
         <div>
-          <div className={styles.containerTitle}>
+          <div className={classes.containerTitle}>
             <div>
-              <span className={styles.total}>
+              <span className={classes.total}>
                 Tổng cộng: {totalRestaurants ? totalRestaurants : 0} nhà hàng
                 <select
                   name="city"
@@ -194,11 +204,8 @@ function RestaurantsManagement({
             ></TextField>
           </div>
           <div className="restaurant-container">
-            <Paper>
-              <div
-                className="restaurant-table-status"
-                style={{ background: "#FFDF85" }}
-              >
+            <Card>
+              <CardHeader color="info" className={classes.restaurantTableHead}>
                 <div style={{ display: "flex" }}>
                   <div>
                     Nhà hàng do Admin quản lý
@@ -232,71 +239,75 @@ function RestaurantsManagement({
                   />
                   Tạo nhà hàng mới
                 </button>
-              </div>
-              <TableContainer>
-                <Table aria-label="simple table">
-                  <TableHead className="restaurant-table__head">
-                    <TableRow>
-                      <TableCell align="center">STT</TableCell>
-                      <TableCell align="center">Tên nhà hàng</TableCell>
-                      <TableCell align="center">Địa chỉ</TableCell>
-                      <TableCell align="center">Thời gian tạo</TableCell>
-                      <TableCell align="center"> Đơn hàng</TableCell>
-                      <TableCell align="center">Đánh giá</TableCell>
+              </CardHeader>
+              <CardBody>
+                <TableContainer>
+                  <Table aria-label="simple table">
+                    <TableHead className="restaurant-table__head">
+                      <TableRow>
+                        <TableCell align="center">STT</TableCell>
+                        <TableCell align="center">Tên nhà hàng</TableCell>
+                        <TableCell align="center">Địa chỉ</TableCell>
+                        <TableCell align="center">Thời gian tạo</TableCell>
+                        <TableCell align="center"> Đơn hàng</TableCell>
+                        <TableCell align="center">Đánh giá</TableCell>
 
-                      <TableCell align="center"></TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className="restaurant-table__body">
-                    {adminRestaurants &&
-                      adminRestaurants.map((restaurant, i) => (
-                        <TableRow key={restaurant._id}>
-                          <TableCell align="center">
-                            {i + 1 + (currentPage - 1) * perPage}
-                          </TableCell>
-                          <TableCell align="center">
-                            {restaurant.name}
-                          </TableCell>
-                          <TableCell align="center">
-                            {restaurant.address}
-                          </TableCell>
-                          <TableCell align="center">
-                            {new Date(
-                              restaurant.createdAt
-                            ).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell align="center">
-                            {restaurant.orders}
-                          </TableCell>
-                          <TableCell align="center">
-                            {restaurant.avgReview}/{restaurant.reviews}
-                            đánh giá
-                          </TableCell>
-                          <TableCell align="center">
-                            <div
-                              className="contract-restaurant-link"
-                              onClick={() => {
-                                handleOpenContractDialog(
-                                  restaurant.contractID,
-                                  restaurant.email
-                                );
-                              }}
-                            >
-                              Liên hệ
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <Pagination
-                currentPage={currentPage}
-                pageCount={totalPage}
-                handler={handlePageChange}
-                pageDisplay={3}
-              ></Pagination>
-            </Paper>
+                        <TableCell align="center"></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody className="restaurant-table__body">
+                      {adminRestaurants &&
+                        adminRestaurants.map((restaurant, i) => (
+                          <TableRow key={restaurant._id}>
+                            <TableCell align="center">
+                              {i + 1 + (currentPage - 1) * perPage}
+                            </TableCell>
+                            <TableCell align="center">
+                              {restaurant.name}
+                            </TableCell>
+                            <TableCell align="center">
+                              {restaurant.address}
+                            </TableCell>
+                            <TableCell align="center">
+                              {new Date(
+                                restaurant.createdAt
+                              ).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell align="center">
+                              {restaurant.orders}
+                            </TableCell>
+                            <TableCell align="center">
+                              <RatingStar
+                                value={restaurant.avgReview}
+                              ></RatingStar>
+                              {`(${restaurant.reviews})`}
+                            </TableCell>
+                            <TableCell align="center">
+                              <div
+                                className="contract-restaurant-link"
+                                onClick={() => {
+                                  handleOpenContractDialog(
+                                    restaurant.contractID,
+                                    restaurant.email
+                                  );
+                                }}
+                              >
+                                Liên hệ
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Pagination
+                  currentPage={currentPage}
+                  pageCount={totalPage}
+                  handler={handlePageChange}
+                  pageDisplay={3}
+                ></Pagination>
+              </CardBody>
+            </Card>
             {/* <Paper style={{ marginTop: "10px" }}>
               <div
                 className="restaurant-table-status"

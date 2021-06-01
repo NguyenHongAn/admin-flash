@@ -32,6 +32,27 @@ const TableStyle = {
     display: "flex",
     flexDirection: "column",
   },
+  containerTitle: {
+    fontSize: "1.2rem",
+    fontWeight: "600",
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "10px",
+  },
+  restaurantTableHead: {
+    display: "flex",
+    justifyContent: "space-between",
+    color: "white",
+    padding: "10px",
+    alignItems: "center",
+  },
+
+  tableBtn: {
+    width: "80px",
+    cursor: "pointer",
+    color: "white",
+  },
 };
 
 export default TableStyle;

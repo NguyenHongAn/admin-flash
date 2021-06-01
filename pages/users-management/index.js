@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import Layout from "../../components/Layout";
 import {
-  Paper,
   TableContainer,
   Table,
   TableHead,
@@ -21,8 +20,10 @@ import Meta from "../../components/Meta";
 import Card from "../../components/Card/Card";
 import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
+import Button from "../../components/CustomButtons/Button";
+//styles
 import { makeStyles } from "@material-ui/core/styles";
-import styles from "../../assets/jss/views/TableList";
+import styles from "../../assets/jss/views/TableListStyle";
 
 function getStatus(num) {
   switch (num) {
@@ -109,7 +110,7 @@ function UsersManagement({
   const [emailFilter, setEmailFilter] = useState(email);
   const [phoneFilter, setPhoneFilter] = useState(phone);
   const classes = useStyles();
-
+  const color ="success";
   const typingTimeoutRef = useRef(null);
   const handleOpenBlockDialog = (account) => {
     setIsOpenBlockDialog(true);
@@ -168,7 +169,7 @@ function UsersManagement({
         <div>
           <div className={classes.tableContainer}>
             <Card>
-              <CardHeader color="success">
+              <CardHeader color={color}>
                 <h4 className={classes.cardTitleWhite}>
                   Tổng cộng: {totalUsers ? totalUsers : 0} người dùng
                 </h4>
@@ -216,8 +217,31 @@ function UsersManagement({
                               {getStatus(user.status)}
                             </TableCell>
                             <TableCell align="center">
+                              {/* {user.status === -2 ? (
+                                <Button
+                                  variant="outlined"
+                                  color={color}
+                                  size="sm"
+                                  onClick={() => {
+                                    handleOpenBlockDialog(user);
+                                  }}
+                                >
+                                  Mở khóa
+                                </Button>
+                              ) : user.status === 0 ? (
+                                <Button
+                                  variant="outlined"
+                                  color={color}
+                                  size="sm"
+                                  onClick={() => {
+                                    handleOpenBlockDialog(user);
+                                  }}
+                                >
+                                Khóa
+                                </Button>
+                              ) : null} */}
                               <div
-                                className="block-user"
+                                className={classes.tableBtn}
                                 onClick={() => {
                                   handleOpenBlockDialog(user);
                                 }}
