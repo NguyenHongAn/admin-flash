@@ -10,6 +10,7 @@ const EXECUTION_ERROR = {
   20: "Có lỗi khi gọi API hỗ trợ từ bên ngoài",
   100: "Server gặp lỗi khi tạo nhà hàng",
   101: "Lấy danh sách nhà hàn không thành công",
+  103: "Lấy thông tin một nhà hàng thất bại",
   110: "Lấy danh sách người dùng không thành công",
   111: "Có lỗi xãy ra khi khóa tài khoản người dùng này",
   112: "Người dùng hiện không tồn tại trong hệ thống, xin mời kiên tra lại",

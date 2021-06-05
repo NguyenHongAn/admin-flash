@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Layout from "../../components/Layout";
 import {
   TableContainer,
@@ -15,6 +15,7 @@ import {
 import { Icon } from "@iconify/react";
 import add12Filled from "@iconify/icons-fluent/add-12-filled";
 import searchIcon from "@iconify/icons-fe/search";
+import settingTwotone from "@iconify/icons-ant-design/setting-twotone";
 //components
 import RestaurantInfoDialog from "../../components/RestaurantInfoDialog";
 import CreateRestaurantDialog from "../../components/CreateRestaurantDialog";
@@ -33,9 +34,11 @@ import styles from "../../assets/jss/views/TableListStyle";
 //functions
 import Service from "./services.js";
 import { useRouter } from "next/router";
+import routers from "../../config/routers";
 
 export const getServerSideProps = async ({ query }) => {
   const { city, search, page, district } = query;
+
   try {
     const { errorCode, data, pagingInfo } =
       await Service.getRestaurantMangagementInfo(city, search, page, district);
@@ -62,20 +65,22 @@ export const getServerSideProps = async ({ query }) => {
       },
     };
   } catch (error) {
-    if (error && error.response.status === 401) {
+    if (error.response && error.response.status === 401) {
       return {
         redirect: {
           destination: "/",
           permanent: false,
         },
       };
+    } else if (typeof error.response !== "undefined") {
+      return {
+        props: {
+          errorType: "error",
+          errorMsg: ErrorCollection.SERVER[error.response.status],
+        },
+      };
     }
-    return {
-      props: {
-        errorType: "error",
-        errorMsg: ErrorCollection.SERVER[error.response.status],
-      },
-    };
+    return { notFound: true };
   }
 };
 
@@ -146,7 +151,7 @@ function RestaurantsManagement({
   };
 
   return (
-    <Layout>
+    <Layout routers={routers}>
       <Meta title="Admin Flash - Restaurants"></Meta>
       {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
       <RestaurantInfoDialog
@@ -245,44 +250,53 @@ function RestaurantsManagement({
                   <Table aria-label="simple table">
                     <TableHead className="restaurant-table__head">
                       <TableRow>
-                        <TableCell align="center">STT</TableCell>
-                        <TableCell align="center">Tên nhà hàng</TableCell>
-                        <TableCell align="center">Địa chỉ</TableCell>
-                        <TableCell align="center">Thời gian tạo</TableCell>
-                        <TableCell align="center"> Đơn hàng</TableCell>
-                        <TableCell align="center">Đánh giá</TableCell>
+                        <TableCell>STT</TableCell>
+                        <TableCell>Tên nhà hàng</TableCell>
+                        <TableCell>Địa chỉ</TableCell>
+                        <TableCell>Thời gian tạo</TableCell>
+                        <TableCell> Phí dịch vụ</TableCell>
+                        <TableCell>Đánh giá</TableCell>
 
-                        <TableCell align="center"></TableCell>
+                        <TableCell></TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody className="restaurant-table__body">
                       {adminRestaurants &&
                         adminRestaurants.map((restaurant, i) => (
                           <TableRow key={restaurant._id}>
-                            <TableCell align="center">
+                            <TableCell>
                               {i + 1 + (currentPage - 1) * perPage}
                             </TableCell>
-                            <TableCell align="center">
+                            <TableCell className={classes.shortName}>
                               {restaurant.name}
                             </TableCell>
-                            <TableCell align="center">
-                              {restaurant.address}
-                            </TableCell>
-                            <TableCell align="center">
+                            <TableCell>{restaurant.address}</TableCell>
+                            <TableCell>
                               {new Date(
                                 restaurant.createdAt
                               ).toLocaleDateString()}
                             </TableCell>
-                            <TableCell align="center">
-                              {restaurant.orders}
-                            </TableCell>
-                            <TableCell align="center">
+                            <TableCell>{restaurant.serviceCharge}</TableCell>
+                            <TableCell>
                               <RatingStar
                                 value={parseInt(restaurant.avgReview)}
                               ></RatingStar>
                             </TableCell>
-                            <TableCell align="center">
-                              <Button
+                            <TableCell>
+                              <div
+                                className={classes.settingBtn}
+                                onClick={() => {
+                                  router.push(
+                                    `/restaurants-management/${restaurant._id}`
+                                  );
+                                }}
+                              >
+                                <Icon
+                                  icon={settingTwotone}
+                                  style={{ color: "black", fontSize: "24px" }}
+                                />
+                              </div>
+                              {/* <Button
                                 variant="outlined"
                                 color="primary"
                                 size="small"
@@ -294,7 +308,7 @@ function RestaurantsManagement({
                                 }}
                               >
                                 Liên hệ
-                              </Button>
+                              </Button> */}
                             </TableCell>
                           </TableRow>
                         ))}

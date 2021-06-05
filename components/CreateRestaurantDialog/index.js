@@ -44,7 +44,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
       city: "",
       openTime: "06:00",
       closeTime: "22:00",
-      transport: "",
+      partner: "0",
     },
     validationSchema: service.validationSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -60,7 +60,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
           district,
           openTime,
           closeTime,
-          transport,
+          partner,
         } = values;
         const { errorCode, data } = await service.createNewRestaurant(
           email,
@@ -72,7 +72,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
           district,
           openTime,
           closeTime,
-          transport
+          partner
         );
 
         if (errorCode === 0) {
@@ -193,7 +193,6 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                       variant="outlined"
                       onChange={formik.handleChange}
                       error={formik.errors.openTime && true}
-                      label={formik.errors.openTime}
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -299,18 +298,21 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                       <InputLabel id="transport-label">
                         {formik.errors.transport
                           ? formik.errors.transport
-                          : `Chọn Phương thức giao hàng`}
+                          : `Là đối tác`}
                       </InputLabel>
                       <Select
                         labelId="transport-label"
                         id="transport"
-                        value={formik.values.transport}
+                        value={formik.values.partner}
                         onChange={formik.handleChange}
-                        error={formik.errors.transport && true}
-                        label={formik.errors.transport}
+                        error={formik.errors.partner && true}
+                        label={formik.errors.partner}
                       >
-                        <MenuItem value="">
-                          <em>None</em>
+                        <MenuItem value="0">
+                          <em>Admin quản lý</em>
+                        </MenuItem>
+                        <MenuItem value="1">
+                          <em>Đối tác quản lý</em>
                         </MenuItem>
                       </Select>
                     </FormControl>

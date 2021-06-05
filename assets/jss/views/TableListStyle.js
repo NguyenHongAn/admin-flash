@@ -54,6 +54,16 @@ const TableStyle = {
     cursor: "pointer",
     color: "white",
   },
+  settingBtn: {
+    cursor: "pointer",
+    textAlign: "center",
+  },
+  shortName: {
+    whiteSpace: "nowrap",
+    maxWidth: "200px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
 };
 
 export default TableStyle;

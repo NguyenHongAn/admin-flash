@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import InfoIcon from "@material-ui/icons/Info";
 import { Icon } from "@iconify/react";
@@ -20,15 +20,15 @@ import CardHeader from "../../components/Card/CardHeader.js";
 import CardIcon from "../../components/Card/CardIcon.js";
 import CardBody from "../../components/Card/CardBody.js";
 import CardFooter from "../../components/Card/CardFooter.js";
-
+import Table from "../../components/Table/Table";
 import muiStyles from "../../assets/jss/views/dashboardStyle";
 import { ArrowDownward } from "@material-ui/icons";
+import routers from "../../config/routers";
 
-const useStyles = makeStyles(muiStyles);
-
-export async function getServerSideProps() {
+export async function getServerSideProps({ query }) {
+  const { filter } = query;
   try {
-    const { errorCode, data } = await Service.getGeneralStatistics();
+    const { errorCode, data } = await Service.getGeneralStatistics(filter);
 
     if (errorCode === 0) {
       return {
@@ -38,10 +38,13 @@ export async function getServerSideProps() {
           totalShippers: data.totalShippers,
           totalOrders: data.totalOrders,
           totalPayment: data.totalPayment,
-          numberOrderArr: data.numberOfOrderInWeek,
-          paymentOrderArr: data.payOfOrderInWeek,
+          numberOrderArr: data.numberOfOrder,
+          paymentOrderArr: data.payOfOrder,
           numberPercent: data.numberPercent,
           paymentPercent: data.paymentPercent,
+          chartLabels: data.labels,
+          shipperData: data.shipperData,
+          restaurantData: data.restaurantData,
         },
       };
     } else {
@@ -71,11 +74,14 @@ export async function getServerSideProps() {
   }
 }
 
+const useStyles = makeStyles(muiStyles);
+
 function GeneralStatistic({
   totalRestaurants,
   totalUsers,
   totalOrders,
   totalShippers,
+  chartLabels,
   totalPayment,
   numberOrderArr,
   paymentOrderArr,
@@ -83,11 +89,21 @@ function GeneralStatistic({
   paymentPercent,
   errorType,
   errorMsg,
+  shipperData,
+  restaurantData,
 }) {
   const classes = useStyles();
   const route = useRouter();
+  const { filter } = route.query;
+  //const [filter, setFilter] = useState(_filter);
+  const handleFilterChange = (e) => {
+    route.push({
+      pathname: "/general-statistics",
+      query: { filter: e.target.value },
+    });
+  };
   return (
-    <Layout>
+    <Layout routers={routers}>
       <Meta title="Admin Flash - General Statistics"></Meta>
       {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
       {
@@ -178,13 +194,29 @@ function GeneralStatistic({
                 </Card>
               </Grid>
             </Grid>
+            <hr className={classes.breakLine}></hr>
+            <Grid item container md={12}>
+              <span className={classes.cardContainer}>
+                Thống kê theo:{" "}
+                <select
+                  name="filter"
+                  className="filter"
+                  value={filter}
+                  onChange={handleFilterChange}
+                >
+                  <option value="week">Tuần</option>
+                  <option value="month">Tháng</option>
+                  <option value="year">Năm</option>
+                </select>
+              </span>
+            </Grid>
             <Grid container>
               <Grid item className={classes.cardContainer} md={6} xs={6}>
                 <Card chart>
                   <CardHeader color="info">
                     <Line
                       data={{
-                        labels: Service.chartLabels,
+                        labels: chartLabels,
                         datasets: [
                           {
                             borderColor: Service.chartBorder,
@@ -199,7 +231,7 @@ function GeneralStatistic({
                   </CardHeader>
                   <CardBody>
                     <h4 className={classes.cardTitle}>
-                      Tổng số đơn trong tuần {totalOrders ? totalOrders : 0}
+                      Tổng số đơn: {totalOrders ? totalOrders : 0} đơn
                     </h4>
                     {numberPercent > 0 ? (
                       <p className={classes.cardCategory}>
@@ -209,7 +241,7 @@ function GeneralStatistic({
                           />
                           {numberPercent}
                         </span>
-                        {" % tăng so với tuần trước"}
+                        {" % tăng so với trước"}
                       </p>
                     ) : (
                       <p className={classes.cardCategory}>
@@ -219,7 +251,7 @@ function GeneralStatistic({
                           />
                           {numberPercent}
                         </span>
-                        {" % giảm so với tuần trước"}
+                        {" % giảm so với trước"}
                       </p>
                     )}
                   </CardBody>
@@ -230,7 +262,7 @@ function GeneralStatistic({
                   <CardHeader color="rose">
                     <Line
                       data={{
-                        labels: Service.chartLabels,
+                        labels: chartLabels,
                         datasets: [
                           {
                             borderColor: Service.chartBorder,
@@ -245,8 +277,7 @@ function GeneralStatistic({
                   </CardHeader>
                   <CardBody>
                     <h4 className={classes.cardTitle}>
-                      Tổng thanh toán trong tuần:{" "}
-                      {totalPayment ? totalPayment : 0}
+                      Tổng thanh toán : {totalPayment ? totalPayment : 0} đồng
                     </h4>
                     {paymentPercent > 0 ? (
                       <p className={classes.cardCategory}>
@@ -256,7 +287,7 @@ function GeneralStatistic({
                           />
                           {paymentPercent}
                         </span>
-                        {" % tăng so với tuần trước"}
+                        {" % tăng so với trước"}
                       </p>
                     ) : (
                       <p className={classes.cardCategory}>
@@ -266,9 +297,35 @@ function GeneralStatistic({
                           />
                           {paymentPercent}
                         </span>
-                        {" % giảm so với tuần trước"}
+                        {" % giảm so với trước"}
                       </p>
                     )}
+                  </CardBody>
+                </Card>
+              </Grid>
+            </Grid>
+            <hr className={classes.breakLine}></hr>
+            <Grid container>
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardHeader color="warning">
+                    <h4 className={classes.cardTitleWhite}>
+                      Thống kê phí dịch vụ
+                    </h4>
+                    <p className={classes.cardCategoryWhite}>
+                      thống kê tổng cho nhà hàng
+                    </p>
+                  </CardHeader>
+                  <CardBody>
+                    <Table
+                      tableHead={[
+                        "Tên",
+                        "Phí dịch vụ (%)",
+                        "Lý thuyết",
+                        "Còn thiếu",
+                      ]}
+                      tableData={[shipperData, restaurantData]}
+                    ></Table>
                   </CardBody>
                 </Card>
               </Grid>

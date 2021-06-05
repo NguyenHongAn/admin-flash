@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Layout from "../../components/Layout";
 
 import {
@@ -22,6 +22,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
 import { useRouter } from "next/router";
 import clearObject from "../../utils/clearObject";
+import routers from "../../config/routers";
 
 function createRandomAvgScore(min, max) {
   return (Math.random() * (max - min) + min).toPrecision(3);
@@ -199,7 +200,7 @@ function DriversManagement() {
   };
 
   return (
-    <Layout>
+    <Layout routers={routers}>
       <Meta title="Flash Admin - Shipper"></Meta>
 
       <BlockUserDialog
@@ -221,45 +222,45 @@ function DriversManagement() {
                   <Table>
                     <TableHead className="user-table__head">
                       <TableRow>
-                        <TableCell align="center">STT</TableCell>
-                        <TableCell align="center">
+                        <TableCell>STT</TableCell>
+                        <TableCell>
                           Email{" "}
                           <input
                             type="text"
                             onChange={handleEmailFilterChange}
                           ></input>
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell>
                           Sđt{" "}
                           <input
                             type="text"
                             onChange={handlePhoneFilterChange}
                           ></input>
                         </TableCell>
-                        <TableCell align="center">Lượt báo cáo</TableCell>
-                        <TableCell align="center">Đánh giá</TableCell>
-                        <TableCell align="center">Trạng thái</TableCell>
-                        <TableCell align="center"></TableCell>
+
+                        <TableCell>Đánh giá</TableCell>
+                        <TableCell>Phí dịch vụ</TableCell>
+                        <TableCell>Trạng thái</TableCell>
+                        <TableCell></TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody className="user-table__body">
                       {TEMPLATE_DATA.map((driver, i) => (
                         <TableRow key={driver.id}>
-                          <TableCell align="center">
+                          <TableCell>
                             {i + 1 + currentPage * driversPresent}
                           </TableCell>
-                          <TableCell align="center">{driver.email}</TableCell>
-                          <TableCell align="center">{driver.phone}</TableCell>
-                          <TableCell align="center">{driver.reports}</TableCell>
-                          <TableCell align="center">
+                          <TableCell>{driver.email}</TableCell>
+                          <TableCell>{driver.phone}</TableCell>
+
+                          <TableCell>
                             <RatingStar
                               value={parseInt(driver.avgReview)}
                             ></RatingStar>
                           </TableCell>
-                          <TableCell align="center">
-                            {getStatus(driver.status)}
-                          </TableCell>
-                          <TableCell align="center">
+                          <TableCell>{driver.reports}</TableCell>
+                          <TableCell>{getStatus(driver.status)}</TableCell>
+                          <TableCell>
                             {driver.status === -2 ? (
                               <Button
                                 variant="outlined"

@@ -90,6 +90,11 @@ const dashboardStyle = {
       lineHeight: "1",
     },
   },
+  breakLine: {
+    color: whiteColor,
+    margin: "10px 20px",
+    width: "100%",
+  },
 };
 
 export default dashboardStyle;

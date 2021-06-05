@@ -2,8 +2,8 @@ import axiosClient from "../../api";
 import URL from "../../api/URL";
 
 const services = {
-  getGeneralStatistics: () => {
-    return axiosClient.get(URL.GET_GENERAL_INFO);
+  getGeneralStatistics: (filter) => {
+    return axiosClient.get(URL.GET_GENERAL_INFO, { params: { filter } });
   },
 
   chartOptions: {

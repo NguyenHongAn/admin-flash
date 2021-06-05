@@ -28,6 +28,7 @@ function RestaurantInfoDialog({ open, handleClose, contractID, email }) {
         maxWidth="xs"
         TransitionComponent={Transition}
         keepMounted
+        fullScreen
         fullWidth
         onClose={handleClose}
         aria-labelledby="alert-dialog-slide-title"

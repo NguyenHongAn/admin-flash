@@ -9,13 +9,12 @@ import Navbar from "../Navbars";
 import Sidebar from "../Sidebar";
 
 import styles from "../../assets/jss/layout/adminLayout";
-import routes from "../../config/routers";
 
 let ps;
 
 const useStyles = makeStyles(styles);
 
-export default function Layout({ children, ...rest }) {
+export default function Layout({ routers, children }) {
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
@@ -55,19 +54,14 @@ export default function Layout({ children, ...rest }) {
   return (
     <div className={classes.wrapper}>
       <Sidebar
-        routes={routes}
+        routes={routers}
         logoText={"Admin"}
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
         color={"blue"}
-        {...rest}
       />
       <div className={classes.mainPanel} ref={mainPanel}>
-        <Navbar
-          routes={routes}
-          handleDrawerToggle={handleDrawerToggle}
-          {...rest}
-        />
+        <Navbar routes={routers} handleDrawerToggle={handleDrawerToggle} />
 
         <div className={classes.content}>
           <div className={classes.container}>{children}</div>

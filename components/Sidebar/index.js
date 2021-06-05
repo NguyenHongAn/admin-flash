@@ -70,7 +70,10 @@ export default function Sidebar(props) {
     </List>
   );
   var brand = (
-    <div className={classes.logo}>
+    <div
+      className={classes.logo}
+      onClick={() => router.push("/general-statistics")}
+    >
       <div className={classes.logoLink}>
         <div className={classes.logoImage}>
           <img src={"/img/Logo.png"} alt="logo" className={classes.img} />

@@ -27,7 +27,7 @@ const service = {
     district,
     openTime,
     closeTime,
-    transport
+    partner
   ) => {
     return axiosClient.post(URL.CREATE_RESTAURANT, {
       email,
@@ -39,7 +39,7 @@ const service = {
       district,
       openTime,
       closeTime,
-      transport,
+      partner,
     });
   },
 };

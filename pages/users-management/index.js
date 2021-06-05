@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Layout from "../../components/Layout";
 import {
   TableContainer,
@@ -26,6 +26,8 @@ import CardBody from "../../components/Card/CardBody";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
 
+import routers from "../../config/routers";
+
 function getStatus(num) {
   switch (num) {
     case -2:
@@ -47,6 +49,7 @@ function getStatus(num) {
 
 export const getServerSideProps = async ({ query }) => {
   const { page, phone, email } = query;
+
   try {
     const { errorCode, data, pagingInfo } = await Service.getUserManagement(
       page,
@@ -163,7 +166,7 @@ function UsersManagement({
   };
 
   return (
-    <Layout>
+    <Layout routers={routers}>
       <Meta title="Admin Flash - Users"></Meta>
       {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
       <BlockUserDialog
@@ -185,8 +188,8 @@ function UsersManagement({
                   <Table>
                     <TableHead className="user-table__head">
                       <TableRow>
-                        <TableCell align="center">STT</TableCell>
-                        <TableCell align="center">
+                        <TableCell>STT</TableCell>
+                        <TableCell>
                           Email{" "}
                           <input
                             type="text"
@@ -194,7 +197,7 @@ function UsersManagement({
                             onChange={handleEmailFilterChange}
                           ></input>
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell>
                           Sđt{" "}
                           <input
                             type="text"
@@ -202,27 +205,25 @@ function UsersManagement({
                             onChange={handlePhoneFilterChange}
                           ></input>
                         </TableCell>
-                        <TableCell align="center">Lượt báo cáo</TableCell>
-                        <TableCell align="center">Điểm</TableCell>
-                        <TableCell align="center">Trạng thái</TableCell>
-                        <TableCell align="center"></TableCell>
+                        <TableCell>Lượt báo cáo</TableCell>
+                        <TableCell>Điểm</TableCell>
+                        <TableCell>Trạng thái</TableCell>
+                        <TableCell></TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody className="user-table__body">
                       {users &&
                         users.map((user, i) => (
                           <TableRow key={user._id}>
-                            <TableCell align="center">
+                            <TableCell>
                               {i + 1 + (currentPage - 1) * perPage}
                             </TableCell>
-                            <TableCell align="center">{user.email}</TableCell>
-                            <TableCell align="center">{user.phone}</TableCell>
-                            <TableCell align="center">{user.reports}</TableCell>
-                            <TableCell align="center">{user.point}</TableCell>
-                            <TableCell align="center">
-                              {getStatus(user.status)}
-                            </TableCell>
-                            <TableCell align="center">
+                            <TableCell>{user.email}</TableCell>
+                            <TableCell>{user.phone}</TableCell>
+                            <TableCell>{user.reports}</TableCell>
+                            <TableCell>{user.point}</TableCell>
+                            <TableCell>{getStatus(user.status)}</TableCell>
+                            <TableCell>
                               {user.status === -2 ? (
                                 <Button
                                   variant="outlined"

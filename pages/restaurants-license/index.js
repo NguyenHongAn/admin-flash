@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "../../components/Layout";
-import Head from "next/head";
 import Meta from "../../components/Meta";
+import routers from "../../config/routers";
 
 function RestaurantsLincese() {
+  useEffect(() => {
+    const jwt = localStorage.getItem("jwt");
+    if (typeof jwt === "undefined") {
+      route.push("/");
+    }
+  }, []);
+
   return (
-    <Layout>
+    <Layout routers={routers}>
       <Meta title="Admin Flash - Licenses"></Meta>
 
       {<div></div>}

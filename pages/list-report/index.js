@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import {
   TableBody,
@@ -16,6 +16,7 @@ import CardBody from "../../components/Card/CardBody";
 import Pagination from "../../components/Pagination";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
+import routers from "../../config/routers";
 
 function genarateFakeNumber(start, length) {
   const seed = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -183,7 +184,7 @@ function ListReport() {
   };
 
   return (
-    <Layout>
+    <Layout routers={routers}>
       <Meta title="Flash Admin - Reports"></Meta>
 
       <ReportDetailDialog
@@ -206,22 +207,22 @@ function ListReport() {
                   <Table>
                     <TableHead className="report-table__head">
                       <TableRow>
-                        <TableCell align="center">STT</TableCell>
-                        <TableCell align="center">Hình ảnh</TableCell>
-                        <TableCell align="center">Nội dung</TableCell>
-                        <TableCell align="center">Thời gian</TableCell>
-                        <TableCell align="center">Người báo cáo</TableCell>
-                        <TableCell align="center">Đối tượng báo cáo</TableCell>
-                        <TableCell align="center">Trạng thái</TableCell>
+                        <TableCell>STT</TableCell>
+                        <TableCell>Hình ảnh</TableCell>
+                        <TableCell>Nội dung</TableCell>
+                        <TableCell>Thời gian</TableCell>
+                        <TableCell>Người báo cáo</TableCell>
+                        <TableCell>Đối tượng báo cáo</TableCell>
+                        <TableCell>Trạng thái</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody className="report-table__body">
                       {TEMPLATE_DATA.map((report, i) => (
                         <TableRow key={report.id}>
-                          <TableCell align="center">
+                          <TableCell>
                             {i + 1 + currentPage * reportsPresent}
                           </TableCell>
-                          <TableCell align="center">
+                          <TableCell>
                             <div
                               className="report-table-image"
                               onClick={() => {
@@ -237,17 +238,13 @@ function ListReport() {
                               </span>
                             </div>
                           </TableCell>
-                          <TableCell align="center">{report.content}</TableCell>
-                          <TableCell align="center">
+                          <TableCell>{report.content}</TableCell>
+                          <TableCell>
                             {report.createdAt.toLocaleDateString()}
                           </TableCell>
-                          <TableCell align="center">
-                            {report.annunciator}
-                          </TableCell>
-                          <TableCell align="center">
-                            {report.reported}
-                          </TableCell>
-                          <TableCell align="center">
+                          <TableCell>{report.annunciator}</TableCell>
+                          <TableCell>{report.reported}</TableCell>
+                          <TableCell>
                             {report.status ? (
                               <input
                                 type="checkbox"
