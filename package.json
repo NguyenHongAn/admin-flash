@@ -27,6 +27,7 @@
     "react-redux": "^7.2.3",
     "react-spinners": "^0.10.6",
     "react-toastify": "^7.0.4",
+    "recompose": "^0.30.0",
     "redux": "^4.0.5",
     "swiper": "^6.5.9",
     "yup": "^0.32.9"

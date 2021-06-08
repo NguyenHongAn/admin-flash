@@ -309,12 +309,13 @@ function GeneralStatistic({
               <Grid item xs={12} md={6}>
                 <Card>
                   <CardHeader color="warning">
-                    <h4 className={classes.cardTitleWhite}>
+                    <h4
+                      className={classes.cardTitleWhite}
+                      style={{ with: "50%" }}
+                    >
                       Thống kê phí dịch vụ
                     </h4>
-                    <p className={classes.cardCategoryWhite}>
-                      thống kê tổng cho nhà hàng
-                    </p>
+                    <div style={{ float: "left" }}>Chỉnh sủa phí dịch vụ</div>
                   </CardHeader>
                   <CardBody>
                     <Table

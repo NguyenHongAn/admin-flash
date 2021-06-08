@@ -17,7 +17,6 @@ import add12Filled from "@iconify/icons-fluent/add-12-filled";
 import searchIcon from "@iconify/icons-fe/search";
 import settingTwotone from "@iconify/icons-ant-design/setting-twotone";
 //components
-import RestaurantInfoDialog from "../../components/RestaurantInfoDialog";
 import CreateRestaurantDialog from "../../components/CreateRestaurantDialog";
 import RatingStar from "../../components/RatingStar";
 import Pagination from "../../components/Pagination";
@@ -35,24 +34,19 @@ import styles from "../../assets/jss/views/TableListStyle";
 import Service from "./services.js";
 import { useRouter } from "next/router";
 import routers from "../../config/routers";
+import classNames from "classnames";
+import RestaurantTable from "../../components/RestaurantTable";
 
 export const getServerSideProps = async ({ query }) => {
-  const { city, search, page, district } = query;
+  const { city } = query;
 
   try {
-    const { errorCode, data, pagingInfo } =
-      await Service.getRestaurantMangagementInfo(city, search, page, district);
+    const { errorCode, data } = await Service.getCities(city);
     if (errorCode === 0) {
       return {
         props: {
           cities: data.cities,
           districts: data.districts,
-          adminRestaurants: data.adminRestaurants,
-          seftRestaurants: data.seftRestaurants,
-          totalRestaurants: data.totalRestaurants,
-          perPage: pagingInfo.perPage,
-          totalPage: pagingInfo.totalPage,
-          currentPage: pagingInfo.currentPage,
         },
       };
     } else if (errorCode === ErrorCollection.INVALID_PARAM) {
@@ -60,7 +54,6 @@ export const getServerSideProps = async ({ query }) => {
     }
     return {
       props: {
-        errorType: "error",
         errorMsg: ErrorCollection.EXECUTION[errorCode],
       },
     };
@@ -75,7 +68,6 @@ export const getServerSideProps = async ({ query }) => {
     } else if (typeof error.response !== "undefined") {
       return {
         props: {
-          errorType: "error",
           errorMsg: ErrorCollection.SERVER[error.response.status],
         },
       };
@@ -86,80 +78,37 @@ export const getServerSideProps = async ({ query }) => {
 
 const useStyle = makeStyles(styles);
 
-function RestaurantsManagement({
-  cities,
-  districts,
-  seftRestaurants,
-  adminRestaurants,
-  perPage,
-  totalPage,
-  currentPage,
-  totalRestaurants,
-  errorType,
-  errorMsg,
-}) {
-  const [email, setEmail] = useState("");
-  const [contractID, setContractID] = useState("");
+function RestaurantsManagement({ cities, districts, errorMsg }) {
   const classes = useStyle();
   const router = useRouter();
-  const { city, search, page, district } = router.query;
-  const [isOpenContract, setIsOpenContract] = useState(false);
+  const { city: selectedCity } = router.query;
+
   const [isOpenNewRestaurant, setIsOpenNewRestaurant] = useState(false);
   const typingTimeoutRef = useRef(null);
-  const [searchString, setSearchString] = useState(search);
-  const handleCloseContractDialog = () => setIsOpenContract(false);
-
-  const handleOpenContractDialog = (contract, resEmail) => {
-    setContractID(contract);
-    setEmail(resEmail);
-    setIsOpenContract(true);
-  };
+  const [searchString, setSearchString] = useState("");
 
   const handleCityChange = (e) => {
     router.push({
       pathname: `/restaurants-management`,
-      query: clearObject({ city: e.target.value, search, page, district }),
+      query: clearObject({ city: e.target.value }),
     });
   };
 
   const handleSearchTermChange = (e) => {
-    setSearchString(e.target.value);
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
 
     typingTimeoutRef.current = setTimeout(() => {
-      router.push({
-        pathname: "/restaurants-management",
-        query: clearObject({ search: e.target.value, city, page, district }),
-      });
+      setSearchString(e.target.value);
     }, 700);
-  };
-
-  const handlePageChange = (selected) => {
-    router.push({
-      pathname: "/restaurants-management",
-      query: clearObject({ page: selected, search, city, district }),
-    });
-  };
-
-  const handleDistrictChange = (e) => {
-    router.push({
-      pathname: "/restaurants-management",
-      query: clearObject({ city, search, page, district: e.target.value }),
-    });
   };
 
   return (
     <Layout routers={routers}>
       <Meta title="Admin Flash - Restaurants"></Meta>
-      {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
-      <RestaurantInfoDialog
-        open={isOpenContract}
-        email={email}
-        contractID={contractID}
-        handleClose={handleCloseContractDialog}
-      ></RestaurantInfoDialog>
+      {errorMsg ? <Toast type="error" content={errorMsg}></Toast> : null}
+
       <CreateRestaurantDialog
         open={isOpenNewRestaurant}
         handleClose={setIsOpenNewRestaurant}
@@ -170,11 +119,10 @@ function RestaurantsManagement({
           <div className={classes.containerTitle}>
             <div>
               <span className={classes.total}>
-                Tổng cộng: {totalRestaurants ? totalRestaurants : 0} nhà hàng
                 <select
                   name="city"
                   className="city-filter"
-                  value={city ? city : -1}
+                  value={selectedCity ? selectedCity : -1}
                   onChange={handleCityChange}
                 >
                   <option value="-1" disabled>
@@ -182,7 +130,7 @@ function RestaurantsManagement({
                   </option>
                   {cities &&
                     cities.map((city) => (
-                      <option value={city.Id} key={city._id}>
+                      <option value={city.Name} key={city._id}>
                         {city.Name}
                       </option>
                     ))}
@@ -208,14 +156,30 @@ function RestaurantsManagement({
               }}
             ></TextField>
           </div>
-          <div className="restaurant-container">
-            <Card>
+          <div>
+            <RestaurantTable
+              color="info"
+              partner={false}
+              search={searchString}
+              selectedCity={selectedCity}
+              cities={cities}
+              districts={districts}
+            ></RestaurantTable>
+            <RestaurantTable
+              partner={true}
+              color="rose"
+              search={searchString}
+              selectedCity={selectedCity}
+              cities={cities}
+              districts={districts}
+            ></RestaurantTable>
+            {/* <Card>
               <CardHeader color="info" className={classes.restaurantTableHead}>
                 <div style={{ display: "flex" }}>
                   <div className={classes.cardTitleWhite}>
                     Nhà hàng do Admin quản lý
-                    {/* : {adminRestaurants.length} nhà
-                    hàng */}
+                     : {adminRestaurants.length} nhà
+                    hàng 
                   </div>
                   <select
                     name="area"
@@ -296,19 +260,7 @@ function RestaurantsManagement({
                                   style={{ color: "black", fontSize: "24px" }}
                                 />
                               </div>
-                              {/* <Button
-                                variant="outlined"
-                                color="primary"
-                                size="small"
-                                onClick={() => {
-                                  handleOpenContractDialog(
-                                    restaurant.contractID,
-                                    restaurant.email
-                                  );
-                                }}
-                              >
-                                Liên hệ
-                              </Button> */}
+                             
                             </TableCell>
                           </TableRow>
                         ))}
@@ -322,7 +274,7 @@ function RestaurantsManagement({
                   pageDisplay={3}
                 ></Pagination>
               </CardBody>
-            </Card>
+            </Card> */}
             {/* <Paper style={{ marginTop: "10px" }}>
               <div
                 className="restaurant-table-status"

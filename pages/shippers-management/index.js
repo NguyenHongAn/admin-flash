@@ -10,143 +10,93 @@ import {
   TableContainer,
   Button,
 } from "@material-ui/core";
+
 import BlockUserDialog from "../../components/BlockUserDialog";
+import Service from "./services";
+import Pagination from "../../components/Pagination";
+import ErrorCollection from "../../config";
 import RatingStar from "../../components/RatingStar";
 import Meta from "../../components/Meta";
 import Card from "../../components/Card/Card";
 import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
-import Pagination from "../../components/Pagination";
+import Toast from "../../components/Toast";
 //style
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
+//function
 import { useRouter } from "next/router";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
 
-function createRandomAvgScore(min, max) {
-  return (Math.random() * (max - min) + min).toPrecision(3);
-}
+export const getServerSideProps = async ({ query }) => {
+  const { page, phone, email } = query;
 
-function genarateFakeNumber(start, length) {
-  const seed = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  let temp = start;
-  for (let i = 0; i < length - start.length; i++) {
-    const index = Math.floor(Math.random() * seed.length);
-    temp += seed[index];
+  try {
+    const { errorCode, data, pagingInfo } = await Service.getShipperManagement(
+      page,
+      email,
+      phone
+    );
+    console.log(data);
+    if (errorCode === 0) {
+      return {
+        props: {
+          totalShipper: data.totalShipper,
+          shippers: data.shippers,
+          totalPage: pagingInfo.totalPage,
+          currentPage: pagingInfo.currentPage,
+          perPage: pagingInfo.perPage,
+        },
+      };
+    } else if (errorCode === ErrorCollection.INVALID_PARAM) {
+      return { notFound: true };
+    } else {
+      return {
+        props: {
+          errorType: "error",
+          errorMsg: ErrorCollection.EXECUTION[errorCode],
+        },
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    if (error.response && error.response.status === 401) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    } else if (typeof error.response !== "undefined") {
+      return {
+        props: {
+          errorType: "error",
+          errorMsg: ErrorCollection.SERVER[error.response.status],
+        },
+      };
+    }
+    return { notFound: true };
   }
-  return temp;
-}
-
-function getStatus(num) {
-  switch (num) {
-    case 0:
-      return "Khóa";
-    case 1:
-      return "Bình thường";
-
-    default:
-      break;
-  }
-}
-
-const TEMPLATE_DATA = [
-  {
-    id: "a",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    avgReview: createRandomAvgScore(3, 5),
-    reviews: Math.floor(Math.random() * 100),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "b",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    avgReview: createRandomAvgScore(3, 5),
-    reviews: Math.floor(Math.random() * 100),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "c",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    avgReview: createRandomAvgScore(3, 5),
-    reviews: Math.floor(Math.random() * 100),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-
-  {
-    id: "d",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    reviews: Math.floor(Math.random() * 100),
-    avgReview: createRandomAvgScore(3, 5),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "e",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    avgReview: createRandomAvgScore(3, 5),
-    reviews: Math.floor(Math.random() * 100),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "f",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    avgReview: createRandomAvgScore(3, 5),
-    reviews: Math.floor(Math.random() * 100),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "g",
-    email: "random@gmail.com",
-    avgReview: createRandomAvgScore(3, 5),
-    phone: genarateFakeNumber("+84", 10),
-    reviews: Math.floor(Math.random() * 100),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "h",
-    email: "random@gmail.com",
-    avgReview: createRandomAvgScore(3, 5),
-    phone: genarateFakeNumber("+84", 10),
-    reviews: Math.floor(Math.random() * 100),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-  {
-    id: "i",
-    email: "random@gmail.com",
-    phone: genarateFakeNumber("+84", 10),
-    reviews: Math.floor(Math.random() * 100),
-    avgReview: createRandomAvgScore(3, 5),
-    reports: Math.floor(Math.random() * 111),
-    status: Math.floor(Math.random() * 10) % 3,
-  },
-];
+};
 
 const useStyles = makeStyles(styles);
 
-function DriversManagement() {
-  const [totalDrvers, setTotlDrivers] = useState(94);
-  const [currentPage, setCurrentPage] = useState(0);
+function DriversManagement({
+  totalShipper,
+  shippers,
+  currentPage,
+  totalPage,
+  perPage,
+  errorType,
+  errorMsg,
+}) {
+  const [user, setUser] = useState({});
   const router = useRouter();
   const { page, phone, email } = router.query;
   const [emailFilter, setEmailFilter] = useState(email);
   const [phoneFilter, setPhoneFilter] = useState(phone);
-  const [driversPresent, setDriversPresent] = useState(10);
   const [isOpenBlockDialog, setIsOpenBlockDialog] = useState(false);
-  const [user, setUser] = useState({});
   const typingTimeoutRef = useRef(null);
 
   const classes = useStyles();
@@ -202,7 +152,7 @@ function DriversManagement() {
   return (
     <Layout routers={routers}>
       <Meta title="Flash Admin - Shipper"></Meta>
-
+      {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
       <BlockUserDialog
         open={isOpenBlockDialog}
         handleClose={handleCloseBlockDialog}
@@ -214,7 +164,7 @@ function DriversManagement() {
             <Card>
               <CardHeader color="info">
                 <h4 className={classes.cardTitleWhite}>
-                  Tổng cộng: {totalDrvers} tài xế
+                  Tổng cộng: {totalShipper ? totalShipper : 0} tài xế
                 </h4>
               </CardHeader>
               <CardBody>
@@ -227,6 +177,7 @@ function DriversManagement() {
                           Email{" "}
                           <input
                             type="text"
+                            value={emailFilter}
                             onChange={handleEmailFilterChange}
                           ></input>
                         </TableCell>
@@ -234,6 +185,7 @@ function DriversManagement() {
                           Sđt{" "}
                           <input
                             type="text"
+                            value={phoneFilter}
                             onChange={handlePhoneFilterChange}
                           ></input>
                         </TableCell>
@@ -245,56 +197,59 @@ function DriversManagement() {
                       </TableRow>
                     </TableHead>
                     <TableBody className="user-table__body">
-                      {TEMPLATE_DATA.map((driver, i) => (
-                        <TableRow key={driver.id}>
-                          <TableCell>
-                            {i + 1 + currentPage * driversPresent}
-                          </TableCell>
-                          <TableCell>{driver.email}</TableCell>
-                          <TableCell>{driver.phone}</TableCell>
+                      {shippers &&
+                        shippers.map((driver, i) => (
+                          <TableRow key={driver.id}>
+                            <TableCell>
+                              {i + 1 + (currentPage - 1) * perPage}
+                            </TableCell>
+                            <TableCell>{driver.email}</TableCell>
+                            <TableCell>{driver.phone}</TableCell>
 
-                          <TableCell>
-                            <RatingStar
-                              value={parseInt(driver.avgReview)}
-                            ></RatingStar>
-                          </TableCell>
-                          <TableCell>{driver.reports}</TableCell>
-                          <TableCell>{getStatus(driver.status)}</TableCell>
-                          <TableCell>
-                            {driver.status === -2 ? (
-                              <Button
-                                variant="outlined"
-                                color="primary"
-                                size="small"
-                                onClick={() => {
-                                  handleOpenBlockDialog(driver);
-                                }}
-                              >
-                                Mở khóa
-                              </Button>
-                            ) : driver.status === 0 ? (
-                              <Button
-                                variant="outlined"
-                                color="primary"
-                                size="small"
-                                onClick={() => {
-                                  handleOpenBlockDialog(driver);
-                                }}
-                              >
-                                Khóa
-                              </Button>
-                            ) : null}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                            <TableCell>
+                              <RatingStar
+                                value={parseInt(driver.avgReview)}
+                              ></RatingStar>
+                            </TableCell>
+                            <TableCell>{driver.serviceCharge}</TableCell>
+                            <TableCell>
+                              {Service.getStatus(driver.status)}
+                            </TableCell>
+                            <TableCell>
+                              {driver.status === -2 ? (
+                                <Button
+                                  variant="outlined"
+                                  color="primary"
+                                  size="small"
+                                  onClick={() => {
+                                    handleOpenBlockDialog(driver);
+                                  }}
+                                >
+                                  Mở khóa
+                                </Button>
+                              ) : driver.status === 0 ? (
+                                <Button
+                                  variant="outlined"
+                                  color="primary"
+                                  size="small"
+                                  onClick={() => {
+                                    handleOpenBlockDialog(driver);
+                                  }}
+                                >
+                                  Khóa
+                                </Button>
+                              ) : null}
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
                 <Pagination
-                  currentPage={1}
-                  pageCount={1}
-                  pageDisplay={3}
+                  currentPage={currentPage}
+                  pageCount={totalPage}
                   handler={handlePageChange}
+                  pageDisplay={3}
                 ></Pagination>
               </CardBody>
             </Card>

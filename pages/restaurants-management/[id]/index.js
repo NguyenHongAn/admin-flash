@@ -14,6 +14,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import arrowLeft from "@iconify/icons-fe/arrow-left";
+import CustomButton from "../../../components/CustomButtons/Button";
 //styles
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../../assets/jss/layout/restaurantLayout";
@@ -54,6 +55,8 @@ export const getServerSideProps = async ({ query }) => {
           _avatar: data.restaurant.Avatar,
           _districts,
           _wards,
+          // _email: data.restaurant.Email,
+          _phone: data.restaurant.ContractID,
         },
       };
     } else if (errorCode === ErrorCollection.INVALID_PARAM) {
@@ -101,6 +104,8 @@ function Restaurant({
   _anouncement,
   _wards,
   _districts,
+  _email,
+  _phone,
 }) {
   const classes = useStyles();
   const router = useRouter();
@@ -116,22 +121,36 @@ function Restaurant({
       city: _city,
     },
     validationSchema: Service.addressSchema,
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (initialValues, values, { resetForm }) => {
       console.log("Click onSubmit");
     },
   });
 
   const infoFormik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       restaurantName: _restaurantName,
       openTime: _openTime,
       closeTime: _closeTime,
-      // description: _description,
       anouncement: _anouncement,
     },
     validationSchema: Service.infoSchema,
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (initialValues, values, { resetForm }) => {
+      let isChange = false;
+      if (avatarUrl !== _avatar) isChange = true;
       console.log("Click onSubmit");
+    },
+  });
+
+  const premisionFormik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      email: "",
+      phone: _phone,
+    },
+    validationSchema: Service.permisionSchema,
+    onSubmit: async (values, { resetForm }) => {
+      console.log(values);
     },
   });
 
@@ -157,235 +176,289 @@ function Restaurant({
     <div className={classes.wrapper}>
       <Meta title="Restaurant Info"></Meta>
       {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
-
-      <AppBar className={classes.navbar}>
-        <Toolbar className={classes.container}>
-          <div
-            className={classNames(classes.flex, classes.backLink)}
-            onClick={() => router.push("/restaurants-management")}
-          >
-            <InlineIcon icon={arrowLeft}></InlineIcon>
-            <span>Quay Lại</span>
-          </div>
-          <div className={classes.title}>Thông tin nhà hàng</div>
-        </Toolbar>
-      </AppBar>
       <div className={classes.dialogFrame}>
-        <Grid container style={{ paddingTop: "60px" }}>
-          <Grid container spacing={1} className={classes.container}>
-            <div className={classes.updateTitle}>Cập nhật thông tin</div>
-            <Grid container item md={3} justify="center">
-              <img className={classes.avatar} src={avatarUrl}></img>
-              <input type="file" id="avatar" name="avatar"></input>
-              <Button className={classes.updateBtn}>Cập nhật</Button>
-            </Grid>
-            <Grid
-              container
-              item
-              md={9}
-              component="form"
-              spacing={1}
-              onSubmit={infoFormik.handleSubmit}
+        <AppBar className={classes.navbar}>
+          <Toolbar className={classes.container}>
+            <div
+              className={classNames(classes.flex, classes.backLink)}
+              onClick={() => router.push("/restaurants-management")}
             >
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  placeholder="Tên nhà hàng"
-                  //required
-                  id="restaurantName"
-                  name="restaurantName"
-                  onChange={infoFormik.handleChange}
-                  value={infoFormik.values.restaurantName}
-                  error={infoFormik.errors.restaurantName && true}
-                  label={infoFormik.errors.restaurantName}
-                ></TextField>
+              <InlineIcon icon={arrowLeft}></InlineIcon>
+              <span>Quay Lại</span>
+            </div>
+            <div className={classes.title}>Thông tin nhà hàng</div>
+          </Toolbar>
+        </AppBar>
+        <div>
+          <Grid container style={{ paddingTop: "60px" }}>
+            <Grid container spacing={1} className={classes.container}>
+              <div className={classes.updateTitle}>Cập nhật thông tin</div>
+              <Grid container item md={3} justify="space-around">
+                <img className={classes.avatar} src={avatarUrl}></img>
+                <input
+                  type="file"
+                  id="avatar"
+                  name="avatar"
+                  accept=".png, .jpg, .jpeg"
+                  style={{ height: "max-content" }}
+                  onChange={(e) => setAvatarUrl(e.target.files[0])}
+                ></input>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  id="openTime"
-                  name="openTime"
-                  label="Mở cửa lúc"
-                  fullWidth
-                  type="time"
-                  value={infoFormik.values.openTime}
-                  variant="outlined"
-                  onChange={infoFormik.handleChange}
-                  error={infoFormik.errors.openTime && true}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  inputProps={{ step: 300 }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  id="closeTime"
-                  name="closeTime"
-                  label="Đóng cửa lúc"
-                  fullWidth
-                  type="time"
-                  value={infoFormik.values.closeTime}
-                  variant="outlined"
-                  onChange={infoFormik.handleChange}
-                  error={infoFormik.errors.closeTime && true}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  inputProps={{ step: 300 }}
-                />
-              </Grid>
-              {/* <Grid item xs={12} sm={12}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  placeholder="Mô tả"
-                  //required
-                  id="description"
-                  name="description"
-                  onChange={infoFormik.handleChange}
-                  value={infoFormik.values.description}
-                  error={infoFormik.errors.description && true}
-                  label={infoFormik.errors.description}
-                ></TextField>
-              </Grid> */}
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  placeholder="Thông báo"
-                  //required
-                  id="anouncement"
-                  name="anouncement"
-                  onChange={infoFormik.handleChange}
-                  value={infoFormik.values.anouncement}
-                  error={infoFormik.errors.anouncement && true}
-                  label={infoFormik.errors.anouncement}
-                ></TextField>
-              </Grid>
-              <Button
-                type="submit"
-                variant="contained"
-                className={classes.updateBtn}
+              <Grid
+                container
+                item
+                md={9}
+                component="form"
+                spacing={1}
+                onSubmit={infoFormik.handleSubmit}
               >
-                Cập nhật
-              </Button>
-            </Grid>
-          </Grid>
-          <hr className={classes.breakLine}></hr>
-          <Grid container spacing={1} className={classes.container}>
-            <div className={classes.updateTitle}>Cập nhật địa chỉ</div>
-            <Grid
-              container
-              item
-              component="form"
-              onSubmit={addressFormik.handleSubmit}
-              spacing={1}
-            >
-              <Grid item md={4}>
-                <FormControl variant="outlined" fullWidth>
-                  <InputLabel id="city-label">
-                    {addressFormik.errors.city
-                      ? addressFormik.errors.city
-                      : `Chọn Thành phố`}
-                  </InputLabel>
-                  <Select
-                    labelId="city-label"
-                    id="city"
-                    name="city"
-                    value={addressFormik.values.city}
-                    onChange={handleSelectedCity}
-                    error={addressFormik.errors.city && true}
-                    label={addressFormik.errors.city}
-                  >
-                    {cities &&
-                      cities.map((city) => (
-                        <MenuItem value={city.Name} key={city.Id}>
-                          {city.Name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item md={4}>
-                <FormControl variant="outlined" fullWidth>
-                  <InputLabel id="district-label">
-                    {addressFormik.errors.district
-                      ? addressFormik.errors.district
-                      : ` Chọn Quận/ Huyện`}
-                  </InputLabel>
-                  <Select
-                    labelId="distrcit-label"
-                    id="district"
-                    name="district"
-                    disabled={addressFormik.values.city === ""}
-                    value={addressFormik.values.district}
-                    onChange={handleSelectedDsitrcts}
-                    error={addressFormik.errors.district && true}
-                    label={addressFormik.errors.district}
-                  >
-                    {districts &&
-                      districts.map((district) => (
-                        <MenuItem value={district.Name} key={district.Id}>
-                          {district.Name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item md={4}>
-                <FormControl variant="outlined" fullWidth>
-                  <InputLabel id="ward-label">
-                    {addressFormik.errors.ward
-                      ? addressFormik.errors.ward
-                      : `Chọn Phường/ xã`}
-                  </InputLabel>
-                  <Select
-                    labelId="ward-label"
-                    id="ward"
-                    name="ward"
-                    disabled={addressFormik.values.district === ""}
-                    value={addressFormik.values.ward}
-                    onChange={addressFormik.handleChange}
-                    error={addressFormik.errors.ward && true}
-                    label={addressFormik.errors.ward}
-                  >
-                    {wards &&
-                      wards.map((ward) => (
-                        <MenuItem key={ward.Id} value={ward.Name}>
-                          {ward.Name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-              </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    placeholder="Tên nhà hàng"
+                    //required
+                    id="restaurantName"
+                    name="restaurantName"
+                    onChange={infoFormik.handleChange}
+                    value={infoFormik.values.restaurantName}
+                    error={infoFormik.errors.restaurantName && true}
+                    label={infoFormik.errors.restaurantName}
+                  ></TextField>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    id="openTime"
+                    name="openTime"
+                    label="Mở cửa lúc"
+                    fullWidth
+                    type="time"
+                    value={infoFormik.values.openTime}
+                    variant="outlined"
+                    onChange={infoFormik.handleChange}
+                    error={infoFormik.errors.openTime && true}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    inputProps={{ step: 300 }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    id="closeTime"
+                    name="closeTime"
+                    label="Đóng cửa lúc"
+                    fullWidth
+                    type="time"
+                    value={infoFormik.values.closeTime}
+                    variant="outlined"
+                    onChange={infoFormik.handleChange}
+                    error={infoFormik.errors.closeTime && true}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    inputProps={{ step: 300 }}
+                  />
+                </Grid>
 
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  placeholder="Địa chỉ: số nhà, tên đường"
-                  ////required
-                  id="address"
-                  name="address"
-                  onChange={addressFormik.handleChange}
-                  value={addressFormik.values.address}
-                  error={addressFormik.errors.address && true}
-                  label={addressFormik.errors.address}
-                ></TextField>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    placeholder="Thông báo"
+                    //required
+                    id="anouncement"
+                    name="anouncement"
+                    onChange={infoFormik.handleChange}
+                    value={infoFormik.values.anouncement}
+                    error={infoFormik.errors.anouncement && true}
+                    label={infoFormik.errors.anouncement}
+                  ></TextField>
+                </Grid>
+                <CustomButton
+                  type="submit"
+                  variant="contained"
+                  className={classes.updateBtn}
+                >
+                  Cập nhật
+                </CustomButton>
               </Grid>
-              <Button
-                type="submit"
-                variant="contained"
-                className={classes.updateBtn}
+            </Grid>
+            <hr className={classes.breakLine}></hr>
+            <Grid container spacing={1} className={classes.container}>
+              <div className={classes.updateTitle}>Cập nhật địa chỉ</div>
+              <Grid
+                container
+                item
+                component="form"
+                onSubmit={addressFormik.handleSubmit}
+                spacing={1}
               >
-                Cập nhật
-              </Button>
+                <Grid item md={4}>
+                  <FormControl variant="outlined" fullWidth>
+                    <InputLabel id="city-label">
+                      {addressFormik.errors.city
+                        ? addressFormik.errors.city
+                        : `Chọn Thành phố`}
+                    </InputLabel>
+                    <Select
+                      labelId="city-label"
+                      id="city"
+                      name="city"
+                      value={addressFormik.values.city}
+                      onChange={handleSelectedCity}
+                      error={addressFormik.errors.city && true}
+                      label={addressFormik.errors.city}
+                    >
+                      {cities &&
+                        cities.map((city) => (
+                          <MenuItem value={city.Name} key={city.Id}>
+                            {city.Name}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item md={4}>
+                  <FormControl variant="outlined" fullWidth>
+                    <InputLabel id="district-label">
+                      {addressFormik.errors.district
+                        ? addressFormik.errors.district
+                        : ` Chọn Quận/ Huyện`}
+                    </InputLabel>
+                    <Select
+                      labelId="distrcit-label"
+                      id="district"
+                      name="district"
+                      disabled={addressFormik.values.city === ""}
+                      value={addressFormik.values.district}
+                      onChange={handleSelectedDsitrcts}
+                      error={addressFormik.errors.district && true}
+                      label={addressFormik.errors.district}
+                    >
+                      {districts &&
+                        districts.map((district) => (
+                          <MenuItem value={district.Name} key={district.Id}>
+                            {district.Name}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item md={4}>
+                  <FormControl variant="outlined" fullWidth>
+                    <InputLabel id="ward-label">
+                      {addressFormik.errors.ward
+                        ? addressFormik.errors.ward
+                        : `Chọn Phường/ xã`}
+                    </InputLabel>
+                    <Select
+                      labelId="ward-label"
+                      id="ward"
+                      name="ward"
+                      disabled={addressFormik.values.district === ""}
+                      value={addressFormik.values.ward}
+                      onChange={addressFormik.handleChange}
+                      error={addressFormik.errors.ward && true}
+                      label={addressFormik.errors.ward}
+                    >
+                      {wards &&
+                        wards.map((ward) => (
+                          <MenuItem key={ward.Id} value={ward.Name}>
+                            {ward.Name}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    placeholder="Địa chỉ: số nhà, tên đường"
+                    ////required
+                    id="address"
+                    name="address"
+                    onChange={addressFormik.handleChange}
+                    value={addressFormik.values.address}
+                    error={addressFormik.errors.address && true}
+                    label={addressFormik.errors.address}
+                  ></TextField>
+                </Grid>
+                <CustomButton
+                  type="submit"
+                  variant="contained"
+                  className={classes.updateBtn}
+                >
+                  Cập nhật
+                </CustomButton>
+              </Grid>
+            </Grid>
+            <hr className={classes.breakLine}></hr>
+            <Grid container spacing={3} className={classes.container}>
+              <Grid
+                container
+                item
+                md={6}
+                spacing={1}
+                component="form"
+                onSubmit={premisionFormik.handleSubmit}
+              >
+                <div className={classes.updateTitle}>
+                  Quyền quản lý nhà hàng
+                </div>
+                <Grid item xs={12} container justify="space-between">
+                  <span style={{ width: "45px", textAlign: "end" }}>
+                    Email:{" "}
+                  </span>
+                  <TextField
+                    style={{ width: "85%" }}
+                    variant="outlined"
+                    name="email"
+                    id="email"
+                    fullWidth
+                    onChange={premisionFormik.handleChange}
+                    value={premisionFormik.values.email}
+                    error={premisionFormik.errors.email && true}
+                    label={premisionFormik.errors.email}
+                  ></TextField>
+                </Grid>
+                <Grid item xs={12} container justify="space-between">
+                  <span style={{ width: "45px", textAlign: "end" }}>Sđt: </span>
+                  <TextField
+                    style={{ width: "85%" }}
+                    variant="outlined"
+                    name="phone"
+                    id="phone"
+                    fullWidth
+                    onChange={premisionFormik.handleChange}
+                    value={premisionFormik.values.phone}
+                    error={premisionFormik.errors.phone && true}
+                    label={premisionFormik.errors.phone}
+                  ></TextField>
+                </Grid>
+                <CustomButton
+                  type="submit"
+                  //color="rose"
+                  className={classes.permisionBtn}
+                >
+                  Cấp quyền
+                </CustomButton>
+              </Grid>
+              <Grid container item md={6} alignContent="flex-start">
+                <div className={classes.updateTitle}>
+                  Ngừng kinh doanh nhà hàng
+                </div>
+                <Grid item xs={12} container justify="space-between">
+                  <CustomButton type="submit" className={classes.permisionBtn}>
+                    Ngừng kinh doanh
+                  </CustomButton>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
-          <hr className={classes.breakLine}></hr>
-          <Grid container spacing={1} className={classes.container}></Grid>
-        </Grid>
+        </div>
       </div>
     </div>
   );

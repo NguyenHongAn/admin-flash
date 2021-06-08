@@ -14,8 +14,6 @@ import personLock16Regular from "@iconify/icons-fluent/person-lock-16-regular";
 import BlockUserDialog from "../../components/BlockUserDialog";
 import Service from "./services";
 import Pagination from "../../components/Pagination";
-import { useRouter } from "next/router";
-import clearObject from "../../utils/clearObject";
 import ErrorCollection from "../../config";
 import Meta from "../../components/Meta";
 import Card from "../../components/Card/Card";
@@ -25,27 +23,10 @@ import CardBody from "../../components/Card/CardBody";
 //styles
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
-
+//function
+import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
-
-function getStatus(num) {
-  switch (num) {
-    case -2:
-      return (
-        <Icon
-          icon={personLock16Regular}
-          style={{ color: "black", fontSize: "24px" }}
-        ></Icon>
-      );
-    case -1:
-      return "Chưa xác thực";
-    case 0:
-      return "Bình thường";
-
-    default:
-      break;
-  }
-}
+import { useRouter } from "next/router";
 
 export const getServerSideProps = async ({ query }) => {
   const { page, phone, email } = query;
@@ -79,20 +60,22 @@ export const getServerSideProps = async ({ query }) => {
     }
   } catch (error) {
     console.log(error);
-    if (error.response.status === 401) {
+    if (error.response && error.response.status === 401) {
       return {
         redirect: {
           destination: "/",
           permanent: false,
         },
       };
+    } else if (typeof error.response !== "undefined") {
+      return {
+        props: {
+          errorType: "error",
+          errorMsg: ErrorCollection.SERVER[error.response.status],
+        },
+      };
     }
-    return {
-      props: {
-        errorType: "error",
-        errorMsg: ErrorCollection.SERVER[error.response.status],
-      },
-    };
+    return { notFound: true };
   }
 };
 

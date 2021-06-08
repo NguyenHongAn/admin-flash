@@ -57,7 +57,7 @@ function signin() {
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
-      router.push("/general-statistics", undefined, { shallow: true });
+      router.push("/general-statistics");
     }
   }, [loading]);
 

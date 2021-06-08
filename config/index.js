@@ -14,6 +14,7 @@ const EXECUTION_ERROR = {
   110: "Lấy danh sách người dùng không thành công",
   111: "Có lỗi xãy ra khi khóa tài khoản người dùng này",
   112: "Người dùng hiện không tồn tại trong hệ thống, xin mời kiên tra lại",
+  120: ":ấy danh sách tài xế thất bại",
   190: "Lấy thông tin thống kê không thành công",
 };
 const ErrorCollection = {

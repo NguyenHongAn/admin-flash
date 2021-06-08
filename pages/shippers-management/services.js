@@ -4,8 +4,8 @@ import { Icon } from "@iconify/react";
 import personLock16Regular from "@iconify/icons-fluent/person-lock-16-regular";
 
 const services = {
-  getUserManagement: (page, email, phone) => {
-    return axiosClient.get(URL.GET_USERS, {
+  getShipperManagement: (page, email, phone) => {
+    return axiosClient.get(URL.GET_SHIPPERS, {
       params: { page, email, phone },
     });
   },

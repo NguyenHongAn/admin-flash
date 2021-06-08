@@ -12,8 +12,9 @@ const services = {
     district: Yup.string().required("địa chỉ nhà hàng không thể để trống"),
     city: Yup.string().required("địa chỉ nhà hàng không thể để trống"),
   }),
+  permisionSchema: Yup.object({}),
   getRestaurantInfo: (id) => {
-    return axiosClient.get(`${URL.GET_RESTAURANTS_INFO}/${id}/info`);
+    return axiosClient.get(`${URL.GET_RESTAURANTS_INFO}/${id}`);
   },
 };
 export default services;

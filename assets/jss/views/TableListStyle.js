@@ -64,6 +64,9 @@ const TableStyle = {
     overflow: "hidden",
     textOverflow: "ellipsis",
   },
+  hidden: {
+    display: "none",
+  },
 };
 
 export default TableStyle;
