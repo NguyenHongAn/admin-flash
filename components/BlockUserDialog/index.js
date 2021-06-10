@@ -53,7 +53,7 @@ function BlockUserDialog({ open, info, handleClose }) {
       }
       handleClose();
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       error.response
         ? setErrorMsg(ErrorCollection.SERVER[error.response.status])
         : null;

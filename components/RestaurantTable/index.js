@@ -69,7 +69,7 @@ function RestaurantTable({
           });
         if (errorCode === 0) {
           console.log(data);
-          //setDictrict(data.districts);
+
           setRestaurants(data.restaurants);
 
           setTotal(data.totalRestaurants);
@@ -168,7 +168,7 @@ function RestaurantTable({
                         ></RatingStar>
                       </TableCell>
                       <TableCell>
-                        {restaurant.isPartner ? (
+                        {!restaurant.isPartner ? (
                           <div
                             className={classes.settingBtn}
                             onClick={() => {

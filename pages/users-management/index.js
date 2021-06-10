@@ -27,15 +27,17 @@ import styles from "../../assets/jss/views/TableListStyle";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
 import { useRouter } from "next/router";
+import getTokenInSS from "../../utils/handldAutheticaion";
 
-export const getServerSideProps = async ({ query }) => {
+export async function getServerSideProps({ req, query }) {
   const { page, phone, email } = query;
-
+  const token = getTokenInSS(req);
   try {
     const { errorCode, data, pagingInfo } = await Service.getUserManagement(
       page,
       email,
-      phone
+      phone,
+      token
     );
 
     if (errorCode === 0) {
@@ -59,7 +61,7 @@ export const getServerSideProps = async ({ query }) => {
       };
     }
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     if (error.response && error.response.status === 401) {
       return {
         redirect: {
@@ -77,7 +79,7 @@ export const getServerSideProps = async ({ query }) => {
     }
     return { notFound: true };
   }
-};
+}
 
 const useStyles = makeStyles(styles);
 
@@ -205,7 +207,9 @@ function UsersManagement({
                             <TableCell>{user.phone}</TableCell>
                             <TableCell>{user.reports}</TableCell>
                             <TableCell>{user.point}</TableCell>
-                            <TableCell>{getStatus(user.status)}</TableCell>
+                            <TableCell>
+                              {Service.getStatus(user.status)}
+                            </TableCell>
                             <TableCell>
                               {user.status === -2 ? (
                                 <Button

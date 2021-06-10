@@ -1,7 +1,8 @@
 import axios from "axios";
 import queryString from "query-string";
-import store from "../store";
+import { Cookies } from "react-cookie";
 
+const cookies = new Cookies();
 const axiosClient = axios.create({
   baseURL: process.env.SERVER_URL,
   headers: {
@@ -14,8 +15,8 @@ const axiosClient = axios.create({
 // Handle request
 axiosClient.interceptors.request.use((config) => {
   // ..Handle token
-  const state = store.getState();
-  const token = state.auth.jwt;
+  const token = cookies.get("jwt");
+
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });

@@ -17,7 +17,7 @@ const store = createStore(reducer, composeEnhancers());
 
 export default store;
 
-//==== user COntext =========================
+//==== user Context =========================
 // export const StateContext = createContext();
 // //create provider
 // export const StateProvider = ({ reducer, initialState, children }) => {

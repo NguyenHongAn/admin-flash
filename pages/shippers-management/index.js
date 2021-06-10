@@ -28,17 +28,18 @@ import styles from "../../assets/jss/views/TableListStyle";
 import { useRouter } from "next/router";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
+import getTokenInSS from "../../utils/handldAutheticaion";
 
-export const getServerSideProps = async ({ query }) => {
+export async function getServerSideProps({ req, query }) {
   const { page, phone, email } = query;
-
+  const token = getTokenInSS(req);
   try {
     const { errorCode, data, pagingInfo } = await Service.getShipperManagement(
       page,
       email,
-      phone
+      phone,
+      token
     );
-    console.log(data);
     if (errorCode === 0) {
       return {
         props: {
@@ -60,7 +61,7 @@ export const getServerSideProps = async ({ query }) => {
       };
     }
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     if (error.response && error.response.status === 401) {
       return {
         redirect: {
@@ -78,7 +79,7 @@ export const getServerSideProps = async ({ query }) => {
     }
     return { notFound: true };
   }
-};
+}
 
 const useStyles = makeStyles(styles);
 
@@ -199,7 +200,7 @@ function DriversManagement({
                     <TableBody className="user-table__body">
                       {shippers &&
                         shippers.map((driver, i) => (
-                          <TableRow key={driver.id}>
+                          <TableRow key={driver._id}>
                             <TableCell>
                               {i + 1 + (currentPage - 1) * perPage}
                             </TableCell>

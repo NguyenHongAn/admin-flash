@@ -2,8 +2,13 @@ import axiosClient from "../../api";
 import URL from "../../api/URL";
 
 const services = {
-  getGeneralStatistics: (filter) => {
-    return axiosClient.get(URL.GET_GENERAL_INFO, { params: { filter } });
+  getGeneralStatistics: (filter, token) => {
+    return axiosClient.get(URL.GET_GENERAL_INFO, {
+      params: { filter },
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
   },
 
   chartOptions: {

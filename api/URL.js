@@ -1,5 +1,7 @@
 const URL = {
+  LOGIN: "/auth",
   GET_RESTAURANTS_INFO: "/restaurants",
+  GET_REPORT: "/complaint",
   GET_CITIES: "/cities",
   CREATE_RESTAURANT: "/restaurants",
   GET_USERS: "/users",

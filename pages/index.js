@@ -12,9 +12,15 @@ import Meta from "../components/Meta";
 //styles
 import styles from "../assets/jss/views/loginStyle";
 import { makeStyles } from "@material-ui/core/styles";
+//function
 import classNames from "classnames";
+import axiosClient from "../api";
+import URL from "../api/URL";
+import ErrorCollection from "../config";
+import { Cookies } from "react-cookie";
 
 const useStyles = makeStyles(styles);
+const cookies = new Cookies();
 
 function signin() {
   const [error, setError] = useState("");
@@ -34,22 +40,28 @@ function signin() {
         .required("Mật khẩu không thể để trống")
         .min(6, "Mật khẩu phải nhiều hơn 6 chữ số"),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const { email, password } = values;
       try {
         dispatch(loadingAction.turnOnLoading());
         console.log({ email, password });
-        //setError("Có gì đó nó sai sai");
+        const { errorCode, data } = await axiosClient.post(URL.LOGIN, {
+          email,
+          password,
+        });
 
-        localStorage.setItem("jwt", "something");
-        dispatch(authAction.signIn("something"));
+        if (errorCode === 0) {
+          cookies.set("jwt", data.jwt);
+          router.push("/general-statistics");
+        } else {
+          setError(ErrorCollection.EXECUTION[errorCode]);
+        }
       } catch (error) {
-        console.log(error);
+        console.log(error.message);
+        setError(ErrorCollection.SERVER[error.response.status]);
       }
-      setTimeout(() => {
-        dispatch(loadingAction.turnOffLoading());
-        console.log("turn Off loading");
-      }, 500);
+
+      dispatch(loadingAction.turnOffLoading());
     },
   });
 

@@ -25,14 +25,17 @@ import Service from "./services";
 import { useFormik } from "formik";
 import Toast from "../../../components/Toast";
 import ErrorCollection from "../../../config";
+import RestaurantTable from "../../components/RestaurantTable";
+import getTokenInSS from "../../utils/handldAutheticaion";
 
 const useStyles = makeStyles(styles);
 
-export const getServerSideProps = async ({ query }) => {
+export async function getServerSideProps({ req, query }) {
   const { id } = query;
+  const token = getTokenInSS(req);
 
   try {
-    const { errorCode, data } = await Service.getRestaurantInfo(id);
+    const { errorCode, data } = await Service.getRestaurantInfo(id, token);
     if (errorCode === 0) {
       const _districts = data.cities.filter(
         (city) => city.Name === data.restaurant.Address.City
@@ -69,7 +72,7 @@ export const getServerSideProps = async ({ query }) => {
       },
     };
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     if (error.response && error.response.status === 401) {
       return {
         redirect: {
@@ -87,7 +90,7 @@ export const getServerSideProps = async ({ query }) => {
     }
     return { notFound: true };
   }
-};
+}
 
 function Restaurant({
   errorType,

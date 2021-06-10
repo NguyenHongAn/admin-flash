@@ -24,11 +24,17 @@ import Table from "../../components/Table/Table";
 import muiStyles from "../../assets/jss/views/dashboardStyle";
 import { ArrowDownward } from "@material-ui/icons";
 import routers from "../../config/routers";
+import getTokenInSS from "../../utils/handldAutheticaion";
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ req, query }) {
   const { filter } = query;
+
+  const token = getTokenInSS(req);
   try {
-    const { errorCode, data } = await Service.getGeneralStatistics(filter);
+    const { errorCode, data } = await Service.getGeneralStatistics(
+      filter,
+      token
+    );
 
     if (errorCode === 0) {
       return {
@@ -56,7 +62,7 @@ export async function getServerSideProps({ query }) {
       };
     }
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     if (error.response && error.response.status === 401) {
       return {
         redirect: {
