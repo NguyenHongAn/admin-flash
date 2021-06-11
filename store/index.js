@@ -2,6 +2,7 @@
 import { createStore, combineReducers, compose } from "redux";
 import loadingReducer from "./reducers/loading.R";
 import authReducer from "./reducers/auth.R";
+import toastReducer from "./reducers/toast.R";
 
 const composeEnhancers =
   (typeof window !== "undefined" &&
@@ -11,6 +12,7 @@ const composeEnhancers =
 const reducer = combineReducers({
   loading: loadingReducer,
   auth: authReducer,
+  toast: toastReducer,
 });
 
 const store = createStore(reducer, composeEnhancers());

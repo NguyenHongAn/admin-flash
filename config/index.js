@@ -7,6 +7,7 @@ const SERVER_ERROR = {
 };
 
 const EXECUTION_ERROR = {
+  1: "Không thể thực hiện",
   20: "Có lỗi khi gọi API hỗ trợ từ bên ngoài",
   100: "Server gặp lỗi khi tạo nhà hàng",
   101: "Lấy danh sách nhà hàn không thành công",

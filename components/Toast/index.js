@@ -1,5 +1,7 @@
 import React from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import ToastAction from "../../store/actions/toast.A";
 
 function getToastType(type) {
   switch (type) {
@@ -19,8 +21,18 @@ function getToastType(type) {
 }
 
 function Toast({ type, content }) {
-  toast(content, {
-    type: getToastType(type),
+  const { isHidden, typeR, contentR } = useSelector((state) => ({
+    typeR: state.toast.type,
+    contentR: state.toast.msg,
+    isHidden: state.toast.isHidden,
+  }));
+
+  const dispatch = useDispatch();
+  setTimeout(() => {
+    dispatch(ToastAction.turnOff());
+  }, 2000);
+  toast(contentR, {
+    type: getToastType(typeR),
     position: "top-right",
     autoClose: 1500,
     hideProgressBar: false,
@@ -29,7 +41,7 @@ function Toast({ type, content }) {
     draggable: true,
     progress: undefined,
   });
-  return (
+  return isHidden ? (
     <ToastContainer
       position="top-right"
       autoClose={1500}
@@ -41,6 +53,8 @@ function Toast({ type, content }) {
       draggable
       pauseOnHover
     />
+  ) : (
+    <div></div>
   );
 }
 export default Toast;

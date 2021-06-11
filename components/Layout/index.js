@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 // core components
 import Navbar from "../Navbars";
 import Sidebar from "../Sidebar";
-
+import Toast from "../Toast";
 import styles from "../../assets/jss/layout/adminLayout";
 
 let ps;
@@ -64,6 +64,7 @@ export default function Layout({ routers, children }) {
         <Navbar routes={routers} handleDrawerToggle={handleDrawerToggle} />
 
         <div className={classes.content}>
+          {/* <Toast></Toast> */}
           <div className={classes.container}>{children}</div>
         </div>
       </div>

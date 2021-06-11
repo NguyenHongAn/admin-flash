@@ -21,6 +21,8 @@ import {
 } from "@material-ui/core";
 import ErrorCollection from "../../config";
 import Toast from "../Toast";
+import { route } from "next/dist/next-server/server/router";
+import { useRouter } from "next/router";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -31,8 +33,8 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
   const [districts, setDistricts] = useState(null);
   const [wards, setWards] = useState(null);
   const dispatch = useDispatch();
-  const [successMsg, setSuccessMsg] = useState("");
 
+  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -42,9 +44,10 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
       ward: "",
       district: "",
       city: "",
-      openTime: "06:00",
-      closeTime: "22:00",
-      partner: "0",
+      password: "",
+      openAt: "06:00",
+      closeAt: "22:00",
+      pakingFree: "0",
     },
     validationSchema: service.validationSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -56,35 +59,44 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
           restaurantName,
           address,
           city,
+          password,
           ward,
           district,
-          openTime,
-          closeTime,
-          partner,
+          openAt,
+          closeAt,
+          pakingFree,
         } = values;
-        const { errorCode, data } = await service.createNewRestaurant(
+        const cityID = location.filter((elm) => elm.Name === city)[0].Id;
+        const districtID = districts.filter((elm) => elm.Name === district)[0]
+          .Id;
+        const { errorCode, data } = await service.createNewRestaurant({
           email,
           phone,
+          password,
           restaurantName,
           address,
           city,
           ward,
           district,
-          openTime,
-          closeTime,
-          partner
-        );
-
+          cityID,
+          districtID,
+          openAt,
+          closeAt,
+          pakingFree,
+        });
+        console.log({ errorCode, data });
         if (errorCode === 0) {
-          setSuccessMsg("Tạo nhà hàng mới thành công");
+          resetForm();
+          setErrorMsg("");
+          handleClose();
         } else {
           setErrorMsg(ErrorCollection.EXECUTION[errorCode]);
         }
-
-        resetForm();
-        setErrorMsg("");
-        handleClose(false);
       } catch (error) {
+        console.log(error);
+        if (error.response && error.response.status === 401) {
+          router.push("/");
+        }
         setErrorMsg(ErrorCollection.SERVER[error.response.status]);
       }
       dispatch(loadingAction.turnOffLoading());
@@ -111,9 +123,6 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
 
   return (
     <div>
-      {successMsg === "" ? null : (
-        <Toast type="info" content={successMsg}></Toast>
-      )}
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -157,6 +166,22 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                   <TextField
                     fullWidth
                     variant="outlined"
+                    placeholder="Password"
+                    required
+                    id="pass"
+                    name="pass"
+                    value={formik.values.password}
+                    onChange={(e) =>
+                      formik.setFieldValue("password", e.target.value)
+                    }
+                    error={formik.errors.password && true}
+                    label={formik.errors.password}
+                  ></TextField>
+                </Grid>
+                <Grid item xs={12} sm={12} className={innerStyle.input}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
                     placeholder="Số điện thoại"
                     required
                     id="phone"
@@ -184,15 +209,15 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      id="openTime"
-                      name="openTime"
+                      id="openAt"
+                      name="openAt"
                       label="Mở cửa lúc"
                       fullWidth
                       type="time"
-                      value={formik.values.openTime}
+                      value={formik.values.openAt}
                       variant="outlined"
                       onChange={formik.handleChange}
-                      error={formik.errors.openTime && true}
+                      error={formik.errors.openAt && true}
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -201,15 +226,15 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      id="closeTime"
-                      name="closeTime"
+                      id="closeAt"
+                      name="closeAt"
                       label="Đóng cửa lúc"
                       fullWidth
                       type="time"
-                      value={formik.values.closeTime}
+                      value={formik.values.closeAt}
                       variant="outlined"
                       onChange={formik.handleChange}
-                      error={formik.errors.closeTime && true}
+                      error={formik.errors.closeAt && true}
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -303,16 +328,16 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                       <Select
                         labelId="transport-label"
                         id="transport"
-                        value={formik.values.partner}
+                        value={formik.values.pakingFree}
                         onChange={formik.handleChange}
-                        error={formik.errors.partner && true}
-                        label={formik.errors.partner}
+                        error={formik.errors.pakingFree && true}
+                        label={formik.errors.pakingFree}
                       >
                         <MenuItem value="0">
-                          <em>Admin quản lý</em>
+                          <em>Gửi xe miễn phí</em>
                         </MenuItem>
                         <MenuItem value="1">
-                          <em>Đối tác quản lý</em>
+                          <em>Gửi xe có phí</em>
                         </MenuItem>
                       </Select>
                     </FormControl>

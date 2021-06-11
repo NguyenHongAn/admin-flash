@@ -153,7 +153,7 @@ function DriversManagement({
   return (
     <Layout routers={routers}>
       <Meta title="Flash Admin - Shipper"></Meta>
-      {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
+      {/* {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null} */}
       <BlockUserDialog
         open={isOpenBlockDialog}
         handleClose={handleCloseBlockDialog}

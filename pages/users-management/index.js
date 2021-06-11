@@ -153,7 +153,7 @@ function UsersManagement({
   return (
     <Layout routers={routers}>
       <Meta title="Admin Flash - Users"></Meta>
-      {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
+      {/* {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null} */}
       <BlockUserDialog
         open={isOpenBlockDialog}
         handleClose={handleCloseBlockDialog}

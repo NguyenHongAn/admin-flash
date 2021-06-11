@@ -111,7 +111,7 @@ function GeneralStatistic({
   return (
     <Layout routers={routers}>
       <Meta title="Admin Flash - General Statistics"></Meta>
-      {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null}
+      {/* {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null} */}
       {
         <div>
           <Grid container>

@@ -20,5 +20,56 @@ const services = {
       },
     });
   },
+  updateAddress: ({ address, ward, district, city, id }) => {
+    console.log({ address, ward, district, city });
+    return axiosClient.put(`${URL.GET_RESTAURANTS_INFO}/${id}/address`, {
+      address,
+      ward,
+      district,
+      city,
+    });
+  },
+
+  updateInfo: ({
+    restaurantName,
+    openAt,
+    closeAt,
+    anouncement,
+    resPhone,
+    id,
+    avatar,
+    isChange,
+    token,
+  }) => {
+    const formData = new FormData();
+    formData.append("name", restaurantName);
+    formData.append("openAt", openAt);
+    formData.append("closeAt", closeAt);
+    formData.append("anouncement", anouncement);
+    formData.append("phone", resPhone);
+    if (isChange) formData.append("avatar", avatar);
+    console.log(formData);
+    return axiosClient({
+      method: "PUT",
+      url: `${URL.GET_RESTAURANTS_INFO}/${id}/info`,
+      data: formData,
+      headers: {
+        "content-type": "multipart/form-data",
+        Authorization: "Bearer " + token,
+      },
+    });
+  },
+
+  addPermision: ({ fullname, phone, email, id, manager }) => {
+    return axiosClient.put(`${URL.GET_RESTAURANTS_INFO}/${id}/permision`, {
+      fullname,
+      phone,
+      email,
+      managerID: manager,
+    });
+  },
+  stopRestaurantService: (id) => {
+    return axiosClient.delete(`${URL.GET_RESTAURANTS_INFO}/${id}`);
+  },
 };
 export default services;

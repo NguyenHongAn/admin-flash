@@ -13,17 +13,10 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import { Icon } from "@iconify/react";
-import add12Filled from "@iconify/icons-fluent/add-12-filled";
 import searchIcon from "@iconify/icons-fe/search";
-import settingTwotone from "@iconify/icons-ant-design/setting-twotone";
 //components
 import CreateRestaurantDialog from "../../components/CreateRestaurantDialog";
-import RatingStar from "../../components/RatingStar";
-import Pagination from "../../components/Pagination";
 import Meta from "../../components/Meta";
-import Card from "../../components/Card/Card";
-import CardHeader from "../../components/Card/CardHeader";
-import CardBody from "../../components/Card/CardBody";
 import ErrorCollection from "../../config";
 import clearObject from "../../utils/clearObject";
 import Toast from "../../components/Toast";
@@ -104,15 +97,22 @@ function RestaurantsManagement({ cities, districts, errorMsg }) {
       setSearchString(e.target.value);
     }, 700);
   };
+  const handleCreateRestaurantDialog = () => {
+    setIsOpenNewRestaurant(false);
+    router.push({
+      pathname: "/restaurants-management",
+      query: { city },
+    });
+  };
 
   return (
     <Layout routers={routers}>
       <Meta title="Admin Flash - Restaurants"></Meta>
-      {errorMsg ? <Toast type="error" content={errorMsg}></Toast> : null}
+      {/* {errorMsg ? <Toast type="error" content={errorMsg}></Toast> : null} */}
 
       <CreateRestaurantDialog
         open={isOpenNewRestaurant}
-        handleClose={setIsOpenNewRestaurant}
+        handleClose={handleCreateRestaurantDialog}
         location={cities}
       ></CreateRestaurantDialog>
       {

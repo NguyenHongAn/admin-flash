@@ -68,8 +68,6 @@ function RestaurantTable({
             district,
           });
         if (errorCode === 0) {
-          console.log(data);
-
           setRestaurants(data.restaurants);
 
           setTotal(data.totalRestaurants);
@@ -98,7 +96,7 @@ function RestaurantTable({
         handleClose={setIsOpenNewRestaurant}
         location={cities}
       ></CreateRestaurantDialog>
-      {errorMsg !== "" ? <Toast type="error" content={errorMsg}></Toast> : null}
+      {/* {errorMsg !== "" ? <Toast type="error" content={errorMsg}></Toast> : null} */}
       <Card>
         <CardHeader color={color} className={classes.restaurantTableHead}>
           <div style={{ display: "flex" }}>

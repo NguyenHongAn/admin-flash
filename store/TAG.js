@@ -7,5 +7,9 @@ const TAG = {
     SIGN_IN: "ADMIN_SIGNIN",
     SIGN_OUT: "ADMIN_SIGNOUT",
   },
+  TOAST: {
+    INFO: "DISPLAY_NOTICE",
+    INVISIBLE: "HIDDEN",
+  },
 };
 export default TAG;
