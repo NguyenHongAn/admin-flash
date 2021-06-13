@@ -124,7 +124,7 @@ function GeneralStatistic({
                 md={3}
               >
                 <Card
-                  onClick={() => route.push("/restaurants-management")}
+                  onClick={() => route.push("/restaurants")}
                   className={classes.cardFrame}
                 >
                   <CardHeader color="warning" stats icon>
@@ -153,7 +153,7 @@ function GeneralStatistic({
                 md={3}
               >
                 <Card
-                  onClick={() => route.push("/users-management")}
+                  onClick={() => route.push("/users")}
                   className={classes.cardFrame}
                 >
                   <CardHeader color="info" stats icon>
@@ -181,7 +181,7 @@ function GeneralStatistic({
                 md={3}
               >
                 <Card
-                  onClick={() => route.push("/drivers-management")}
+                  onClick={() => route.push("/shippers")}
                   className={classes.cardFrame}
                 >
                   <CardHeader color="success" stats icon>

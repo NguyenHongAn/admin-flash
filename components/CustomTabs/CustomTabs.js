@@ -44,7 +44,7 @@ export default function CustomTabs(props) {
           scrollButtons="auto"
         >
           {tabs.map((prop, key) => {
-            var icon = {};
+            const icon = {};
             if (prop.tabIcon) {
               icon = {
                 icon: <prop.tabIcon />,

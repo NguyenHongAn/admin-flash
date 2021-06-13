@@ -64,7 +64,7 @@ export default function Layout({ routers, children }) {
         <Navbar routes={routers} handleDrawerToggle={handleDrawerToggle} />
 
         <div className={classes.content}>
-          {/* <Toast></Toast> */}
+          <Toast></Toast>
           <div className={classes.container}>{children}</div>
         </div>
       </div>

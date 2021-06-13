@@ -29,10 +29,10 @@ export default function Sidebar(props) {
   }
 
   const { color, logoText, routes } = props;
-  var links = (
+  const links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
-        var listItemClasses;
+        let listItemClasses;
 
         listItemClasses = classNames({
           [" " + classes[color]]: activeRoute(prop.path),
@@ -69,7 +69,7 @@ export default function Sidebar(props) {
       })}
     </List>
   );
-  var brand = (
+  const brand = (
     <div
       className={classes.logo}
       onClick={() => router.push("/general-statistics")}

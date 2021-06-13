@@ -59,7 +59,7 @@ export async function getServerSideProps({ req, query }) {
           _avatar: data.restaurant.Avatar || "",
           _districts,
           _wards,
-          _manager: data.manager,
+          _manager: data.manager || {},
           _phone: data.restaurant.Phone,
         },
       };
@@ -205,7 +205,7 @@ function Restaurant({
               "Cập nhật thông tin nhà hàng thành công"
             )
           );
-          router.push(`restaurants-management/${id}`);
+          router.push(`restaurants/${id}`);
         } else {
           dispatch(
             ToastAction.displayInfo(
@@ -248,7 +248,7 @@ function Restaurant({
         });
         console.log({ errorCode, data });
         if (errorCode === 0) {
-          router.push("/restaurants-management");
+          router.push("/restaurants");
           dispatch(
             ToastAction.displayInfo(
               "success",
@@ -305,7 +305,7 @@ function Restaurant({
           )
         );
         console.log({ errorCode });
-        router.push("/restaurants-management");
+        router.push("/restaurants");
       } else {
         dispatch(
           ToastAction.displayInfo("error", ErrorCollection.EXECUTION[errorCode])
@@ -333,7 +333,7 @@ function Restaurant({
           <Toolbar className={classes.container}>
             <div
               className={classNames(classes.flex, classes.backLink)}
-              onClick={() => router.push("/restaurants-management")}
+              onClick={() => router.push("/restaurants")}
             >
               <InlineIcon icon={arrowLeft}></InlineIcon>
               <span>Quay Lại</span>

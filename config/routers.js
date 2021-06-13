@@ -11,17 +11,17 @@ const routes = [
     icon: lineChartOutlined,
   },
   {
-    path: "/restaurants-management",
+    path: "/restaurants",
     name: "Quản lý nhà hàng",
     icon: storeIcon,
   },
   {
-    path: "/users-management",
+    path: "/users",
     name: "Quản lý người dùng",
     icon: multipleUsers,
   },
   {
-    path: "/shippers-management",
+    path: "/shippers",
     name: "Quản lý tài xế ",
     icon: roundDirectionsBike,
   },

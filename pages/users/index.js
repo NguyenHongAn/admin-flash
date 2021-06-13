@@ -1,50 +1,50 @@
 import React, { useState, useRef, useEffect } from "react";
 import Layout from "../../components/Layout";
-
 import {
+  TableContainer,
   Table,
   TableHead,
   TableBody,
   TableRow,
   TableCell,
-  TableContainer,
   Button,
 } from "@material-ui/core";
-
+import { Icon } from "@iconify/react";
+import personLock16Regular from "@iconify/icons-fluent/person-lock-16-regular";
 import BlockUserDialog from "../../components/BlockUserDialog";
 import Service from "./services";
 import Pagination from "../../components/Pagination";
 import ErrorCollection from "../../config";
-import RatingStar from "../../components/RatingStar";
 import Meta from "../../components/Meta";
 import Card from "../../components/Card/Card";
 import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
-import Toast from "../../components/Toast";
-//style
+// import Button from "../../components/CustomButtons/Button";
+//styles
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
 //function
-import { useRouter } from "next/router";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
+import { useRouter } from "next/router";
 import getTokenInSS from "../../utils/handldAutheticaion";
 
 export async function getServerSideProps({ req, query }) {
   const { page, phone, email } = query;
   const token = getTokenInSS(req);
   try {
-    const { errorCode, data, pagingInfo } = await Service.getShipperManagement(
+    const { errorCode, data, pagingInfo } = await Service.getUserManagement(
       page,
       email,
       phone,
       token
     );
+
     if (errorCode === 0) {
       return {
         props: {
-          totalShipper: data.totalShipper,
-          shippers: data.shippers,
+          totalUsers: data.totalUsers,
+          users: data.users,
           totalPage: pagingInfo.totalPage,
           currentPage: pagingInfo.currentPage,
           perPage: pagingInfo.perPage,
@@ -83,24 +83,24 @@ export async function getServerSideProps({ req, query }) {
 
 const useStyles = makeStyles(styles);
 
-function DriversManagement({
-  totalShipper,
-  shippers,
+function UsersManagement({
+  totalUsers,
+  users,
   currentPage,
   totalPage,
   perPage,
   errorType,
   errorMsg,
 }) {
+  const [isOpenBlockDialog, setIsOpenBlockDialog] = useState(false);
   const [user, setUser] = useState({});
   const router = useRouter();
   const { page, phone, email } = router.query;
   const [emailFilter, setEmailFilter] = useState(email);
   const [phoneFilter, setPhoneFilter] = useState(phone);
-  const [isOpenBlockDialog, setIsOpenBlockDialog] = useState(false);
-  const typingTimeoutRef = useRef(null);
-
   const classes = useStyles();
+  const color = "success";
+  const typingTimeoutRef = useRef(null);
 
   const handleOpenBlockDialog = (account) => {
     setIsOpenBlockDialog(true);
@@ -110,14 +110,14 @@ function DriversManagement({
   const handleCloseBlockDialog = () => {
     setIsOpenBlockDialog(false);
     router.push({
-      pathname: "/shippers-management",
+      pathname: `/users`,
       query: clearObject({ page, email, phone }),
     });
   };
 
   const handlePageChange = (selected) => {
     router.push({
-      pathname: `/shippers-management`,
+      pathname: `/users`,
       query: clearObject({ page: selected, email, phone }),
     });
   };
@@ -130,7 +130,7 @@ function DriversManagement({
     }
     typingTimeoutRef.current = setTimeout(() => {
       router.push({
-        pathname: "/shippers-management",
+        pathname: "/users",
         query: clearObject({ page: page, email: e.target.value, phone }),
       });
     }, 700);
@@ -144,7 +144,7 @@ function DriversManagement({
     }
     typingTimeoutRef.current = setTimeout(() => {
       router.push({
-        pathname: "/shippers-management",
+        pathname: "/users",
         query: clearObject({ page, email, phone: e.target.value }),
       });
     }, 700);
@@ -152,7 +152,7 @@ function DriversManagement({
 
   return (
     <Layout routers={routers}>
-      <Meta title="Flash Admin - Shipper"></Meta>
+      <Meta title="Admin Flash - Users"></Meta>
       {/* {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null} */}
       <BlockUserDialog
         open={isOpenBlockDialog}
@@ -163,9 +163,9 @@ function DriversManagement({
         <div>
           <div className={classes.tableContainer}>
             <Card>
-              <CardHeader color="info">
+              <CardHeader color={color}>
                 <h4 className={classes.cardTitleWhite}>
-                  Tổng cộng: {totalShipper ? totalShipper : 0} tài xế
+                  Tổng cộng: {totalUsers ? totalUsers : 0} người dùng
                 </h4>
               </CardHeader>
               <CardBody>
@@ -190,51 +190,45 @@ function DriversManagement({
                             onChange={handlePhoneFilterChange}
                           ></input>
                         </TableCell>
-
-                        <TableCell>Đánh giá</TableCell>
-                        <TableCell>Phí dịch vụ</TableCell>
+                        <TableCell>Lượt báo cáo</TableCell>
+                        <TableCell>Điểm</TableCell>
                         <TableCell>Trạng thái</TableCell>
                         <TableCell></TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody className="user-table__body">
-                      {shippers &&
-                        shippers.map((driver, i) => (
-                          <TableRow key={driver._id}>
+                      {users &&
+                        users.map((user, i) => (
+                          <TableRow key={user._id}>
                             <TableCell>
                               {i + 1 + (currentPage - 1) * perPage}
                             </TableCell>
-                            <TableCell>{driver.email}</TableCell>
-                            <TableCell>{driver.phone}</TableCell>
-
+                            <TableCell>{user.email}</TableCell>
+                            <TableCell>{user.phone}</TableCell>
+                            <TableCell>{user.reports}</TableCell>
+                            <TableCell>{user.point}</TableCell>
                             <TableCell>
-                              <RatingStar
-                                value={parseInt(driver.avgReview)}
-                              ></RatingStar>
-                            </TableCell>
-                            <TableCell>{driver.serviceCharge}</TableCell>
-                            <TableCell>
-                              {Service.getStatus(driver.status)}
+                              {Service.getStatus(user.status)}
                             </TableCell>
                             <TableCell>
-                              {driver.status === -2 ? (
+                              {user.status === -2 ? (
                                 <Button
                                   variant="outlined"
                                   color="primary"
                                   size="small"
                                   onClick={() => {
-                                    handleOpenBlockDialog(driver);
+                                    handleOpenBlockDialog(user);
                                   }}
                                 >
                                   Mở khóa
                                 </Button>
-                              ) : driver.status === 0 ? (
+                              ) : user.status === 0 ? (
                                 <Button
                                   variant="outlined"
                                   color="primary"
                                   size="small"
                                   onClick={() => {
-                                    handleOpenBlockDialog(driver);
+                                    handleOpenBlockDialog(user);
                                   }}
                                 >
                                   Khóa
@@ -260,4 +254,4 @@ function DriversManagement({
     </Layout>
   );
 }
-export default DriversManagement;
+export default UsersManagement;

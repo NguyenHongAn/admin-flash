@@ -2,9 +2,11 @@ import axiosClient from "../../api";
 import URL from "../../api/URL";
 
 const services = {
-  blockUserAccount: (userID) => {
-    console.log(`${URL.GET_USERS}/${userID}/block`);
-    return axiosClient.put(`${URL.GET_USERS}/${userID}/block`, { id: userID });
+  blockUserAccount: (userID, reason) => {
+    return axiosClient.put(`${URL.GET_USERS}/${userID}/block`, {
+      id: userID,
+      reason,
+    });
   },
   reasons: [
     { label: "Tài khoản có khả năng bị hack", value: 0 },

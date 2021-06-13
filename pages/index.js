@@ -44,7 +44,7 @@ function signin() {
       const { email, password } = values;
       try {
         dispatch(loadingAction.turnOnLoading());
-        console.log({ email, password });
+
         const { errorCode, data } = await axiosClient.post(URL.LOGIN, {
           email,
           password,
@@ -67,8 +67,9 @@ function signin() {
 
   const router = useRouter();
   useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
+    const jwt = cookies.get("jwt");
+    console.log(jwt);
+    if (typeof jwt !== "undefined") {
       router.push("/general-statistics");
     }
   }, [loading]);

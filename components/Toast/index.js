@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import ToastAction from "../../store/actions/toast.A";
@@ -20,27 +20,33 @@ function getToastType(type) {
   }
 }
 
-function Toast({ type, content }) {
-  const { isHidden, typeR, contentR } = useSelector((state) => ({
-    typeR: state.toast.type,
-    contentR: state.toast.msg,
+function Toast() {
+  const { isHidden, type, content } = useSelector((state) => ({
+    type: state.toast.type,
+    content: state.toast.msg,
     isHidden: state.toast.isHidden,
   }));
-
   const dispatch = useDispatch();
-  setTimeout(() => {
-    dispatch(ToastAction.turnOff());
-  }, 2000);
-  toast(contentR, {
-    type: getToastType(typeR),
-    position: "top-right",
-    autoClose: 1500,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-  });
+
+  useEffect(() => {
+    toast(content, {
+      type: getToastType(type),
+      position: "top-right",
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+
+    return () => {
+      setTimeout(() => {
+        dispatch(ToastAction.turnOff());
+      }, 1500);
+    };
+  }, [isHidden]);
+
   return isHidden ? (
     <ToastContainer
       position="top-right"

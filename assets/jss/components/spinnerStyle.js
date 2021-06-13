@@ -13,7 +13,7 @@ const spinnerStyles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: "10000",
+    zIndex: "100000",
   },
 };
 export default spinnerStyles;

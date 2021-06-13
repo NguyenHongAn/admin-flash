@@ -80,27 +80,31 @@ function RestaurantsManagement({ cities, districts, errorMsg }) {
   const [isOpenNewRestaurant, setIsOpenNewRestaurant] = useState(false);
   const typingTimeoutRef = useRef(null);
   const [searchString, setSearchString] = useState("");
+  const [strDisplay, setStrDisplay] = useState("");
 
   const handleCityChange = (e) => {
     router.push({
-      pathname: `/restaurants-management`,
+      pathname: `/restaurants`,
       query: clearObject({ city: e.target.value }),
     });
   };
 
   const handleSearchTermChange = (e) => {
+    setStrDisplay(e.target.value);
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
+    console.log(e.target.value);
 
     typingTimeoutRef.current = setTimeout(() => {
       setSearchString(e.target.value);
     }, 700);
   };
+
   const handleCreateRestaurantDialog = () => {
     setIsOpenNewRestaurant(false);
     router.push({
-      pathname: "/restaurants-management",
+      pathname: "/restaurants",
       query: { city },
     });
   };
@@ -142,7 +146,7 @@ function RestaurantsManagement({ cities, districts, errorMsg }) {
               onChange={handleSearchTermChange}
               name="search"
               id="search"
-              value={searchString}
+              value={strDisplay}
               style={{ width: "30%" }}
               placeholder="Tìm kiếm nhà hàng"
               InputProps={{

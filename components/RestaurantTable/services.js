@@ -7,6 +7,9 @@ const Service = {
       params: { city: city, search: search, page: page, district, partner },
     });
   },
+  stopRestaurantService: (id) => {
+    return axiosClient.delete(`${URL.GET_RESTAURANTS_INFO}/${id}`);
+  },
 };
 
 export default Service;

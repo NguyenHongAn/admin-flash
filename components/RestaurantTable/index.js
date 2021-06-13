@@ -4,6 +4,7 @@ import {
   TableHead,
   TableBody,
   Table,
+  Button,
   TableCell,
   TableRow,
 } from "@material-ui/core";
@@ -26,6 +27,8 @@ import styles from "../../assets/jss/views/TableListStyle";
 import Service from "./services.js";
 import { useRouter } from "next/router";
 import classNames from "classnames";
+import { useDispatch } from "react-redux";
+import ToastAction from "../../store/actions/toast.A";
 
 const useStyles = makeStyles(styles);
 
@@ -46,6 +49,7 @@ function RestaurantTable({
   const [totalPage, setTotalPage] = useState(0);
   const [perPage, setPerPage] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
+  const dispatch = useDispatch();
   const classes = useStyles();
   const router = useRouter();
   const handlePageChange = (selected) => {
@@ -54,6 +58,35 @@ function RestaurantTable({
 
   const handleDistrictChange = (e) => {
     setDistrict(e.target.value);
+  };
+
+  const handleStopService = async (id, name) => {
+    try {
+      const { errorCode } = await Service.stopRestaurantService(id);
+      if (errorCode === 0) {
+        dispatch(
+          ToastAction.displayInfo(
+            "success",
+            "Ngừng kinh doanh nhà hàng " + name
+          )
+        );
+      } else {
+        dispatch(
+          ToastAction.displayInfo("error", ErrorCollection.EXECUTION[errorCode])
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response) {
+        if (error.reponse.status === 401) router.push("/");
+        dispatch(
+          ToastAction.displayInfo(
+            "error",
+            ErrorCollection.SERVER[error.response.status]
+          )
+        );
+      }
+    }
   };
 
   useEffect(() => {
@@ -171,7 +204,7 @@ function RestaurantTable({
                             className={classes.settingBtn}
                             onClick={() => {
                               router.push(
-                                `/restaurants-management/${restaurant._id}`
+                                `/restaurants/${restaurant._id}`
                               );
                             }}
                           >
@@ -180,7 +213,16 @@ function RestaurantTable({
                               style={{ color: "black", fontSize: "24px" }}
                             />
                           </div>
-                        ) : null}
+                        ) : (
+                          <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={() => handleStopService(restaurant._id)}
+                          >
+                            {" "}
+                            Ngừng
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
