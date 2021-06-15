@@ -9,7 +9,6 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import Toast from "../Toast";
 import Service from "./services";
 import ErrorCollection from "../../config";
 import { useDispatch } from "react-redux";
@@ -20,10 +19,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function BlockUserDialog({ open, info, handleClose }) {
+function BlockUserDialog({ open, info, handleClose, role }) {
   const [reason, setReason] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  //const [successMsg, setSuccessMsg] = useState("");
+  
   const dispatch = useDispatch();
 
   const handleBlockUserAccount = async () => {
@@ -31,13 +30,14 @@ function BlockUserDialog({ open, info, handleClose }) {
       dispatch(loadingAction.turnOnLoading());
       const { errorCode, data } = await Service.blockUserAccount(
         info._id,
-        reason
+        reason,
+        role
       );
       console.log(errorCode, data);
       if (errorCode === 0) {
         dispatch(
           ToastAction.displayInfo(
-            "error",
+            "success",
             `${data.Status === 0 ? "Mở khóa" : "Khóa"} tài khoản thành công`
           )
         );
@@ -47,6 +47,9 @@ function BlockUserDialog({ open, info, handleClose }) {
       handleClose();
     } catch (error) {
       console.log(error.message);
+      if (error.response && error.response.status === 401) {
+        router.push("/");
+      }
       error.response
         ? dispatch(
             ToastAction.displayInfo(
@@ -55,15 +58,13 @@ function BlockUserDialog({ open, info, handleClose }) {
             )
           )
         : null;
+      handleClose();
     }
     dispatch(loadingAction.turnOffLoading());
   };
 
   return (
     <>
-      {/* {successMsg === "" ? null : (
-        <Toast type="info" content={successMsg}></Toast>
-      )} */}
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -93,6 +94,7 @@ function BlockUserDialog({ open, info, handleClose }) {
               placeholder="Lý do"
               margin="normal"
               id="reason"
+              required
               name="reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}

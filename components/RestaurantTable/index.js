@@ -19,7 +19,6 @@ import Card from "../Card/Card";
 import CardHeader from "../Card/CardHeader";
 import CardBody from "../Card/CardBody";
 import ErrorCollection from "../../config";
-import Toast from "../Toast";
 //styles
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
@@ -42,16 +41,16 @@ function RestaurantTable({
 }) {
   const [page, setPage] = useState(1);
   const [district, setDistrict] = useState("");
-  //const [districts, setDistricts] = useState([]);
+  const [isReload, setIsReload] = useState(null);
   const [isOpenNewRestaurant, setIsOpenNewRestaurant] = useState(false);
   const [restaurants, setRestaurants] = useState([]);
   const [total, setTotal] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [perPage, setPerPage] = useState(0);
-  const [errorMsg, setErrorMsg] = useState("");
   const dispatch = useDispatch();
   const classes = useStyles();
   const router = useRouter();
+
   const handlePageChange = (selected) => {
     setPage(selected);
   };
@@ -89,6 +88,11 @@ function RestaurantTable({
     }
   };
 
+  const handleCloseCreateResDialog = () => {
+    setIsOpenNewRestaurant(false);
+    setIsReload(Date.now());
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -108,28 +112,37 @@ function RestaurantTable({
           setTotalPage(pagingInfo.totalPage);
           setPage(pagingInfo.currentPage);
         } else if (errorCode === ErrorCollection.INVALID_PARAM) {
-          router.push();
+          router.push("/");
         } else {
-          setErrorMsg(ErrorCollection.SERVER[error.response.status]);
+          dispatch(
+            ToastAction.displayInfo(
+              "error",
+              ErrorCollection.SERVER[error.response.status]
+            )
+          );
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
           router.push("/");
         } else if (typeof error.response !== "undefined") {
-          setErrorMsg(ErrorCollection.SERVER[error.response.status]);
+          dispatch(
+            ToastAction.displayInfo(
+              "error",
+              ErrorCollection.SERVER[error.response.status]
+            )
+          );
         }
       }
     })();
-  }, [search, selectedCity, district, page]);
+  }, [search, selectedCity, district, page, isReload]);
 
   return (
     <div>
       <CreateRestaurantDialog
         open={isOpenNewRestaurant}
-        handleClose={setIsOpenNewRestaurant}
+        handleClose={handleCloseCreateResDialog}
         location={cities}
       ></CreateRestaurantDialog>
-      {/* {errorMsg !== "" ? <Toast type="error" content={errorMsg}></Toast> : null} */}
       <Card>
         <CardHeader color={color} className={classes.restaurantTableHead}>
           <div style={{ display: "flex" }}>
@@ -195,33 +208,35 @@ function RestaurantTable({
                       <TableCell>{restaurant.serviceCharge}</TableCell>
                       <TableCell>
                         <RatingStar
-                          value={parseInt(restaurant.avgReview)}
+                          value={parseInt(restaurant.rating)}
                         ></RatingStar>
                       </TableCell>
                       <TableCell>
-                        {!restaurant.isPartner ? (
-                          <div
-                            className={classes.settingBtn}
-                            onClick={() => {
-                              router.push(
-                                `/restaurants/${restaurant._id}`
-                              );
-                            }}
-                          >
-                            <Icon
-                              icon={settingTwotone}
-                              style={{ color: "black", fontSize: "24px" }}
-                            />
-                          </div>
+                        {restaurant.isService ? (
+                          !restaurant.isPartner ? (
+                            <div
+                              className={classes.settingBtn}
+                              onClick={() => {
+                                router.push(`/restaurants/${restaurant._id}`);
+                              }}
+                            >
+                              <Icon
+                                icon={settingTwotone}
+                                style={{ color: "black", fontSize: "24px" }}
+                              />
+                            </div>
+                          ) : (
+                            <Button
+                              variant="outlined"
+                              color="secondary"
+                              onClick={() => handleStopService(restaurant._id)}
+                            >
+                              {" "}
+                              Ngừng
+                            </Button>
+                          )
                         ) : (
-                          <Button
-                            variant="outlined"
-                            color="secondary"
-                            onClick={() => handleStopService(restaurant._id)}
-                          >
-                            {" "}
-                            Ngừng
-                          </Button>
+                          <span>Đã ngừng kinh doanh</span>
                         )}
                       </TableCell>
                     </TableRow>

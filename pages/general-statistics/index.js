@@ -14,7 +14,6 @@ import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import Meta from "../../components/Meta";
 import Service from "./services";
 import ErrorCollection from "../../config";
-import Toast from "../../components/Toast";
 import Card from "../../components/Card/Card.js";
 import CardHeader from "../../components/Card/CardHeader.js";
 import CardIcon from "../../components/Card/CardIcon.js";
@@ -111,7 +110,6 @@ function GeneralStatistic({
   return (
     <Layout routers={routers}>
       <Meta title="Admin Flash - General Statistics"></Meta>
-      {/* {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null} */}
       {
         <div>
           <Grid container>

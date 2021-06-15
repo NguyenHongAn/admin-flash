@@ -48,7 +48,7 @@ const services = {
     formData.append("anouncement", anouncement);
     formData.append("phone", resPhone);
     if (isChange) formData.append("avatar", avatar);
-    console.log(formData);
+
     return axiosClient({
       method: "PUT",
       url: `${URL.GET_RESTAURANTS_INFO}/${id}/info`,

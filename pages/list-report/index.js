@@ -20,6 +20,8 @@ import styles from "../../assets/jss/views/TableListStyle";
 import routers from "../../config/routers";
 import Service from "./services";
 import getTokenInSS from "../../utils/handldAutheticaion";
+import ErrorCollection from "../../config";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps({ req, query }) {
   const { page } = query;
@@ -79,13 +81,24 @@ function ListReport({
   currentPage,
 }) {
   const [isOpenDetailDialog, setIsOpenDetailDialog] = useState(false);
-  const [report, setReport] = useState({});
+  const [reportId, setReport] = useState(null);
   const classes = useStyles();
+  const router = useRouter();
+  const { page } = router.query;
 
-  const handleOpenDetailDialog = (info) => {
-    setReport(info);
+  const handleOpenDetailDialog = (id) => {
+    setReport(id);
     setIsOpenDetailDialog(true);
   };
+
+  const handleCloseDetailDialog = () => {
+    setIsOpenDetailDialog(false);
+    router.push({
+      pathname: "/list-report",
+      query: { page },
+    });
+  };
+
   const handlePageChange = (selected) => {
     setPage(selected);
   };
@@ -95,8 +108,8 @@ function ListReport({
       <Meta title="Flash Admin - Reports"></Meta>
       <ReportDetailDialog
         open={isOpenDetailDialog}
-        handleClose={setIsOpenDetailDialog}
-        report={report}
+        handleClose={handleCloseDetailDialog}
+        id={reportId}
       ></ReportDetailDialog>
       {
         <div>
@@ -133,7 +146,7 @@ function ListReport({
                               <div
                                 className="report-table-image"
                                 onClick={() => {
-                                  handleOpenDetailDialog(report);
+                                  handleOpenDetailDialog(report._id);
                                 }}
                               >
                                 <img
@@ -152,17 +165,10 @@ function ListReport({
                             <TableCell>{report.fullname}</TableCell>
                             <TableCell>{report.payment}</TableCell>
                             <TableCell>
-                              {report.status ? (
-                                <input
-                                  type="checkbox"
-                                  onChange={() => {}}
-                                  checked
-                                ></input>
+                              {report.status === 1 ? (
+                                <input type="checkbox" checked></input>
                               ) : (
-                                <input
-                                  type="checkbox"
-                                  onChange={() => {}}
-                                ></input>
+                                <input type="checkbox"></input>
                               )}
                             </TableCell>
                           </TableRow>

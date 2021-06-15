@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import Layout from "../../components/Layout";
-
 import {
   Table,
   TableHead,
@@ -20,7 +19,6 @@ import Meta from "../../components/Meta";
 import Card from "../../components/Card/Card";
 import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
-import Toast from "../../components/Toast";
 //style
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
@@ -83,7 +81,7 @@ export async function getServerSideProps({ req, query }) {
 
 const useStyles = makeStyles(styles);
 
-function DriversManagement({
+function ShippersManagement({
   totalShipper,
   shippers,
   currentPage,
@@ -153,11 +151,11 @@ function DriversManagement({
   return (
     <Layout routers={routers}>
       <Meta title="Flash Admin - Shipper"></Meta>
-      {/* {errorType ? <Toast type={errorType} content={errorMsg}></Toast> : null} */}
       <BlockUserDialog
         open={isOpenBlockDialog}
         handleClose={handleCloseBlockDialog}
         info={user}
+        role="shipper"
       ></BlockUserDialog>
       {
         <div>
@@ -199,42 +197,42 @@ function DriversManagement({
                     </TableHead>
                     <TableBody className="user-table__body">
                       {shippers &&
-                        shippers.map((driver, i) => (
-                          <TableRow key={driver._id}>
+                        shippers.map((shipper, i) => (
+                          <TableRow key={shipper._id}>
                             <TableCell>
                               {i + 1 + (currentPage - 1) * perPage}
                             </TableCell>
-                            <TableCell>{driver.email}</TableCell>
-                            <TableCell>{driver.phone}</TableCell>
+                            <TableCell>{shipper.email}</TableCell>
+                            <TableCell>{shipper.phone}</TableCell>
 
                             <TableCell>
                               <RatingStar
-                                value={parseInt(driver.avgReview)}
+                                value={parseInt(shipper.avgReview)}
                               ></RatingStar>
                             </TableCell>
-                            <TableCell>{driver.serviceCharge}</TableCell>
+                            <TableCell>{shipper.serviceCharge}</TableCell>
                             <TableCell>
-                              {Service.getStatus(driver.status)}
+                              {Service.getStatus(shipper.status)}
                             </TableCell>
                             <TableCell>
-                              {driver.status === -2 ? (
+                              {shipper.status === -2 ? (
                                 <Button
                                   variant="outlined"
                                   color="primary"
                                   size="small"
                                   onClick={() => {
-                                    handleOpenBlockDialog(driver);
+                                    handleOpenBlockDialog(shipper);
                                   }}
                                 >
                                   Mở khóa
                                 </Button>
-                              ) : driver.status === 0 ? (
+                              ) : shipper.status === 0 ? (
                                 <Button
                                   variant="outlined"
                                   color="primary"
                                   size="small"
                                   onClick={() => {
-                                    handleOpenBlockDialog(driver);
+                                    handleOpenBlockDialog(shipper);
                                   }}
                                 >
                                   Khóa
@@ -260,4 +258,4 @@ function DriversManagement({
     </Layout>
   );
 }
-export default DriversManagement;
+export default ShippersManagement;

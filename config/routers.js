@@ -3,6 +3,7 @@ import storeIcon from "@iconify/icons-dashicons/store";
 import multipleUsers from "@iconify/icons-gridicons/multiple-users";
 import roundDirectionsBike from "@iconify/icons-ic/round-directions-bike";
 import roundReport from "@iconify/icons-ic/round-report";
+import coinF from "@iconify/icons-jam/coin-f";
 
 const routes = [
   {
@@ -27,8 +28,13 @@ const routes = [
   },
   {
     path: "/list-report",
-    name: " Khiếu nại/ Tố cáo",
+    name: "Khiếu nại/ Tố cáo",
     icon: roundReport,
+  },
+  {
+    path: "/with-draw",
+    name: "Thanh toán",
+    icon: coinF,
   },
 ];
 

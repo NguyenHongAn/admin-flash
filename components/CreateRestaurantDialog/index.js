@@ -20,9 +20,8 @@ import {
   InputLabel,
 } from "@material-ui/core";
 import ErrorCollection from "../../config";
-import Toast from "../Toast";
-import { route } from "next/dist/next-server/server/router";
 import { useRouter } from "next/router";
+import ToastAction from "../../store/actions/toast.A";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -47,7 +46,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
       password: "",
       openAt: "06:00",
       closeAt: "22:00",
-      pakingFree: "0",
+      parkingFee: 0,
     },
     validationSchema: service.validationSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -64,7 +63,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
           district,
           openAt,
           closeAt,
-          pakingFree,
+          parkingFee,
         } = values;
         const cityID = location.filter((elm) => elm.Name === city)[0].Id;
         const districtID = districts.filter((elm) => elm.Name === district)[0]
@@ -82,12 +81,15 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
           districtID,
           openAt,
           closeAt,
-          pakingFree,
+          parkingFee,
         });
         console.log({ errorCode, data });
         if (errorCode === 0) {
           resetForm();
           setErrorMsg("");
+          dispatch(
+            ToastAction.displayInfo("success", "Tạo nhà hàng mới thành công")
+          );
           handleClose();
         } else {
           setErrorMsg(ErrorCollection.EXECUTION[errorCode]);
@@ -97,7 +99,12 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
         if (error.response && error.response.status === 401) {
           router.push("/");
         }
-        setErrorMsg(ErrorCollection.SERVER[error.response.status]);
+        dispatch(
+          ToastAction.displayInfo(
+            "error",
+            ErrorCollection.SERVER[error.response.status]
+          )
+        );
       }
       dispatch(loadingAction.turnOffLoading());
     },
@@ -158,7 +165,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                     name="email"
                     value={formik.values.email}
                     onChange={formik.handleChange}
-                    error={formik.errors.email && true}
+                    error={formik.errors.email && formik.touched.email && true}
                     label={formik.errors.email}
                   ></TextField>
                 </Grid>
@@ -174,7 +181,9 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                     onChange={(e) =>
                       formik.setFieldValue("password", e.target.value)
                     }
-                    error={formik.errors.password && true}
+                    error={
+                      formik.errors.password && formik.touched.password && true
+                    }
                     label={formik.errors.password}
                   ></TextField>
                 </Grid>
@@ -188,7 +197,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                     name="phone"
                     onChange={formik.handleChange}
                     value={formik.values.phone}
-                    error={formik.errors.phone && true}
+                    error={formik.errors.phone && formik.touched.phone && true}
                     label={formik.errors.phone}
                   ></TextField>
                 </Grid>
@@ -202,7 +211,11 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                     name="restaurantName"
                     onChange={formik.handleChange}
                     value={formik.values.restaurantName}
-                    error={formik.errors.restaurantName && true}
+                    error={
+                      formik.errors.restaurantName &&
+                      formik.touched.restaurantName &&
+                      true
+                    }
                     label={formik.errors.restaurantName}
                   ></TextField>
                 </Grid>
@@ -217,7 +230,9 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                       value={formik.values.openAt}
                       variant="outlined"
                       onChange={formik.handleChange}
-                      error={formik.errors.openAt && true}
+                      error={
+                        formik.errors.openAt && formik.touched.openAt && true
+                      }
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -234,7 +249,9 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                       value={formik.values.closeAt}
                       variant="outlined"
                       onChange={formik.handleChange}
-                      error={formik.errors.closeAt && true}
+                      error={
+                        formik.errors.closeAt && formik.touched.closeAt && true
+                      }
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -254,7 +271,9 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                         name="city"
                         value={formik.values.city}
                         onChange={handleSelectedCity}
-                        error={formik.errors.city && true}
+                        error={
+                          formik.errors.city && formik.touched.city && true
+                        }
                         label={formik.errors.city}
                       >
                         {location &&
@@ -280,7 +299,11 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                         disabled={formik.values.city === ""}
                         value={formik.values.district}
                         onChange={handleSelectedDsitrcts}
-                        error={formik.errors.district && true}
+                        error={
+                          formik.errors.district &&
+                          formik.touched.district &&
+                          true
+                        }
                         label={formik.errors.district}
                       >
                         {districts &&
@@ -306,7 +329,9 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                         disabled={formik.values.district === ""}
                         value={formik.values.ward}
                         onChange={formik.handleChange}
-                        error={formik.errors.ward && true}
+                        error={
+                          formik.errors.ward && formik.touched.ward && true
+                        }
                         label={formik.errors.ward}
                       >
                         {wards &&
@@ -321,22 +346,27 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                   <Grid item xs={12} sm={6}>
                     <FormControl variant="outlined" fullWidth>
                       <InputLabel id="transport-label">
-                        {formik.errors.transport
-                          ? formik.errors.transport
-                          : `Là đối tác`}
+                        {formik.errors.parkingFee
+                          ? formik.errors.parkingFee
+                          : `Gửi xe`}
                       </InputLabel>
                       <Select
                         labelId="transport-label"
-                        id="transport"
-                        value={formik.values.pakingFree}
+                        id="parkingFee"
+                        name="parkingFee"
+                        value={formik.values.parkingFee}
                         onChange={formik.handleChange}
-                        error={formik.errors.pakingFree && true}
-                        label={formik.errors.pakingFree}
+                        error={
+                          formik.errors.parkingFee &&
+                          formik.touched.parkingFee &&
+                          true
+                        }
+                        label={formik.errors.parkingFee}
                       >
-                        <MenuItem value="0">
+                        <MenuItem value={0}>
                           <em>Gửi xe miễn phí</em>
                         </MenuItem>
-                        <MenuItem value="1">
+                        <MenuItem value={1}>
                           <em>Gửi xe có phí</em>
                         </MenuItem>
                       </Select>
@@ -353,7 +383,9 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                     name="address"
                     onChange={formik.handleChange}
                     value={formik.values.address}
-                    error={formik.errors.address && true}
+                    error={
+                      formik.errors.address && formik.touched.address && true
+                    }
                     label={formik.errors.address}
                   ></TextField>
                 </Grid>
@@ -368,7 +400,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                       fullWidth
                       variant="contained"
                       onClick={() => {
-                        handleClose(false);
+                        handleClose();
                         setErrorMsg("");
                         formik.resetForm();
                       }}

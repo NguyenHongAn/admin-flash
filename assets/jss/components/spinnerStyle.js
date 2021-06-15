@@ -1,7 +1,7 @@
 const spinnerStyles = {
   spinner: {
     display: "block",
-    zIndex: "100",
+    zIndex: "100000",
     margin: "0px auto",
     position: "absolute",
   },
@@ -14,6 +14,7 @@ const spinnerStyles = {
     justifyContent: "center",
     alignItems: "center",
     zIndex: "100000",
+    opacity: "2",
   },
 };
 export default spinnerStyles;

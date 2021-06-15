@@ -2,8 +2,9 @@ import axiosClient from "../../api";
 import URL from "../../api/URL";
 
 const services = {
-  blockUserAccount: (userID, reason) => {
-    return axiosClient.put(`${URL.GET_USERS}/${userID}/block`, {
+  blockUserAccount: (userID, reason, role) => {
+    const url = role === "user" ? URL.GET_USERS : URL.GET_SHIPPERS;
+    return axiosClient.put(`${url}/${userID}/block`, {
       id: userID,
       reason,
     });

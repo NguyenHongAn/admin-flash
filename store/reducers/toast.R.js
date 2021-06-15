@@ -12,8 +12,7 @@ const loadingReducer = (state = loadingState, action) => {
       };
     case TAG.TOAST.INVISIBLE:
       return {
-        ...state,
-        isHidden: true,
+        loadingState,
       };
     default:
       return state;

@@ -19,7 +19,7 @@ import CreateRestaurantDialog from "../../components/CreateRestaurantDialog";
 import Meta from "../../components/Meta";
 import ErrorCollection from "../../config";
 import clearObject from "../../utils/clearObject";
-import Toast from "../../components/Toast";
+
 import RestaurantTable from "../../components/RestaurantTable";
 //styles
 import { makeStyles } from "@material-ui/core/styles";
@@ -112,8 +112,6 @@ function RestaurantsManagement({ cities, districts, errorMsg }) {
   return (
     <Layout routers={routers}>
       <Meta title="Admin Flash - Restaurants"></Meta>
-      {/* {errorMsg ? <Toast type="error" content={errorMsg}></Toast> : null} */}
-
       <CreateRestaurantDialog
         open={isOpenNewRestaurant}
         handleClose={handleCreateRestaurantDialog}

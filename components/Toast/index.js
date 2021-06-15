@@ -39,7 +39,6 @@ function Toast() {
       draggable: true,
       progress: undefined,
     });
-
     return () => {
       setTimeout(() => {
         dispatch(ToastAction.turnOff());
@@ -47,7 +46,7 @@ function Toast() {
     };
   }, [isHidden]);
 
-  return isHidden ? (
+  return !isHidden ? (
     <ToastContainer
       position="top-right"
       autoClose={1500}

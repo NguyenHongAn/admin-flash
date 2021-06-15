@@ -14,6 +14,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import arrowLeft from "@iconify/icons-fe/arrow-left";
+import Toast from "../../../components/Toast";
 import CustomButton from "../../../components/CustomButtons/Button";
 //styles
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,12 +24,11 @@ import { useRouter } from "next/router";
 import classNames from "classnames";
 import Service from "./services";
 import { useFormik } from "formik";
-import Toast from "../../../components/Toast";
 import ErrorCollection from "../../../config";
 import getTokenInSS from "../../../utils/handldAutheticaion";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../../store/actions/toast.A";
-import { route } from "next/dist/next-server/server/router";
+
 const useStyles = makeStyles(styles);
 
 export async function getServerSideProps({ req, query }) {
@@ -63,8 +63,6 @@ export async function getServerSideProps({ req, query }) {
           _phone: data.restaurant.Phone,
         },
       };
-    } else if (errorCode === ErrorCollection.INVALID_PARAM) {
-      return { notFound: true };
     }
     return {
       props: {
@@ -81,21 +79,12 @@ export async function getServerSideProps({ req, query }) {
           permanent: false,
         },
       };
-    } else if (typeof error.response !== "undefined") {
-      return {
-        props: {
-          errorType: "error",
-          errorMsg: ErrorCollection.SERVER[error.response.status],
-        },
-      };
     }
     return { notFound: true };
   }
 }
 
 function Restaurant({
-  errorType,
-  errorMsg,
   cities,
   _avatar,
   _restaurantName,
@@ -113,7 +102,8 @@ function Restaurant({
 }) {
   const classes = useStyles();
   const router = useRouter();
-  const [avatar, setAvatar] = useState(_avatar);
+  const [avatar, setAvatar] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState(_avatar);
   const [districts, setDistricts] = useState(_districts);
   const [wards, setWards] = useState(_wards);
   const { id } = router.query;
@@ -150,8 +140,8 @@ function Restaurant({
         } else {
           dispatch(
             ToastAction.displayInfo(
-              "success",
-              ErrorCollection.EXECUTION[errroCode]
+              "error",
+              ErrorCollection.EXECUTION[errorCode]
             )
           );
         }
@@ -160,8 +150,8 @@ function Restaurant({
         if (error.response) {
           dispatch(
             ToastAction.displayInfo(
-              "success",
-              ErrorCollection.EXECUTION[error.response.status]
+              "error",
+              ErrorCollection.SERVER[error.response.status]
             )
           );
         }
@@ -183,7 +173,7 @@ function Restaurant({
       let isChange = false;
       if (avatar !== _avatar) isChange = true;
       const token = getTokenInSS(null);
-      console.log({ avatar, token });
+
       const { restaurantName, openAt, closeAt, anouncement, resPhone } = values;
       try {
         const { errorCode, data } = await Service.updateInfo({
@@ -205,7 +195,7 @@ function Restaurant({
               "Cập nhật thông tin nhà hàng thành công"
             )
           );
-          router.push(`restaurants/${id}`);
+          router.push(`/restaurants/${id}`);
         } else {
           dispatch(
             ToastAction.displayInfo(
@@ -214,13 +204,14 @@ function Restaurant({
             )
           );
         }
+        setAvatar(null);
       } catch (error) {
         console.log(error);
         if (error.response) {
           dispatch(
             ToastAction.displayInfo(
-              "success",
-              ErrorCollection.EXECUTION[error.response.status]
+              "error",
+              ErrorCollection.SERVER[error.response.status]
             )
           );
         }
@@ -236,7 +227,7 @@ function Restaurant({
       phone: "",
     },
     validationSchema: Service.permisionSchema,
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values) => {
       const { fullname, email, phone } = values;
       try {
         const { errorCode, data } = await Service.addPermision({
@@ -258,7 +249,7 @@ function Restaurant({
         } else {
           dispatch(
             ToastAction.displayInfo(
-              "success",
+              "error",
               ErrorCollection.EXECUTION[errroCode]
             )
           );
@@ -268,8 +259,8 @@ function Restaurant({
         if (error.response) {
           dispatch(
             ToastAction.displayInfo(
-              "success",
-              ErrorCollection.EXECUTION[error.response.status]
+              "error",
+              ErrorCollection.SERVER[error.response.status]
             )
           );
         }
@@ -317,17 +308,21 @@ function Restaurant({
   };
 
   const hanldeChooseImage = (e) => {
+    //e.preventDefault();
     const file = e.target.files[0];
     const reader = new FileReader();
-    const url = reader.readAsDataURL(file);
+    setAvatar(file);
+    reader.readAsDataURL(file);
 
-    reader.onloadend = function (e) {
-      setAvatar(file);
-    }.bind(this);
+    reader.addEventListener("load", () => {
+      setAvatarUrl(reader.result);
+    });
   };
+
   return (
     <div className={classes.wrapper}>
       <Meta title="Restaurant Info"></Meta>
+      <Toast></Toast>
       <div className={classes.dialogFrame}>
         <AppBar className={classes.navbar}>
           <Toolbar className={classes.container}>
@@ -348,7 +343,7 @@ function Restaurant({
               <Grid container item md={3} justify="space-around">
                 <img
                   className={classes.avatar}
-                  src={avatar}
+                  src={avatarUrl}
                   id="image-review"
                 ></img>
                 <input
@@ -357,7 +352,7 @@ function Restaurant({
                   name="avatar"
                   accept=".png, .jpg, .jpeg"
                   style={{ height: "max-content" }}
-                  onChange={(e) => setAvatar(e.target.files[0])}
+                  onChange={hanldeChooseImage}
                 ></input>
               </Grid>
               <Grid

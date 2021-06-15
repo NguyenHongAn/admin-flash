@@ -6,7 +6,8 @@ const URL = {
   CREATE_RESTAURANT: "/restaurants",
   GET_USERS: "/users",
   GET_GENERAL_INFO: "/",
-  GET_SHIPPERS: "shippers",
+  GET_SHIPPERS: "/shippers",
+  GET_WITHDRAW: "/withdraw",
 };
 
 export default URL;
