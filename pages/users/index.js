@@ -190,7 +190,7 @@ function UsersManagement({
                             onChange={handlePhoneFilterChange}
                           ></input>
                         </TableCell>
-                        <TableCell>Lượt báo cáo</TableCell>
+                        <TableCell>Họ và tên</TableCell>
                         <TableCell>Điểm</TableCell>
                         <TableCell>Trạng thái</TableCell>
                         <TableCell></TableCell>
@@ -206,7 +206,7 @@ function UsersManagement({
                             <TableCell>{user.email}</TableCell>
                             <TableCell>{user.phone}</TableCell>
                             <TableCell>{user.reports}</TableCell>
-                            <TableCell>{user.point}</TableCell>
+                            <TableCell>{user.fullname}</TableCell>
                             <TableCell>
                               {Service.getStatus(user.status)}
                             </TableCell>

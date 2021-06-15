@@ -166,9 +166,9 @@ function ListReport({
                             <TableCell>{report.payment}</TableCell>
                             <TableCell>
                               {report.status === 1 ? (
-                                <input type="checkbox" checked></input>
+                                <input type="checkbox" checked readOnly></input>
                               ) : (
-                                <input type="checkbox"></input>
+                                <input type="checkbox" readOnly></input>
                               )}
                             </TableCell>
                           </TableRow>

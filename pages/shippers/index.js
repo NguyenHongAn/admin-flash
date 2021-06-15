@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Layout from "../../components/Layout";
 import {
   Table,
@@ -7,9 +7,11 @@ import {
   TableRow,
   TableCell,
   TableContainer,
+  Grid,
   Button,
 } from "@material-ui/core";
-
+import { Icon } from "@iconify/react";
+import add12Filled from "@iconify/icons-fluent/add-12-filled";
 import BlockUserDialog from "../../components/BlockUserDialog";
 import Service from "./services";
 import Pagination from "../../components/Pagination";
@@ -19,6 +21,7 @@ import Meta from "../../components/Meta";
 import Card from "../../components/Card/Card";
 import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
+import CreateShipperDialog from "../../components/CreateShipperDialog";
 //style
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
@@ -27,6 +30,7 @@ import { useRouter } from "next/router";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
 import getTokenInSS from "../../utils/handldAutheticaion";
+import getReceiptStatus from "../../utils/getReceiptStatus";
 
 export async function getServerSideProps({ req, query }) {
   const { page, phone, email } = query;
@@ -38,6 +42,7 @@ export async function getServerSideProps({ req, query }) {
       phone,
       token
     );
+    //console.log(data.shippers);
     if (errorCode === 0) {
       return {
         props: {
@@ -96,6 +101,7 @@ function ShippersManagement({
   const [emailFilter, setEmailFilter] = useState(email);
   const [phoneFilter, setPhoneFilter] = useState(phone);
   const [isOpenBlockDialog, setIsOpenBlockDialog] = useState(false);
+  const [isOpenCreateShipper, setIsOpenCreateShipper] = useState(false);
   const typingTimeoutRef = useRef(null);
 
   const classes = useStyles();
@@ -112,7 +118,13 @@ function ShippersManagement({
       query: clearObject({ page, email, phone }),
     });
   };
-
+  const handleCloseShipperDialog = () => {
+    setIsOpenCreateShipper(false);
+    router.push({
+      pathname: "/shippers",
+      query: clearObject({ page, email, phone }),
+    });
+  };
   const handlePageChange = (selected) => {
     router.push({
       pathname: `/shippers`,
@@ -148,6 +160,34 @@ function ShippersManagement({
     }, 700);
   };
 
+  const handleServiceFee = async (id) => {
+    try {
+      const { errorCode } = await Service.paymentForServiceFee(id);
+      if (errorCode === 0) {
+        dispatch(
+          ToastAction.displayInfo("success", "Đã thanh toán phí dịch vụ")
+        );
+      } else {
+        dispatch(
+          ToastAction.displayInfo("error", ErrorCollection.EXECUTION[errorCode])
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        router.push("/");
+      }
+      error.response
+        ? dispatch(
+            ToastAction.displayInfo(
+              "error",
+              ErrorCollection.SERVER[error.response.status]
+            )
+          )
+        : null;
+    }
+  };
+
   return (
     <Layout routers={routers}>
       <Meta title="Flash Admin - Shipper"></Meta>
@@ -157,14 +197,28 @@ function ShippersManagement({
         info={user}
         role="shipper"
       ></BlockUserDialog>
+      <CreateShipperDialog
+        handleClose={handleCloseShipperDialog}
+        open={isOpenCreateShipper}
+      ></CreateShipperDialog>
       {
         <div>
           <div className={classes.tableContainer}>
             <Card>
-              <CardHeader color="info">
+              <CardHeader color="info" className={classes.restaurantTableHead}>
                 <h4 className={classes.cardTitleWhite}>
                   Tổng cộng: {totalShipper ? totalShipper : 0} tài xế
                 </h4>
+                <button
+                  onClick={() => setIsOpenCreateShipper(true)}
+                  className="add-restaurant-btn"
+                >
+                  <Icon
+                    icon={add12Filled}
+                    style={{ color: "#2196f3", fontSize: "24px" }}
+                  />
+                  Tạo tài xế mới
+                </button>
               </CardHeader>
               <CardBody>
                 <TableContainer>
@@ -188,7 +242,7 @@ function ShippersManagement({
                             onChange={handlePhoneFilterChange}
                           ></input>
                         </TableCell>
-
+                        <TableCell>Ho và tên</TableCell>
                         <TableCell>Đánh giá</TableCell>
                         <TableCell>Phí dịch vụ</TableCell>
                         <TableCell>Trạng thái</TableCell>
@@ -204,40 +258,59 @@ function ShippersManagement({
                             </TableCell>
                             <TableCell>{shipper.email}</TableCell>
                             <TableCell>{shipper.phone}</TableCell>
-
+                            <TableCell>{shipper.fullname}</TableCell>
                             <TableCell>
                               <RatingStar
                                 value={parseInt(shipper.avgReview)}
                               ></RatingStar>
                             </TableCell>
-                            <TableCell>{shipper.serviceCharge}</TableCell>
+                            <TableCell>
+                              {getReceiptStatus(shipper.serviceCharge)}
+                            </TableCell>
                             <TableCell>
                               {Service.getStatus(shipper.status)}
                             </TableCell>
                             <TableCell>
-                              {shipper.status === -2 ? (
-                                <Button
-                                  variant="outlined"
-                                  color="primary"
-                                  size="small"
-                                  onClick={() => {
-                                    handleOpenBlockDialog(shipper);
-                                  }}
-                                >
-                                  Mở khóa
-                                </Button>
-                              ) : shipper.status === 0 ? (
-                                <Button
-                                  variant="outlined"
-                                  color="primary"
-                                  size="small"
-                                  onClick={() => {
-                                    handleOpenBlockDialog(shipper);
-                                  }}
-                                >
-                                  Khóa
-                                </Button>
-                              ) : null}
+                              <Grid container>
+                                {shipper.serviceCharge === -1 ? (
+                                  <Button
+                                    size="small"
+                                    variant="outlined"
+                                    style={{
+                                      color: "#FFDF85",
+                                      borderColor: "#FFDF85",
+                                    }}
+                                    onClick={() =>
+                                      handleServiceFee(shipper._id)
+                                    }
+                                  >
+                                    Thanh toán
+                                  </Button>
+                                ) : null}
+                                {shipper.status === -2 ? (
+                                  <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    onClick={() => {
+                                      handleOpenBlockDialog(shipper);
+                                    }}
+                                  >
+                                    Mở khóa
+                                  </Button>
+                                ) : shipper.status === 0 ? (
+                                  <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    onClick={() => {
+                                      handleOpenBlockDialog(shipper);
+                                    }}
+                                  >
+                                    Khóa
+                                  </Button>
+                                ) : null}
+                              </Grid>
                             </TableCell>
                           </TableRow>
                         ))}

@@ -1,33 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import Hidden from "@material-ui/core/Hidden";
-import Tooltip from "@material-ui/core/Tooltip";
 // @material-ui/icons
 import { Icon } from "@iconify/react";
 import logoutIcon from "@iconify/icons-carbon/logout";
 
-import Search from "@material-ui/icons/Search";
-// core components
-import CustomInput from "../CustomInput/CustomInput.js";
 import Button from "../CustomButtons/Button.js";
 import { useDispatch } from "react-redux";
 import authActions from "../../store/actions/auth.A";
 
 import styles from "../../assets/jss/components/headerLinksStyle";
 import { useRouter } from "next/router";
-
+import { Cookies } from "react-cookie";
 const useStyles = makeStyles(styles);
+const cookies = new Cookies();
 
 export default function AdminNavbarLinks() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const route = useRouter();
+  const router = useRouter();
 
   const handleLogout = () => {
     dispatch(authActions.signOut());
-    localStorage.removeItem("jwt");
-    route.push("/");
+    cookies.remove("jwt");
+    router.push("/");
   };
 
   return (

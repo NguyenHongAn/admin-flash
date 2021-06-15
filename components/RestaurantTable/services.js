@@ -10,6 +10,9 @@ const Service = {
   stopRestaurantService: (id) => {
     return axiosClient.delete(`${URL.GET_RESTAURANTS_INFO}/${id}`);
   },
+  paymentForServiceFee: (id) => {
+    return axiosClient.post(`${URL.GET_RESTAURANTS_INFO}/pay-receipt`, { id });
+  },
 };
 
 export default Service;

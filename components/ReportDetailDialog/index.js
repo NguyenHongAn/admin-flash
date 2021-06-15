@@ -63,12 +63,14 @@ function ReportDetailDialog({ id, handleClose, open }) {
       if (error.response && error.response.status === 401) {
         router.push("/");
       }
-      dispatch(
-        ToastAction.displayInfo(
-          "error",
-          ErrorCollection.SERVER[error.response.status]
+      error.response
+      ? dispatch(
+          ToastAction.displayInfo(
+            "error",
+            ErrorCollection.SERVER[error.response.status]
+          )
         )
-      );
+      : null;
     }
     handleClose();
   };
@@ -103,12 +105,14 @@ function ReportDetailDialog({ id, handleClose, open }) {
           if (error.response && error.response.status === 401) {
             router.push("/");
           }
-          dispatch(
-            ToastAction.displayInfo(
-              "error",
-              ErrorCollection.SERVER[error.response.status]
+          error.response
+          ? dispatch(
+              ToastAction.displayInfo(
+                "error",
+                ErrorCollection.SERVER[error.response.status]
+              )
             )
-          );
+          : null;
         }
       })();
     }

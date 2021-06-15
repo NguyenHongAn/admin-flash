@@ -28,6 +28,7 @@ import { useRouter } from "next/router";
 import classNames from "classnames";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../store/actions/toast.A";
+import getReceiptStatus from "../../utils/getReceiptStatus";
 
 const useStyles = makeStyles(styles);
 
@@ -91,6 +92,33 @@ function RestaurantTable({
   const handleCloseCreateResDialog = () => {
     setIsOpenNewRestaurant(false);
     setIsReload(Date.now());
+  };
+  const handleServiceFee = async (id) => {
+    try {
+      const { errorCode } = await Service.paymentForServiceFee(id);
+      if (errorCode === 0) {
+        dispatch(
+          ToastAction.displayInfo("success", "Đã thanh toán phí dịch vụ")
+        );
+      } else {
+        dispatch(
+          ToastAction.displayInfo("error", ErrorCollection.EXECUTION[errorCode])
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        router.push("/");
+      }
+      error.response
+        ? dispatch(
+            ToastAction.displayInfo(
+              "error",
+              ErrorCollection.SERVER[error.response.status]
+            )
+          )
+        : null;
+    }
   };
 
   useEffect(() => {
@@ -205,13 +233,28 @@ function RestaurantTable({
                       <TableCell>
                         {new Date(restaurant.createdAt).toLocaleDateString()}
                       </TableCell>
-                      <TableCell>{restaurant.serviceCharge}</TableCell>
+                      <TableCell>
+                        {getReceiptStatus(restaurant.serviceCharge)}
+                      </TableCell>
                       <TableCell>
                         <RatingStar
                           value={parseInt(restaurant.rating)}
                         ></RatingStar>
                       </TableCell>
                       <TableCell>
+                        {restaurant.serviceCharge === -1 ? (
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            style={{
+                              color: "#FFDF85",
+                              borderColor: "#FFDF85",
+                            }}
+                            onClick={() => handleServiceFee(restaurant._id)}
+                          >
+                            Thanh toán
+                          </Button>
+                        ) : null}
                         {restaurant.isService ? (
                           !restaurant.isPartner ? (
                             <div

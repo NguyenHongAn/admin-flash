@@ -28,7 +28,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function CreateRestaurantDialog({ open, handleClose, location }) {
-  const [errorMsg, setErrorMsg] = useState("");
   const [districts, setDistricts] = useState(null);
   const [wards, setWards] = useState(null);
   const dispatch = useDispatch();
@@ -86,25 +85,32 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
         console.log({ errorCode, data });
         if (errorCode === 0) {
           resetForm();
-          setErrorMsg("");
+
           dispatch(
             ToastAction.displayInfo("success", "Tạo nhà hàng mới thành công")
           );
           handleClose();
         } else {
-          setErrorMsg(ErrorCollection.EXECUTION[errorCode]);
+          dispatch(
+            ToastAction.displayInfo(
+              "error",
+              ErrorCollection.EXECUTION[errorCode]
+            )
+          );
         }
       } catch (error) {
         console.log(error);
         if (error.response && error.response.status === 401) {
           router.push("/");
         }
-        dispatch(
-          ToastAction.displayInfo(
-            "error",
-            ErrorCollection.SERVER[error.response.status]
-          )
-        );
+        error.response
+          ? dispatch(
+              ToastAction.displayInfo(
+                "error",
+                ErrorCollection.SERVER[error.response.status]
+              )
+            )
+          : null;
       }
       dispatch(loadingAction.turnOffLoading());
     },
@@ -148,11 +154,6 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
             maxWidth="sm"
             className={innerStyle.formContainer}
           >
-            {errorMsg === "" ? null : (
-              <Typography className={innerStyle.error} align="left">
-                {errorMsg}
-              </Typography>
-            )}
             <form onSubmit={formik.handleSubmit}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={12} className={innerStyle.input}>
@@ -401,7 +402,6 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                       variant="contained"
                       onClick={() => {
                         handleClose();
-                        setErrorMsg("");
                         formik.resetForm();
                       }}
                     >

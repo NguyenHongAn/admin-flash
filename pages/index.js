@@ -26,7 +26,7 @@ function signin() {
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading);
-
+  const router = useRouter();
   const classes = useStyles();
 
   const formik = useFormik({
@@ -57,7 +57,7 @@ function signin() {
           setError(ErrorCollection.EXECUTION[errorCode]);
         }
       } catch (error) {
-        console.log(error.message);
+        console.log(error);
         setError(ErrorCollection.SERVER[error.response.status]);
       }
 
@@ -65,10 +65,9 @@ function signin() {
     },
   });
 
-  const router = useRouter();
   useEffect(() => {
     const jwt = cookies.get("jwt");
-    console.log(jwt);
+
     if (typeof jwt !== "undefined") {
       router.push("/general-statistics");
     }

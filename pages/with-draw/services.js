@@ -10,6 +10,26 @@ const Service = {
       },
     });
   },
+  solveWithDraw: (id) => {
+    return axiosClient.post(URL.GET_WITHDRAW, {
+      id: id,
+    });
+  },
+  cancelWithDraw: (id) => {
+    return axiosClient.post(`${URL.GET_WITHDRAW}/cancel`, {
+      id: id,
+    });
+  },
+  getStatus: (status) => {
+    switch (status) {
+      case -1:
+        return "Chưa giải quyết";
+      case 1:
+        return "Đã giải quyết";
+      default:
+        return "Chưa giải quyết";
+    }
+  },
 };
 
 export default Service;

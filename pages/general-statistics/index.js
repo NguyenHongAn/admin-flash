@@ -69,13 +69,15 @@ export async function getServerSideProps({ req, query }) {
           permanent: false,
         },
       };
+    } else if (error.response) {
+      return {
+        props: {
+          errorType: "error",
+          errorMsg: ErrorCollection.SERVER[error.response.status],
+        },
+      };
     }
-    return {
-      props: {
-        errorType: "error",
-        errorMsg: ErrorCollection.SERVER[error.response.status],
-      },
-    };
+    return { notFound: true };
   }
 }
 

@@ -12,6 +12,9 @@ const services = {
       },
     });
   },
+  paymentForServiceFee: (id) => {
+    return axiosClient.post(`${URL.GET_SHIPPERS}/pay-receipt`, { id });
+  },
   getStatus: (num) => {
     switch (num) {
       case -2:
