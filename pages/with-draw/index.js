@@ -30,13 +30,12 @@ import { useDispatch } from "react-redux";
 import ToastAction from "../../store/actions/toast.A";
 
 export async function getServerSideProps({ req, query }) {
-  const { page } = query;
+  const { page, filter } = query;
   const token = getTokenInSS(req);
   try {
     const { errorCode, data, pagingInfo } = await Service.getWithDrawList(
       page,
-      //   email,
-      //   phone,
+      filter,
       token
     );
 
@@ -85,12 +84,22 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
   const classes = useStyles();
   const router = useRouter();
   const dispatch = useDispatch();
+  const { page, filter } = router.query;
 
   const handlePageChange = (selected) => {
     router.push({
       pathname: `/with-draw`,
-      query: clearObject({ page: selected }),
+      query: clearObject({ page: selected, filter }),
     });
+  };
+
+  const handleFilterChange = (e) => {
+    if (filter !== 2) {
+      router.push({
+        pathname: `/with-draw`,
+        query: clearObject({ page, filter: e.target.value }),
+      });
+    }
   };
 
   const solveWithDraw = async (id) => {
@@ -161,6 +170,17 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
             <h4 className={classes.cardTitleWhite}>
               Tổng cộng: {listWithDraw && listWithDraw.length} tài xế
             </h4>
+            <select
+              name="area"
+              className="restaurant-table-filter"
+              value={filter ? filter : 2}
+              onChange={handleDistrictChange}
+            >
+              <option value={2}>Tất cả</option>
+              <option value={-1}>Chưa giải quyết</option>
+              <option value={0}>Đã xử lý</option>
+              <option value={1}>Tất cả</option>
+            </select>
           </CardHeader>
           <CardBody>
             <TableContainer>

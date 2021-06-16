@@ -22,8 +22,10 @@ import CardFooter from "../../components/Card/CardFooter.js";
 import Table from "../../components/Table/Table";
 import muiStyles from "../../assets/jss/views/dashboardStyle";
 import { ArrowDownward } from "@material-ui/icons";
+import SettingsIcon from "@material-ui/icons/Settings";
 import routers from "../../config/routers";
 import getTokenInSS from "../../utils/handldAutheticaion";
+import SettingDialog from "../../components/SettingDialog";
 
 export async function getServerSideProps({ req, query }) {
   const { filter } = query;
@@ -102,16 +104,30 @@ function GeneralStatistic({
   const classes = useStyles();
   const route = useRouter();
   const { filter } = route.query;
-  //const [filter, setFilter] = useState(_filter);
+  const [isOpenSetting, setIsOpenSetting] = useState(false);
   const handleFilterChange = (e) => {
     route.push({
       pathname: "/general-statistics",
       query: { filter: e.target.value },
     });
   };
+
+  const handleCloseSettingDalog = () => {
+    setIsOpenSetting(false);
+    route.push({
+      pathname: "/general-statistics",
+      query: { filter },
+    });
+  };
   return (
     <Layout routers={routers}>
       <Meta title="Admin Flash - General Statistics"></Meta>
+      <SettingDialog
+        open={isOpenSetting}
+        handleClose={handleCloseSettingDalog}
+        shipper={shipperData}
+        restaurant={restaurantData}
+      ></SettingDialog>
       {
         <div>
           <Grid container>
@@ -283,7 +299,9 @@ function GeneralStatistic({
                   </CardHeader>
                   <CardBody>
                     <h4 className={classes.cardTitle}>
-                      Tổng thanh toán : {totalPayment ? totalPayment : 0} đồng
+                      Tổng thanh toán :{" "}
+                      {totalPayment ? Number(totalPayment).toLocaleString() : 0}{" "}
+                      đồng
                     </h4>
                     {paymentPercent > 0 ? (
                       <p className={classes.cardCategory}>
@@ -314,20 +332,25 @@ function GeneralStatistic({
             <Grid container>
               <Grid item xs={12} md={6}>
                 <Card>
-                  <CardHeader color="warning">
+                  <CardHeader
+                    color="warning"
+                    style={{ justifyContent: "space-between", display: "flex" }}
+                    onClick={() => setIsOpenSetting(true)}
+                  >
                     <h4
                       className={classes.cardTitleWhite}
                       style={{ with: "50%" }}
                     >
                       Thống kê phí dịch vụ
                     </h4>
-                    <div style={{ float: "left" }}>Chỉnh sủa phí dịch vụ</div>
+                    <SettingsIcon style={{ cursor: "pointer" }}></SettingsIcon>
                   </CardHeader>
                   <CardBody>
                     <Table
                       tableHead={[
                         "Tên",
                         "Phí dịch vụ (%)",
+                        "thời gian nợ (ngày)",
                         "Lý thuyết",
                         "Còn thiếu",
                       ]}

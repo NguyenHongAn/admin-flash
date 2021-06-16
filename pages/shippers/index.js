@@ -31,6 +31,8 @@ import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
 import getTokenInSS from "../../utils/handldAutheticaion";
 import getReceiptStatus from "../../utils/getReceiptStatus";
+import { useDispatch } from "react-redux";
+import ToastAction from "../../store/actions/toast.A";
 
 export async function getServerSideProps({ req, query }) {
   const { page, phone, email } = query;
@@ -105,7 +107,7 @@ function ShippersManagement({
   const typingTimeoutRef = useRef(null);
 
   const classes = useStyles();
-
+  const dispatch = useDispatch();
   const handleOpenBlockDialog = (account) => {
     setIsOpenBlockDialog(true);
     setUser(account);
@@ -163,10 +165,15 @@ function ShippersManagement({
   const handleServiceFee = async (id) => {
     try {
       const { errorCode } = await Service.paymentForServiceFee(id);
+      console.log(errorCode);
       if (errorCode === 0) {
         dispatch(
           ToastAction.displayInfo("success", "Đã thanh toán phí dịch vụ")
         );
+        router.push({
+          pathname: "/shippers",
+          query: clearObject({ page, email, phone }),
+        });
       } else {
         dispatch(
           ToastAction.displayInfo("error", ErrorCollection.EXECUTION[errorCode])
@@ -244,6 +251,7 @@ function ShippersManagement({
                         </TableCell>
                         <TableCell>Ho và tên</TableCell>
                         <TableCell>Đánh giá</TableCell>
+                        <TableCell>Trạng thái phí</TableCell>
                         <TableCell>Phí dịch vụ</TableCell>
                         <TableCell>Trạng thái</TableCell>
                         <TableCell></TableCell>
@@ -267,6 +275,7 @@ function ShippersManagement({
                             <TableCell>
                               {getReceiptStatus(shipper.serviceCharge)}
                             </TableCell>
+                            <TableCell>{shipper.serviceFee}</TableCell>
                             <TableCell>
                               {Service.getStatus(shipper.status)}
                             </TableCell>
@@ -279,12 +288,13 @@ function ShippersManagement({
                                     style={{
                                       color: "#FFDF85",
                                       borderColor: "#FFDF85",
+                                      margin: "0px 5px",
                                     }}
                                     onClick={() =>
-                                      handleServiceFee(shipper._id)
+                                      handleServiceFee(shipper.receiptID)
                                     }
                                   >
-                                    Thanh toán
+                                    Trả phí
                                   </Button>
                                 ) : null}
                                 {shipper.status === -2 ? (

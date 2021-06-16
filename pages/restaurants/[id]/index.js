@@ -61,6 +61,7 @@ export async function getServerSideProps({ req, query }) {
           _wards,
           _manager: data.manager || {},
           _phone: data.restaurant.Phone,
+          _password: data.newPassword,
         },
       };
     }
@@ -99,6 +100,7 @@ function Restaurant({
   _districts,
   _manager,
   _phone,
+  _password,
 }) {
   const classes = useStyles();
   const router = useRouter();
@@ -425,21 +427,6 @@ function Restaurant({
                     inputProps={{ step: 300 }}
                   />
                 </Grid>
-
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    placeholder="Thông báo"
-                    //required
-                    id="anouncement"
-                    name="anouncement"
-                    onChange={infoFormik.handleChange}
-                    value={infoFormik.values.anouncement}
-                    error={infoFormik.errors.anouncement && true}
-                    label={infoFormik.errors.anouncement}
-                  ></TextField>
-                </Grid>
                 <CustomButton
                   type="submit"
                   variant="contained"
@@ -617,6 +604,20 @@ function Restaurant({
                     value={premisionFormik.values.fullname}
                     error={premisionFormik.errors.fullname && true}
                     label={premisionFormik.errors.fullname}
+                  ></TextField>
+                </Grid>
+                <Grid item xs={12} container justify="space-between">
+                  <span style={{ width: "85px", textAlign: "end" }}>
+                    Mật khẩu
+                  </span>
+                  <TextField
+                    style={{ width: "80%" }}
+                    variant="outlined"
+                    name="password"
+                    id="password"
+                    fullWidth
+                    inputProps={{ readOnly: true }}
+                    defaultValue={_password}
                   ></TextField>
                 </Grid>
                 <CustomButton

@@ -7,8 +7,8 @@ const Service = {
       params: { city: city, search: search, page: page, district, partner },
     });
   },
-  stopRestaurantService: (id) => {
-    return axiosClient.delete(`${URL.GET_RESTAURANTS_INFO}/${id}`);
+  handleRecallPermission: (id) => {
+    return axiosClient.put(`${URL.GET_RESTAURANTS_INFO}/${id}/recall`);
   },
   paymentForServiceFee: (id) => {
     return axiosClient.post(`${URL.GET_RESTAURANTS_INFO}/pay-receipt`, { id });

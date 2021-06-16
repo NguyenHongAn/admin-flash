@@ -60,16 +60,18 @@ function RestaurantTable({
     setDistrict(e.target.value);
   };
 
-  const handleStopService = async (id, name) => {
+  const handleRecallPermission = async (id, name) => {
     try {
-      const { errorCode } = await Service.stopRestaurantService(id);
+      const { errorCode } = await Service.handleRecallPermission(id);
+      console.log(errorCode);
       if (errorCode === 0) {
         dispatch(
           ToastAction.displayInfo(
             "success",
-            "Ngừng kinh doanh nhà hàng " + name
+            "Thu hồi quyền quản lý nhà hàng " + name
           )
         );
+        router.push("/restaurants");
       } else {
         dispatch(
           ToastAction.displayInfo("error", ErrorCollection.EXECUTION[errorCode])
@@ -215,6 +217,7 @@ function RestaurantTable({
                   <TableCell>Tên nhà hàng</TableCell>
                   <TableCell>Địa chỉ</TableCell>
                   <TableCell>Thời gian tạo</TableCell>
+                  <TableCell>Tình trạng</TableCell>
                   <TableCell> Phí dịch vụ</TableCell>
                   <TableCell>Đánh giá</TableCell>
 
@@ -236,6 +239,7 @@ function RestaurantTable({
                       <TableCell>
                         {getReceiptStatus(restaurant.serviceCharge)}
                       </TableCell>
+                      <TableCell>{restaurant.serviceFee}</TableCell>
                       <TableCell>
                         <RatingStar
                           value={parseInt(restaurant.rating)}
@@ -249,10 +253,13 @@ function RestaurantTable({
                             style={{
                               color: "#FFDF85",
                               borderColor: "#FFDF85",
+                              margin: "0px 5px",
                             }}
-                            onClick={() => handleServiceFee(restaurant._id)}
+                            onClick={() =>
+                              handleServiceFee(restaurant.receiptID)
+                            }
                           >
-                            Thanh toán
+                            Trả phí
                           </Button>
                         ) : null}
                         {restaurant.isService ? (
@@ -272,10 +279,14 @@ function RestaurantTable({
                             <Button
                               variant="outlined"
                               color="secondary"
-                              onClick={() => handleStopService(restaurant._id)}
+                              onClick={() =>
+                                handleRecallPermission(
+                                  restaurant._id,
+                                  restaurant.name
+                                )
+                              }
                             >
-                              {" "}
-                              Ngừng
+                              Thu hồi
                             </Button>
                           )
                         ) : (

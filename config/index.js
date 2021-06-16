@@ -27,6 +27,8 @@ const EXECUTION_ERROR = {
   170: "Lấy danh sách các khiếu nại thất bại",
   171: "Cập nhật khiếu nại thất bại",
   180: "Lấy danh sách thành phố và quận thất bại",
+  181: "Lấy thông tin cai đặt thất bại",
+  182: "Cập nhật thông tin cài đặt thât bại",
   190: "Lấy thông tin thống kê không thành công",
   193: "Thanh toán phí dịch vụ thành công ",
   194: "Hoàn tiền thất bại",
