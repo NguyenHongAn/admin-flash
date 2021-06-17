@@ -27,7 +27,7 @@ import styles from "../../assets/jss/views/TableListStyle";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
 import { useRouter } from "next/router";
-import getTokenInSS from "../../utils/handldAutheticaion";
+import getTokenInSS from "../../utils/handleAuthetication";
 
 export async function getServerSideProps({ req, query }) {
   const { page, phone, email } = query;

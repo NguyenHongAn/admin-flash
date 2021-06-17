@@ -1,5 +1,14 @@
 import axiosClient from "../../api";
 import URL from "../../api/URL";
+import {
+  roseColor,
+  infoColor,
+  successColor,
+  whiteColor,
+  blackColor,
+  primaryColor,
+  warningColor,
+} from "../../assets/jss";
 
 const services = {
   getGeneralStatistics: (filter, token) => {
@@ -40,9 +49,15 @@ const services = {
       },
     },
   },
-  chartLabels: ["Mon", "Tues", "Wednes", "Thus", "Fri", "Sat", "Sun"],
-  chartBorder: ["white"],
-  chartColor: ["white"],
+  CHART_COLOR: {
+    roseColor,
+    infoColor,
+    successColor,
+    whiteColor,
+    blackColor,
+    warningColor,
+    primaryColor,
+  },
 };
 
 export default services;

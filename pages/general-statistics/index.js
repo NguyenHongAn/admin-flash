@@ -24,7 +24,7 @@ import muiStyles from "../../assets/jss/views/dashboardStyle";
 import { ArrowDownward } from "@material-ui/icons";
 import SettingsIcon from "@material-ui/icons/Settings";
 import routers from "../../config/routers";
-import getTokenInSS from "../../utils/handldAutheticaion";
+import getTokenInSS from "../../utils/handleAuthetication";
 import SettingDialog from "../../components/SettingDialog";
 
 export async function getServerSideProps({ req, query }) {
@@ -47,6 +47,7 @@ export async function getServerSideProps({ req, query }) {
           totalPayment: data.totalPayment,
           numberOrderArr: data.numberOfOrder,
           paymentOrderArr: data.payOfOrder,
+          statusOrderArr: data.orderStatus,
           numberPercent: data.numberPercent,
           paymentPercent: data.paymentPercent,
           chartLabels: data.labels,
@@ -94,6 +95,7 @@ function GeneralStatistic({
   totalPayment,
   numberOrderArr,
   paymentOrderArr,
+  statusOrderArr,
   numberPercent,
   paymentPercent,
   errorType,
@@ -241,8 +243,8 @@ function GeneralStatistic({
                         labels: chartLabels,
                         datasets: [
                           {
-                            borderColor: Service.chartBorder,
-                            backgroundColor: Service.chartColor,
+                            borderColor: Service.CHART_COLOR.whiteColor,
+                            backgroundColor: Service.CHART_COLOR.whiteColor,
                             label: "Số đơn",
                             data: numberOrderArr,
                           },
@@ -287,8 +289,8 @@ function GeneralStatistic({
                         labels: chartLabels,
                         datasets: [
                           {
-                            borderColor: Service.chartBorder,
-                            backgroundColor: Service.chartColor,
+                            borderColor: Service.CHART_COLOR.whiteColor,
+                            backgroundColor: Service.CHART_COLOR.whiteColor,
                             label: "Thanh toán",
                             data: paymentOrderArr,
                           },
@@ -324,6 +326,64 @@ function GeneralStatistic({
                         {" % giảm so với trước"}
                       </p>
                     )}
+                  </CardBody>
+                </Card>
+              </Grid>
+              <Grid item className={classes.cardContainer} md={6} xs={6}>
+                <Card chart>
+                  <CardHeader color="success">
+                    <Line
+                      data={{
+                        labels: chartLabels,
+                        datasets: [
+                          {
+                            borderColor: Service.CHART_COLOR.infoColor[1],
+                            backgroundColor: Service.CHART_COLOR.infoColor[1],
+                            label: "Đơn hàng thành công",
+                            data: statusOrderArr[0],
+                          },
+                          {
+                            borderColor: Service.CHART_COLOR.warningColor[1],
+                            backgroundColor:
+                              Service.CHART_COLOR.warningColor[1],
+                            label: "Đơn hàng bị hoãn",
+                            data: statusOrderArr[1],
+                          },
+                          {
+                            borderColor: Service.CHART_COLOR.whiteColor,
+                            backgroundColor: Service.CHART_COLOR.whiteColor,
+                            label: "Đơn hàng boom",
+                            data: statusOrderArr[2],
+                          },
+                        ],
+                      }}
+                      options={Service.chartOptions}
+                    ></Line>
+                  </CardHeader>
+                  <CardBody>
+                    <Grid container>
+                      <h4 className={classes.cardTitle}>
+                        Số đơn thành công:{" "}
+                        {statusOrderArr[0].reduce(
+                          (pre, curr) => (pre += curr),
+                          0
+                        )}{" "}
+                      </h4>
+                      <h4 className={classes.cardTitle}>
+                        Số đơn bị hủy:{" "}
+                        {statusOrderArr[1].reduce(
+                          (pre, curr) => (pre += curr),
+                          0
+                        )}{" "}
+                      </h4>
+                      <h4 className={classes.cardTitle}>
+                        Số đơn bị boom:{" "}
+                        {statusOrderArr[2].reduce(
+                          (pre, curr) => (pre += curr),
+                          0
+                        )}{" "}
+                      </h4>
+                    </Grid>
                   </CardBody>
                 </Card>
               </Grid>

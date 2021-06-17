@@ -35,14 +35,16 @@ function ShipperDetailDialog({ id, handleClose, open, shipper }) {
 
   const dispatch = useDispatch();
   //console.log(shipper);
-  const handleBoomOrder = async () => {
+  const handleBoomOrder = async (e) => {
+    e.preventDefault();
     try {
       const { errorCode, data } = await Service.handleBoomOrder(
         orderID,
         shipper._id
       );
+
       if (errorCode === 0) {
-        console.log(data);
+        setOrderID("");
       } else {
         dispatch(
           ToastAction.displayInfo("error", ErrorCollection.EXECUTION[errorCode])
@@ -148,7 +150,7 @@ function ShipperDetailDialog({ id, handleClose, open, shipper }) {
               item
               md={12}
               component="form"
-              onSubmit={handleBoomOrder}
+              onSubmit={(e) => handleBoomOrder(e)}
             >
               <Grid
                 item

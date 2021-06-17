@@ -31,7 +31,7 @@ import styles from "../../assets/jss/views/TableListStyle";
 import { useRouter } from "next/router";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
-import getTokenInSS from "../../utils/handldAutheticaion";
+import getTokenInSS from "../../utils/handleAuthetication";
 import {getReceiptStatus} from "../../utils/getStatus";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../store/actions/toast.A";

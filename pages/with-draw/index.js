@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Layout from "../../components/Layout";
 import {
   Table,
@@ -25,17 +25,17 @@ import styles from "../../assets/jss/views/TableListStyle";
 import { useRouter } from "next/router";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
-import getTokenInSS from "../../utils/handldAutheticaion";
+import getTokenInSS from "../../utils/handleAuthetication";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../store/actions/toast.A";
 
 export async function getServerSideProps({ req, query }) {
-  const { page, filter } = query;
+  const { page, phone } = query;
   const token = getTokenInSS(req);
   try {
     const { errorCode, data, pagingInfo } = await Service.getWithDrawList(
       page,
-      filter,
+      phone,
       token
     );
 
@@ -84,8 +84,9 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
   const classes = useStyles();
   const router = useRouter();
   const dispatch = useDispatch();
-  const { page, filter } = router.query;
-
+  const { page, phone } = router.query;
+  const [phoneFilter, setPhoneFilter] = useState(phone);
+  const typingTimeoutRef = useRef(null);
   const handlePageChange = (selected) => {
     router.push({
       pathname: `/with-draw`,
@@ -94,12 +95,17 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
   };
 
   const handleFilterChange = (e) => {
-    if (filter !== 2) {
+    setPhoneFilter(e.target.value);
+    //
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
       router.push({
         pathname: `/with-draw`,
-        query: clearObject({ page, filter: e.target.value }),
+        query: clearObject({ page, phone: e.target.value }),
       });
-    }
+    }, 700);
   };
 
   const solveWithDraw = async (id) => {
@@ -168,19 +174,8 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
         <Card>
           <CardHeader color="info">
             <h4 className={classes.cardTitleWhite}>
-              Tổng cộng: {listWithDraw && listWithDraw.length} tài xế
+              Tổng cộng: {listWithDraw && listWithDraw.length} yêu cầu
             </h4>
-            <select
-              name="area"
-              className="restaurant-table-filter"
-              value={filter ? filter : 2}
-              onChange={handleDistrictChange}
-            >
-              <option value={2}>Tất cả</option>
-              <option value={-1}>Chưa giải quyết</option>
-              <option value={0}>Đã xử lý</option>
-              <option value={1}>Tất cả</option>
-            </select>
           </CardHeader>
           <CardBody>
             <TableContainer>
@@ -189,7 +184,14 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
                   <TableRow>
                     <TableCell>STT</TableCell>
                     <TableCell>Tên </TableCell>
-                    <TableCell>Sđt </TableCell>
+                    <TableCell>
+                      Sđt{" "}
+                      <input
+                        type="text"
+                        value={phoneFilter}
+                        onChange={handleFilterChange}
+                      ></input>{" "}
+                    </TableCell>
 
                     <TableCell>Đối tượng</TableCell>
                     <TableCell>Số tiền rút</TableCell>

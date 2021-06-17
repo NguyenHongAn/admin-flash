@@ -19,7 +19,12 @@ const EXECUTION_ERROR = {
   110: "Lấy danh sách người dùng không thành công",
   111: "Có lỗi xãy ra khi khóa tài khoản người dùng này",
   112: "Người dùng hiện không tồn tại trong hệ thống, xin mời kiên tra lại",
-  120: ":ấy danh sách tài xế thất bại",
+  120: "Lấy danh sách tài xế thất bại",
+  121: "Cập nhật thông tin đơn hàng hất bại",
+  122: "không tìm thấy đơn hàng",
+  130: "Thanh toán phí dịch vụ không thành công",
+  140: "Hoàn tiền thất bại",
+  141: "Lấy danh sách yêu cầu hoàn tiền không thành công",
   150: "Server đang lỗi tạm thời không thể đăng nhập",
   151: "Email không hợp lệ",
   152: "Mật khẩu không hợp lệ",
@@ -27,12 +32,9 @@ const EXECUTION_ERROR = {
   170: "Lấy danh sách các khiếu nại thất bại",
   171: "Cập nhật khiếu nại thất bại",
   180: "Lấy danh sách thành phố và quận thất bại",
-  181: "Lấy thông tin cai đặt thất bại",
+  181: "Lấy thông tin cài đặt thất bại",
   182: "Cập nhật thông tin cài đặt thât bại",
   190: "Lấy thông tin thống kê không thành công",
-  193: "Thanh toán phí dịch vụ thành công ",
-  194: "Hoàn tiền thất bại",
-  195: "Lấy danh sách yêu cầu hoàn tiền thành công",
 };
 
 const ErrorCollection = {

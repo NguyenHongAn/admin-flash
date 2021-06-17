@@ -25,7 +25,7 @@ import classNames from "classnames";
 import Service from "./services";
 import { useFormik } from "formik";
 import ErrorCollection from "../../../config";
-import getTokenInSS from "../../../utils/handldAutheticaion";
+import getTokenInSS from "../../../utils/handleAuthetication";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../../store/actions/toast.A";
 

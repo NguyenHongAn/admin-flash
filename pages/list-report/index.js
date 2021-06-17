@@ -19,7 +19,7 @@ import styles from "../../assets/jss/views/TableListStyle";
 //function
 import routers from "../../config/routers";
 import Service from "./services";
-import getTokenInSS from "../../utils/handldAutheticaion";
+import getTokenInSS from "../../utils/handleAuthetication";
 import ErrorCollection from "../../config";
 import { useRouter } from "next/router";
 

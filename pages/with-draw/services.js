@@ -2,9 +2,9 @@ import axiosClient from "../../api";
 import URL from "../../api/URL";
 
 const Service = {
-  getWithDrawList: (page, token) => {
+  getWithDrawList: (page, phone, token) => {
     return axiosClient.get(URL.GET_WITHDRAW, {
-      params: { page },
+      params: { page, phone },
       headers: {
         Authorization: "Bearer " + token,
       },
@@ -26,6 +26,8 @@ const Service = {
         return "Chưa giải quyết";
       case 1:
         return "Đã giải quyết";
+      case 0:
+        return "Đã hủy";
       default:
         return "Chưa giải quyết";
     }

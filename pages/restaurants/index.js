@@ -29,7 +29,7 @@ import Service from "./services.js";
 import { useRouter } from "next/router";
 import routers from "../../config/routers";
 import classNames from "classnames";
-import getTokenInSS from "../../utils/handldAutheticaion";
+import getTokenInSS from "../../utils/handleAuthetication";
 
 export async function getServerSideProps({ req, query }) {
   const { city } = query;
