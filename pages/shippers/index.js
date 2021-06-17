@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { Icon } from "@iconify/react";
 import add12Filled from "@iconify/icons-fluent/add-12-filled";
+import accountDetails from "@iconify/icons-mdi/account-details";
 import BlockUserDialog from "../../components/BlockUserDialog";
 import Service from "./services";
 import Pagination from "../../components/Pagination";
@@ -22,6 +23,7 @@ import Card from "../../components/Card/Card";
 import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
 import CreateShipperDialog from "../../components/CreateShipperDialog";
+import ShipperDetailDialog from "../../components/ShipperDetailDialog";
 //style
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/views/TableListStyle";
@@ -30,7 +32,7 @@ import { useRouter } from "next/router";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
 import getTokenInSS from "../../utils/handldAutheticaion";
-import getReceiptStatus from "../../utils/getReceiptStatus";
+import {getReceiptStatus} from "../../utils/getStatus";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../store/actions/toast.A";
 
@@ -104,6 +106,7 @@ function ShippersManagement({
   const [phoneFilter, setPhoneFilter] = useState(phone);
   const [isOpenBlockDialog, setIsOpenBlockDialog] = useState(false);
   const [isOpenCreateShipper, setIsOpenCreateShipper] = useState(false);
+  const [isOpenDetailDialog, setIsOpenDetailDialog] = useState(false);
   const typingTimeoutRef = useRef(null);
 
   const classes = useStyles();
@@ -126,6 +129,10 @@ function ShippersManagement({
       pathname: "/shippers",
       query: clearObject({ page, email, phone }),
     });
+  };
+  const handleOpenDetailDialog = (shipper) => {
+    setIsOpenDetailDialog(true);
+    setUser(shipper);
   };
   const handlePageChange = (selected) => {
     router.push({
@@ -208,6 +215,11 @@ function ShippersManagement({
         handleClose={handleCloseShipperDialog}
         open={isOpenCreateShipper}
       ></CreateShipperDialog>
+      <ShipperDetailDialog
+        handleClose={setIsOpenDetailDialog}
+        open={isOpenDetailDialog}
+        shipper={user}
+      ></ShipperDetailDialog>
       {
         <div>
           <div className={classes.tableContainer}>
@@ -249,7 +261,7 @@ function ShippersManagement({
                             onChange={handlePhoneFilterChange}
                           ></input>
                         </TableCell>
-                        <TableCell>Ho và tên</TableCell>
+
                         <TableCell>Đánh giá</TableCell>
                         <TableCell>Trạng thái phí</TableCell>
                         <TableCell>Phí dịch vụ</TableCell>
@@ -266,7 +278,7 @@ function ShippersManagement({
                             </TableCell>
                             <TableCell>{shipper.email}</TableCell>
                             <TableCell>{shipper.phone}</TableCell>
-                            <TableCell>{shipper.fullname}</TableCell>
+
                             <TableCell>
                               <RatingStar
                                 value={parseInt(shipper.avgReview)}
@@ -279,49 +291,62 @@ function ShippersManagement({
                             <TableCell>
                               {Service.getStatus(shipper.status)}
                             </TableCell>
-                            <TableCell>
-                              <Grid container>
-                                {shipper.serviceCharge === -1 ? (
-                                  <Button
-                                    size="small"
-                                    variant="outlined"
-                                    style={{
-                                      color: "#FFDF85",
-                                      borderColor: "#FFDF85",
-                                      margin: "0px 5px",
-                                    }}
-                                    onClick={() =>
-                                      handleServiceFee(shipper.receiptID)
-                                    }
-                                  >
-                                    Trả phí
-                                  </Button>
-                                ) : null}
-                                {shipper.status === -2 ? (
-                                  <Button
-                                    variant="outlined"
-                                    color="primary"
-                                    size="small"
-                                    onClick={() => {
-                                      handleOpenBlockDialog(shipper);
-                                    }}
-                                  >
-                                    Mở khóa
-                                  </Button>
-                                ) : shipper.status === 0 ? (
-                                  <Button
-                                    variant="outlined"
-                                    color="primary"
-                                    size="small"
-                                    onClick={() => {
-                                      handleOpenBlockDialog(shipper);
-                                    }}
-                                  >
-                                    Khóa
-                                  </Button>
-                                ) : null}
-                              </Grid>
-                            </TableCell>
+
+                            <Grid
+                              container
+                              spacing={1}
+                              justify="space-between"
+                              component={TableCell}
+                            >
+                              {shipper.serviceCharge === -1 ? (
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  style={{
+                                    color: "#FFDF85",
+                                    borderColor: "#FFDF85",
+                                    // margin: "0px 5px",
+                                  }}
+                                  onClick={() =>
+                                    handleServiceFee(shipper.receiptID)
+                                  }
+                                >
+                                  Trả phí
+                                </Button>
+                              ) : null}
+                              {shipper.status === -2 ? (
+                                <Button
+                                  variant="outlined"
+                                  color="primary"
+                                  size="small"
+                                  onClick={() => {
+                                    handleOpenBlockDialog(shipper);
+                                  }}
+                                >
+                                  Mở khóa
+                                </Button>
+                              ) : shipper.status === 0 ? (
+                                <Button
+                                  variant="outlined"
+                                  color="primary"
+                                  size="small"
+                                  onClick={() => {
+                                    handleOpenBlockDialog(shipper);
+                                  }}
+                                >
+                                  Khóa
+                                </Button>
+                              ) : null}
+                              <Icon
+                                icon={accountDetails}
+                                style={{
+                                  fontSize: "24px",
+                                  float: "right",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => handleOpenDetailDialog(shipper)}
+                              ></Icon>
+                            </Grid>
                           </TableRow>
                         ))}
                     </TableBody>

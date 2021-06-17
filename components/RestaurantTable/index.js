@@ -28,7 +28,7 @@ import { useRouter } from "next/router";
 import classNames from "classnames";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../store/actions/toast.A";
-import getReceiptStatus from "../../utils/getReceiptStatus";
+import {getReceiptStatus} from "../../utils/getStatus";
 
 const useStyles = makeStyles(styles);
 
@@ -232,7 +232,9 @@ function RestaurantTable({
                       <TableCell className={classes.shortName}>
                         {restaurant.name}
                       </TableCell>
-                      <TableCell>{restaurant.address}</TableCell>
+                      <TableCell className={classes.shortName}>
+                        {restaurant.address}
+                      </TableCell>
                       <TableCell>
                         {new Date(restaurant.createdAt).toLocaleDateString()}
                       </TableCell>
@@ -290,7 +292,9 @@ function RestaurantTable({
                             </Button>
                           )
                         ) : (
-                          <span>Đã ngừng kinh doanh</span>
+                          <span style={{ textWrap: "break-word" }}>
+                            Đã ngừng kinh doanh
+                          </span>
                         )}
                       </TableCell>
                     </TableRow>

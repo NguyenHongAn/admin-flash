@@ -93,7 +93,7 @@ function CreateShipperDialog({ open, handleClose }) {
         Tạo tài xế mới
       </DialogTitle>
       <DialogContent>
-        <Container component="main" container>
+        <Container component="main">
           <form onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
