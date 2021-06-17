@@ -45,6 +45,13 @@ function ShipperDetailDialog({ id, handleClose, open, shipper }) {
 
       if (errorCode === 0) {
         setOrderID("");
+        handleClose(false);
+        dispatch(
+          ToastAction.displayInfo(
+            "success",
+            "Cập nhật thông tin đơn hàng bị boom thành công"
+          )
+        );
       } else {
         dispatch(
           ToastAction.displayInfo("error", ErrorCollection.EXECUTION[errorCode])

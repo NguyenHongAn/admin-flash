@@ -1,17 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Layout from "../../components/Layout";
-import {
-  TableContainer,
-  TableHead,
-  TableBody,
-  Table,
-  TableCell,
-  TableRow,
-  IconButton,
-  TextField,
-  Button,
-  InputAdornment,
-} from "@material-ui/core";
+import { IconButton, TextField, InputAdornment } from "@material-ui/core";
 import { Icon } from "@iconify/react";
 import searchIcon from "@iconify/icons-fe/search";
 //components
@@ -81,7 +70,7 @@ function RestaurantsManagement({ cities, districts, errorMsg }) {
   const typingTimeoutRef = useRef(null);
   const [searchString, setSearchString] = useState("");
   const [strDisplay, setStrDisplay] = useState("");
-
+  const [reload, setReload] = useState(null);
   const handleCityChange = (e) => {
     router.push({
       pathname: `/restaurants`,
@@ -167,6 +156,8 @@ function RestaurantsManagement({ cities, districts, errorMsg }) {
               selectedCity={selectedCity}
               cities={cities}
               districts={districts}
+              reload={reload}
+              setReload={setReload}
             ></RestaurantTable>
             <RestaurantTable
               partner={true}
@@ -175,6 +166,8 @@ function RestaurantsManagement({ cities, districts, errorMsg }) {
               selectedCity={selectedCity}
               cities={cities}
               districts={districts}
+              reload={reload}
+              setReload={setReload}
             ></RestaurantTable>
           </div>
         </div>

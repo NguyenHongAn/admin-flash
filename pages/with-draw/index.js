@@ -119,6 +119,10 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
             "Yêu cầu hoàn tiền đã được giải quyết"
           )
         );
+        router.push({
+          pathname: `/with-draw`,
+          query: clearObject({ page, phone }),
+        });
       } else {
         dispatch(ToastAction.displayInfo("error", data));
       }
@@ -146,6 +150,10 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
         dispatch(
           ToastAction.displayInfo("success", "Tạm hoãn yêu cầu hoàn tiền")
         );
+        router.push({
+          pathname: `/with-draw`,
+          query: clearObject({ page, phone }),
+        });
       } else {
         dispatch(
           ToastAction.displayInfo("error", ErrorCollection.EXECUTION[errorCode])
@@ -218,31 +226,35 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
                         </TableCell>
                         <TableCell>
                           <Grid container spacing={1}>
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              style={{
-                                color: "#FFDF85",
-                                borderColor: "#FFDF85",
-                                margin: "0 5px",
-                              }}
-                              onClick={() => cancelWithDraw(request._id)}
-                            >
-                              Hủy
-                            </Button>
+                            {request.Status === 0 ? null : (
+                              <div>
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  style={{
+                                    color: "#FFDF85",
+                                    borderColor: "#FFDF85",
+                                    margin: "0 5px",
+                                  }}
+                                  onClick={() => cancelWithDraw(request._id)}
+                                >
+                                  Hủy
+                                </Button>
 
-                            <Button
-                              variant="outlined"
-                              style={{
-                                color: "#008000",
-                                borderColor: "#008000",
-                                margin: "0 5px",
-                              }}
-                              size="small"
-                              onClick={() => solveWithDraw(request._id)}
-                            >
-                              Thanh toán
-                            </Button>
+                                <Button
+                                  variant="outlined"
+                                  style={{
+                                    color: "#008000",
+                                    borderColor: "#008000",
+                                    margin: "0 5px",
+                                  }}
+                                  size="small"
+                                  onClick={() => solveWithDraw(request._id)}
+                                >
+                                  Thanh toán
+                                </Button>
+                              </div>
+                            )}
                           </Grid>
                         </TableCell>
                       </TableRow>

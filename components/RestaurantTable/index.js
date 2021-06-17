@@ -28,7 +28,7 @@ import { useRouter } from "next/router";
 import classNames from "classnames";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../store/actions/toast.A";
-import {getReceiptStatus} from "../../utils/getStatus";
+import { getReceiptStatus } from "../../utils/getStatus";
 
 const useStyles = makeStyles(styles);
 
@@ -39,6 +39,8 @@ function RestaurantTable({
   cities,
   partner,
   districts,
+  reload,
+  setReload,
 }) {
   const [page, setPage] = useState(1);
   const [district, setDistrict] = useState("");
@@ -71,7 +73,7 @@ function RestaurantTable({
             "Thu hồi quyền quản lý nhà hàng " + name
           )
         );
-        router.push("/restaurants");
+        setReload(Date.now());
       } else {
         dispatch(
           ToastAction.displayInfo("error", ErrorCollection.EXECUTION[errorCode])
@@ -93,7 +95,7 @@ function RestaurantTable({
 
   const handleCloseCreateResDialog = () => {
     setIsOpenNewRestaurant(false);
-    setIsReload(Date.now());
+    setReload(Date.now());
   };
   const handleServiceFee = async (id) => {
     try {
@@ -164,7 +166,7 @@ function RestaurantTable({
         }
       }
     })();
-  }, [search, selectedCity, district, page, isReload]);
+  }, [search, selectedCity, district, page, reload]);
 
   return (
     <div>

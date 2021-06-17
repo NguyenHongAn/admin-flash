@@ -20,7 +20,7 @@ const EXECUTION_ERROR = {
   111: "Có lỗi xãy ra khi khóa tài khoản người dùng này",
   112: "Người dùng hiện không tồn tại trong hệ thống, xin mời kiên tra lại",
   120: "Lấy danh sách tài xế thất bại",
-  121: "Cập nhật thông tin đơn hàng hất bại",
+  121: "Cập nhật thông tin đơn hàng thất bại",
   122: "không tìm thấy đơn hàng",
   130: "Thanh toán phí dịch vụ không thành công",
   140: "Hoàn tiền thất bại",
