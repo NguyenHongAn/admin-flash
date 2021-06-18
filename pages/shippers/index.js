@@ -32,7 +32,7 @@ import { useRouter } from "next/router";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
 import getTokenInSS from "../../utils/handleAuthetication";
-import {getReceiptStatus} from "../../utils/getStatus";
+import { getReceiptStatus } from "../../utils/getStatus";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../store/actions/toast.A";
 
@@ -305,7 +305,7 @@ function ShippersManagement({
                                   style={{
                                     color: "#FFDF85",
                                     borderColor: "#FFDF85",
-                                    // margin: "0px 5px",
+                                    margin: "0px 2px",
                                   }}
                                   onClick={() =>
                                     handleServiceFee(shipper.receiptID)
@@ -330,6 +330,7 @@ function ShippersManagement({
                                   variant="outlined"
                                   color="primary"
                                   size="small"
+                                  style={{ margin: "0px 2px" }}
                                   onClick={() => {
                                     handleOpenBlockDialog(shipper);
                                   }}

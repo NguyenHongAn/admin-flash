@@ -362,26 +362,36 @@ function GeneralStatistic({
                   </CardHeader>
                   <CardBody>
                     <Grid container>
-                      <h4 className={classes.cardTitle}>
+                      <h4
+                        className={classes.cardTitle}
+                        style={{ marginRight: "10px" }}
+                      >
                         Số đơn thành công:{" "}
                         {statusOrderArr[0].reduce(
                           (pre, curr) => (pre += curr),
                           0
-                        )}{" "}
+                        )}
+                        <span>{"  "}</span>
                       </h4>
-                      <h4 className={classes.cardTitle}>
+                      <h4
+                        className={classes.cardTitle}
+                        style={{ marginRight: "10px" }}
+                      >
                         Số đơn bị hủy:{" "}
                         {statusOrderArr[1].reduce(
                           (pre, curr) => (pre += curr),
                           0
-                        )}{" "}
+                        )}
                       </h4>
-                      <h4 className={classes.cardTitle}>
+                      <h4
+                        className={classes.cardTitle}
+                        style={{ marginRight: "10px" }}
+                      >
                         Số đơn bị boom:{" "}
                         {statusOrderArr[2].reduce(
                           (pre, curr) => (pre += curr),
                           0
-                        )}{" "}
+                        )}
                       </h4>
                     </Grid>
                   </CardBody>
