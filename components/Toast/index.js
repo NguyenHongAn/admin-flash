@@ -44,7 +44,7 @@ function Toast() {
         dispatch(ToastAction.turnOff());
       }, 1500);
     };
-  }, [isHidden]);
+  }, [isHidden, dispatch]);
 
   return !isHidden ? (
     <ToastContainer

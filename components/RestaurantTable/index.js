@@ -271,7 +271,9 @@ function RestaurantTable({
                             <div
                               className={classes.settingBtn}
                               onClick={() => {
-                                router.push(`/restaurants/${restaurant._id}`);
+                                router.push({
+                                  pathname: `/restaurants/${restaurant._id}`,
+                                });
                               }}
                             >
                               <Icon

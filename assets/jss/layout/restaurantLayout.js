@@ -3,7 +3,8 @@ import { container, grayColor, infoColor, whiteColor } from "../index.js";
 const restaurantStyles = {
   wrapper: {
     top: "0",
-    minHeight: "100vh",
+    height: "100vh",
+    overflowY: "scroll",
     position: "relative",
     background: "linear-gradient(to right bottom, #2196f3, #e9f5fe)",
   },

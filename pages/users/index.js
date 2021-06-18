@@ -191,7 +191,6 @@ function UsersManagement({
                           ></input>
                         </TableCell>
                         <TableCell>Họ và tên</TableCell>
-                        <TableCell>Điểm</TableCell>
                         <TableCell>Trạng thái</TableCell>
                         <TableCell></TableCell>
                       </TableRow>
@@ -205,7 +204,7 @@ function UsersManagement({
                             </TableCell>
                             <TableCell>{user.email}</TableCell>
                             <TableCell>{user.phone}</TableCell>
-                            <TableCell>{user.reports}</TableCell>
+
                             <TableCell>{user.fullname}</TableCell>
                             <TableCell>
                               {Service.getStatus(user.status)}

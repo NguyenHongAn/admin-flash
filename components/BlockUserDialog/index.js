@@ -22,12 +22,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function BlockUserDialog({ open, info, handleClose, role }) {
   const [reason, setReason] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  
+
   const dispatch = useDispatch();
 
   const handleBlockUserAccount = async () => {
     try {
-      dispatch(loadingAction.turnOnLoading());
+      //dispatch(loadingAction.turnOnLoading());
       const { errorCode, data } = await Service.blockUserAccount(
         info._id,
         reason,
@@ -60,7 +60,7 @@ function BlockUserDialog({ open, info, handleClose, role }) {
         : null;
       handleClose();
     }
-    dispatch(loadingAction.turnOffLoading());
+    // dispatch(loadingAction.turnOffLoading());
   };
 
   return (
