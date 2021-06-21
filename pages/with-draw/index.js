@@ -200,7 +200,7 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
                         onChange={handleFilterChange}
                       ></input>{" "}
                     </TableCell>
-
+                    <TabelCell>Ví điện tử</TabelCell>
                     <TableCell>Đối tượng</TableCell>
                     <TableCell>Số tiền rút</TableCell>
                     <TableCell>Trạng thái</TableCell>
@@ -216,7 +216,7 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
                         </TableCell>
                         <TableCell>{request.User.Name}</TableCell>
                         <TableCell>{request.User.Phone}</TableCell>
-
+                        <TableCell>{request.User.Wallet}</TableCell>
                         <TableCell>
                           {request.User.Role === 2 ? "Nhà hàng" : "Tài xế"}
                         </TableCell>
