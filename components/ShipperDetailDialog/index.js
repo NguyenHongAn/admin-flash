@@ -126,7 +126,7 @@ function ShipperDetailDialog({ id, handleClose, open, shipper }) {
             </Grid>
 
             <Grid item md={6}>
-              <div className={classes.title}>Tình trạng phi: </div>
+              <div className={classes.title}>Tình trạng phí: </div>
               <span>{getReceiptStatus(shipper.serviceCharge)}</span>
             </Grid>
             <Grid item md={6}>

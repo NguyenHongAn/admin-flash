@@ -200,7 +200,7 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
                         onChange={handleFilterChange}
                       ></input>{" "}
                     </TableCell>
-                    <TabelCell>Ví điện tử</TabelCell>
+                    <TableCell>Ví điện tử</TableCell>
                     <TableCell>Đối tượng</TableCell>
                     <TableCell>Số tiền rút</TableCell>
                     <TableCell>Trạng thái</TableCell>
