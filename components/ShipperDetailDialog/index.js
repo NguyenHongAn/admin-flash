@@ -22,6 +22,7 @@ import {
   getReceiptStatus,
   getGender,
 } from "../../utils/getStatus";
+import { removeJwt } from "../../utils/handleAuthetication";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -61,6 +62,8 @@ function ShipperDetailDialog({ id, handleClose, open, shipper }) {
       console.log(error);
       if (error.response && error.response.status === 401) {
         router.push("/");
+        removeJwt();
+        removeJwt;
       }
       error.response
         ? dispatch(

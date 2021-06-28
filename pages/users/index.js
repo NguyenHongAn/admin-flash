@@ -27,7 +27,7 @@ import styles from "../../assets/jss/views/TableListStyle";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
 import { useRouter } from "next/router";
-import getTokenInSS from "../../utils/handleAuthetication";
+import { getTokenInSS, removeJwt } from "../../utils/handleAuthetication";
 
 export async function getServerSideProps({ req, query }) {
   const { page, phone, email } = query;
@@ -63,6 +63,7 @@ export async function getServerSideProps({ req, query }) {
   } catch (error) {
     console.log(error.message);
     if (error.response && error.response.status === 401) {
+      removeJwt();
       return {
         redirect: {
           destination: "/",

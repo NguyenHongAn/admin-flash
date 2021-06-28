@@ -12,8 +12,8 @@ import {
 import Service from "./services";
 import ErrorCollection from "../../config";
 import { useDispatch } from "react-redux";
-import loadingAction from "../../store/actions/loading.A";
 import ToastAction from "../../store/actions/toast.A";
+import { removeJwt } from "../../utils/handleAuthetication";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -49,6 +49,7 @@ function BlockUserDialog({ open, info, handleClose, role }) {
       console.log(error.message);
       if (error.response && error.response.status === 401) {
         router.push("/");
+        removeJwt();
       }
       error.response
         ? dispatch(

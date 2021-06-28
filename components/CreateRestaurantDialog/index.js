@@ -22,6 +22,7 @@ import {
 import ErrorCollection from "../../config";
 import { useRouter } from "next/router";
 import ToastAction from "../../store/actions/toast.A";
+import { removeJwt } from "../../utils/handleAuthetication";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -67,11 +68,12 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
         const cityID = location.filter((elm) => elm.Name === city)[0].Id;
         const districtID = districts.filter((elm) => elm.Name === district)[0]
           .Id;
+        const name = restaurantName.trim();
         const { errorCode, data } = await service.createNewRestaurant({
           email,
           phone,
           password,
-          restaurantName,
+          restaurantName: name,
           address,
           city,
           ward,
@@ -102,6 +104,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
         console.log(error);
         if (error.response && error.response.status === 401) {
           router.push("/");
+          removeJwt();
         }
         error.response
           ? dispatch(

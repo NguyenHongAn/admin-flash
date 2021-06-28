@@ -24,7 +24,7 @@ import muiStyles from "../../assets/jss/views/dashboardStyle";
 import { ArrowDownward } from "@material-ui/icons";
 import SettingsIcon from "@material-ui/icons/Settings";
 import routers from "../../config/routers";
-import getTokenInSS from "../../utils/handleAuthetication";
+import { getTokenInSS, removeJwt } from "../../utils/handleAuthetication";
 import SettingDialog from "../../components/SettingDialog";
 
 export async function getServerSideProps({ req, query }) {
@@ -66,6 +66,7 @@ export async function getServerSideProps({ req, query }) {
   } catch (error) {
     console.log(error.message);
     if (error.response && error.response.status === 401) {
+      removeJwt();
       return {
         redirect: {
           destination: "/",

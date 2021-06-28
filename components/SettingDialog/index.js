@@ -14,6 +14,7 @@ import ErrorCollection from "../../config";
 import Button from "../../components/CustomButtons/Button";
 import { useRouter } from "next/router";
 import ToastAction from "../../store/actions/toast.A";
+import { removeJwt } from "../../utils/handleAuthetication";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -62,6 +63,7 @@ function SettingDialog({ open, handleClose }) {
         console.log(error);
         if (error.response && error.response.status === 401) {
           router.push("/");
+          removeJwt();
         }
         error.response
           ? dispatch(

@@ -25,7 +25,7 @@ import classNames from "classnames";
 import Service from "./services";
 import { useFormik } from "formik";
 import ErrorCollection from "../../../config";
-import getTokenInSS from "../../../utils/handleAuthetication";
+import { getTokenInSS, removeJwt } from "../../../utils/handleAuthetication";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../../store/actions/toast.A";
 
@@ -74,6 +74,7 @@ export async function getServerSideProps({ req, query }) {
   } catch (error) {
     console.log(error.message);
     if (error.response && error.response.status === 401) {
+      removeJwt();
       return {
         redirect: {
           destination: "/",

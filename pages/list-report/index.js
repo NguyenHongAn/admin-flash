@@ -19,7 +19,7 @@ import styles from "../../assets/jss/views/TableListStyle";
 //function
 import routers from "../../config/routers";
 import Service from "./services";
-import getTokenInSS from "../../utils/handleAuthetication";
+import { getTokenInSS, removeJwt } from "../../utils/handleAuthetication";
 import ErrorCollection from "../../config";
 import { useRouter } from "next/router";
 
@@ -53,6 +53,7 @@ export async function getServerSideProps({ req, query }) {
   } catch (error) {
     console.log(error.message);
     if (error.response && error.response.status === 401) {
+      removeJwt();
       return {
         redirect: {
           destination: "/",
@@ -118,7 +119,10 @@ function ListReport({
               <CardHeader color="info">
                 <h4 className={classes.cardTitleWhite}>
                   {" "}
-                  Tổng cộng: {totalComplaints} chưa giải quyết
+                  Tổng cộng:{" "}
+                  {totalComplaints === 0
+                    ? `${totalComplaints} chưa giải quyết`
+                    : "Không có khiếu nại"}
                 </h4>
               </CardHeader>
               <CardBody>

@@ -18,7 +18,7 @@ import Service from "./services.js";
 import { useRouter } from "next/router";
 import routers from "../../config/routers";
 import classNames from "classnames";
-import getTokenInSS from "../../utils/handleAuthetication";
+import {getTokenInSS, removeJwt} from "../../utils/handleAuthetication";
 
 export async function getServerSideProps({ req, query }) {
   const { city } = query;
@@ -42,6 +42,7 @@ export async function getServerSideProps({ req, query }) {
     };
   } catch (error) {
     if (error.response && error.response.status === 401) {
+      removeJwt();
       return {
         redirect: {
           destination: "/",

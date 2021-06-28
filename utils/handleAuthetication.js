@@ -2,7 +2,7 @@ import { Cookies } from "react-cookie";
 // set up cookies
 const cookies = new Cookies();
 
-function getTokenInSS(req) {
+export function getTokenInSS(req) {
   let token = null;
   // if context has request info aka Server Side
   if (req) {
@@ -18,5 +18,6 @@ function getTokenInSS(req) {
   }
   return token;
 }
-
-export default getTokenInSS;
+export function removeJwt() {
+  cookies.remove("jwt");
+}

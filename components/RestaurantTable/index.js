@@ -29,6 +29,7 @@ import classNames from "classnames";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../store/actions/toast.A";
 import { getReceiptStatus } from "../../utils/getStatus";
+import { removeJwt } from "../../utils/handleAuthetication";
 
 const useStyles = makeStyles(styles);
 
@@ -82,7 +83,10 @@ function RestaurantTable({
     } catch (error) {
       console.log(error);
       if (error.response) {
-        if (error.reponse.status === 401) router.push("/");
+        if (error.reponse.status === 401) {
+          router.push("/");
+          removeJwt();
+        }
         dispatch(
           ToastAction.displayInfo(
             "error",
@@ -113,6 +117,7 @@ function RestaurantTable({
       console.log(error);
       if (error.response && error.response.status === 401) {
         router.push("/");
+        removeJwt();
       }
       error.response
         ? dispatch(
@@ -156,6 +161,7 @@ function RestaurantTable({
       } catch (error) {
         if (error.response && error.response.status === 401) {
           router.push("/");
+          removeJwt();
         } else if (typeof error.response !== "undefined") {
           dispatch(
             ToastAction.displayInfo(

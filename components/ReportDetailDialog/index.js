@@ -20,6 +20,7 @@ import ToastAction from "../../store/actions/toast.A";
 import { useDispatch } from "react-redux";
 import ErrorCollection from "../../config";
 import Service from "./service";
+import { removeJwt } from "../../utils/handleAuthetication";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -62,15 +63,16 @@ function ReportDetailDialog({ id, handleClose, open }) {
       console.log(error);
       if (error.response && error.response.status === 401) {
         router.push("/");
+        removeJwt();
       }
       error.response
-      ? dispatch(
-          ToastAction.displayInfo(
-            "error",
-            ErrorCollection.SERVER[error.response.status]
+        ? dispatch(
+            ToastAction.displayInfo(
+              "error",
+              ErrorCollection.SERVER[error.response.status]
+            )
           )
-        )
-      : null;
+        : null;
     }
     handleClose();
   };
@@ -104,15 +106,16 @@ function ReportDetailDialog({ id, handleClose, open }) {
           console.log(error);
           if (error.response && error.response.status === 401) {
             router.push("/");
+            removeJwt();
           }
           error.response
-          ? dispatch(
-              ToastAction.displayInfo(
-                "error",
-                ErrorCollection.SERVER[error.response.status]
+            ? dispatch(
+                ToastAction.displayInfo(
+                  "error",
+                  ErrorCollection.SERVER[error.response.status]
+                )
               )
-            )
-          : null;
+            : null;
         }
       })();
     }

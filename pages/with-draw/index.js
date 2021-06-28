@@ -25,7 +25,7 @@ import styles from "../../assets/jss/views/TableListStyle";
 import { useRouter } from "next/router";
 import clearObject from "../../utils/clearObject";
 import routers from "../../config/routers";
-import getTokenInSS from "../../utils/handleAuthetication";
+import { getTokenInSS, removeJwt } from "../../utils/handleAuthetication";
 import { useDispatch } from "react-redux";
 import ToastAction from "../../store/actions/toast.A";
 
@@ -59,6 +59,7 @@ export async function getServerSideProps({ req, query }) {
   } catch (error) {
     console.log(error.message);
     if (error.response && error.response.status === 401) {
+      removeJwt();
       return {
         redirect: {
           destination: "/",
@@ -129,6 +130,7 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
     } catch (error) {
       console.log(error);
       if (error.response && error.response.status === 401) {
+        removeJwt();
         router.push("/");
       }
       error.response
@@ -162,6 +164,7 @@ function WithDraw({ listWithDraw, currentPage, totalPage, perPage }) {
     } catch (error) {
       console.log(error);
       if (error.response && error.response.status === 401) {
+        removeJwt();
         router.push("/");
       }
       error.response
