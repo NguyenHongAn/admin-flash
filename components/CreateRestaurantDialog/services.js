@@ -31,23 +31,7 @@ const service = {
     districtID,
     openAt,
     closeAt,
-    parkingFee,
   }) => {
-    console.log({
-      email,
-      phone,
-      password,
-      restaurantName,
-      address,
-      city,
-      ward,
-      district,
-      cityID,
-      districtID,
-      openAt,
-      closeAt,
-      parkingFee,
-    });
     return axiosClient.post(URL.CREATE_RESTAURANT, {
       email,
       contractID: phone,
@@ -61,7 +45,6 @@ const service = {
       district,
       openAt,
       closeAt,
-      parkingFee,
     });
   },
 };

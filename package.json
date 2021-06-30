@@ -5,7 +5,7 @@
   "scripts": {
     "dev:win": "set ENVIROMENT=DEVELOPMENT && next dev -p 5001",
     "dev:mac": "ENVIROMENT=DEVELOPMENT next dev -p 5001",
-    "build": "next build -p 5001 && next export",
+    "build": "next build",
     "start": "next start"
   },
   "dependencies": {

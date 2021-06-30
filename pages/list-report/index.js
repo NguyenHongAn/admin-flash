@@ -100,8 +100,11 @@ function ListReport({
     });
   };
 
-  const handlePageChange = (selected) => {
-    setPage(selected);
+  const handlePageChange = () => {
+    router.push({
+      pathname: `/list-report`,
+      query: { page },
+    });
   };
 
   return (

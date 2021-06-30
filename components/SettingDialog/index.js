@@ -6,24 +6,39 @@ import {
   Dialog,
   DialogContent,
   Slide,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
+  Table,
   DialogTitle,
   TextField,
   Grid,
+  IconButton,
 } from "@material-ui/core";
 import ErrorCollection from "../../config";
 import Button from "../../components/CustomButtons/Button";
 import { useRouter } from "next/router";
 import ToastAction from "../../store/actions/toast.A";
 import { removeJwt } from "../../utils/handleAuthetication";
+import Icon from "@iconify/react";
+import add12Filled from "@iconify/icons-fluent/add-12-filled";
+import { makeStyles } from "@material-ui/core";
+import settingStyle from "../../assets/jss/components/settingStyle";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const useStyle = makeStyles(settingStyle);
 function SettingDialog({ open, handleClose }) {
   const dispatch = useDispatch();
-  const [id, setID] = useState();
+  const [id, setID] = useState("");
+  const [shippingFee, setShippingFee] = useState([]);
+  const [onFocus, setOnfocus] = useState(-1);
   const router = useRouter();
+  const classes = useStyle();
+
   const formik = useFormik({
     initialValues: {
       shipperPercent: 0,
@@ -40,6 +55,7 @@ function SettingDialog({ open, handleClose }) {
           shipperPercent,
           merchantPercent,
           delayDay,
+          shippingFee,
         });
         console.log({ errorCode, data });
         if (errorCode === 0) {
@@ -77,6 +93,19 @@ function SettingDialog({ open, handleClose }) {
     },
   });
 
+  const handleShippingFeeChange = (e, property, index) => {
+    const temp = [...shippingFee];
+    const value = parseInt(e.target.value);
+    temp[index][property] = value;
+
+    setOnfocus(value);
+    setShippingFee(temp);
+  };
+
+  const addMoreCell = () => {
+    setShippingFee([...shippingFee, {}]);
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -86,6 +115,7 @@ function SettingDialog({ open, handleClose }) {
           formik.setFieldValue("shipperPercent", data.PercentFeeShipper);
           formik.setFieldValue("merchantPercent", data.PercentFeeMerchant);
           formik.setFieldValue("delayDay", data.MAX_DAY_DELAY_PAY_RECEIPT);
+          setShippingFee(data.ShippingFee);
           setID(data._id);
         } else {
           dispatch(
@@ -181,6 +211,67 @@ function SettingDialog({ open, handleClose }) {
                 label={formik.errors.delayDay}
               ></TextField>
             </Grid>
+          </Grid>
+          <Grid item container>
+            <Grid item sm={12}>
+              Phí dịch vụ vận chuyển:
+            </Grid>
+            <Table>
+              <TableHead></TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell className={classes.tableCell}>
+                    Khoảng cách(km):
+                  </TableCell>
+                  {shippingFee.map((obj, index) => (
+                    <TableCell
+                      className={classes.tableCell}
+                      key={obj.MaxDistance}
+                    >
+                      <input
+                        type="text"
+                        autoFocus={obj.MaxDistance === onFocus}
+                        value={obj.MaxDistance ? obj.MaxDistance : 0}
+                        className={classes.input}
+                        id={`distance_${index}`}
+                        onChange={(e) =>
+                          handleShippingFeeChange(e, "MaxDistance", index)
+                        }
+                      ></input>
+                    </TableCell>
+                  ))}
+                  <TableCell className={classes.tableCell}>
+                    <IconButton
+                      color="primary"
+                      component="span"
+                      onClick={addMoreCell}
+                    >
+                      <Icon icon={add12Filled}></Icon>
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className={classes.tableCell}>
+                    Phí(đồng):
+                  </TableCell>
+                  {shippingFee.map((obj, index) => (
+                    <TableCell className={classes.tableCell} key={obj.Fee}>
+                      <input
+                        type="text"
+                        id={`fee_${index}`}
+                        className={classes.input}
+                        autoFocus={obj.Fee === onFocus}
+                        value={obj.Fee ? obj.Fee : 0}
+                        onChange={(e) =>
+                          handleShippingFeeChange(e, "Fee", index)
+                        }
+                      ></input>
+                    </TableCell>
+                  ))}
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </Grid>
           <Grid
             container

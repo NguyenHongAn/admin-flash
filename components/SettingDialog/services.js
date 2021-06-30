@@ -10,12 +10,24 @@ const Service = {
   getSetting: () => {
     return axiosClient.get(URL.GET_SETTING);
   },
-  updateSetting: ({ id, shipperPercent, merchantPercent, delayDay }) => {
+  updateSetting: ({
+    id,
+    shipperPercent,
+    merchantPercent,
+    delayDay,
+    shippingFee,
+  }) => {
+    shippingFee = shippingFee.filter(
+      (obj) =>
+        typeof obj.MaxDistance !== "undefined" && typeof obj.Fee !== "undefined"
+    );
+    console.log(typeof shippingFee.MaxDistance);
     return axiosClient.put(URL.GET_SETTING, {
       id,
       shipperPercent,
       merchantPercent,
       delayDay,
+      shippingFee,
     });
   },
 };

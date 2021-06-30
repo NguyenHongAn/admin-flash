@@ -46,7 +46,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
       password: "",
       openAt: "06:00",
       closeAt: "22:00",
-      parkingFee: 0,
+    
     },
     validationSchema: service.validationSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -63,7 +63,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
           district,
           openAt,
           closeAt,
-          parkingFee,
+         
         } = values;
         const cityID = location.filter((elm) => elm.Name === city)[0].Id;
         const districtID = districts.filter((elm) => elm.Name === district)[0]
@@ -82,7 +82,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
           districtID,
           openAt,
           closeAt,
-          parkingFee,
+         
         });
         console.log({ errorCode, data });
         if (errorCode === 0) {
@@ -195,7 +195,7 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    placeholder="Số điện thoại"
+                    placeholder="Số điện thoại nhà hàng"
                     required
                     id="phone"
                     name="phone"
@@ -347,36 +347,8 @@ function CreateRestaurantDialog({ open, handleClose, location }) {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="transport-label">
-                        {formik.errors.parkingFee
-                          ? formik.errors.parkingFee
-                          : `Gửi xe`}
-                      </InputLabel>
-                      <Select
-                        labelId="transport-label"
-                        id="parkingFee"
-                        name="parkingFee"
-                        value={formik.values.parkingFee}
-                        onChange={formik.handleChange}
-                        error={
-                          formik.errors.parkingFee &&
-                          formik.touched.parkingFee &&
-                          true
-                        }
-                        label={formik.errors.parkingFee}
-                      >
-                        <MenuItem value={0}>
-                          <em>Gửi xe miễn phí</em>
-                        </MenuItem>
-                        <MenuItem value={1}>
-                          <em>Gửi xe có phí</em>
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
                 </Grid>
+                 
                 <Grid item xs={12} sm={12} className={innerStyle.input}>
                   <TextField
                     fullWidth
