@@ -255,7 +255,7 @@ function SettingDialog({ open, handleClose }) {
                   <TableCell className={classes.tableCell}>
                     Phí(đồng):
                   </TableCell>
-                  {shippngFee &&
+                  {shippingFee &&
                     shippingFee.map((obj, index) => (
                       <TableCell className={classes.tableCell} key={obj.Fee}>
                         <input
