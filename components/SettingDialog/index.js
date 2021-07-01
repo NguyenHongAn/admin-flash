@@ -223,23 +223,24 @@ function SettingDialog({ open, handleClose }) {
                   <TableCell className={classes.tableCell}>
                     Khoảng cách(km):
                   </TableCell>
-                  {shippingFee.map((obj, index) => (
-                    <TableCell
-                      className={classes.tableCell}
-                      key={obj.MaxDistance}
-                    >
-                      <input
-                        type="text"
-                        autoFocus={obj.MaxDistance === onFocus}
-                        value={obj.MaxDistance ? obj.MaxDistance : 0}
-                        className={classes.input}
-                        id={`distance_${index}`}
-                        onChange={(e) =>
-                          handleShippingFeeChange(e, "MaxDistance", index)
-                        }
-                      ></input>
-                    </TableCell>
-                  ))}
+                  {shippingFee &&
+                    shippingFee.map((obj, index) => (
+                      <TableCell
+                        className={classes.tableCell}
+                        key={obj.MaxDistance}
+                      >
+                        <input
+                          type="text"
+                          autoFocus={obj.MaxDistance === onFocus}
+                          value={obj.MaxDistance ? obj.MaxDistance : 0}
+                          className={classes.input}
+                          id={`distance_${index}`}
+                          onChange={(e) =>
+                            handleShippingFeeChange(e, "MaxDistance", index)
+                          }
+                        ></input>
+                      </TableCell>
+                    ))}
                   <TableCell className={classes.tableCell}>
                     <IconButton
                       color="primary"
@@ -254,20 +255,21 @@ function SettingDialog({ open, handleClose }) {
                   <TableCell className={classes.tableCell}>
                     Phí(đồng):
                   </TableCell>
-                  {shippingFee.map((obj, index) => (
-                    <TableCell className={classes.tableCell} key={obj.Fee}>
-                      <input
-                        type="text"
-                        id={`fee_${index}`}
-                        className={classes.input}
-                        autoFocus={obj.Fee === onFocus}
-                        value={obj.Fee ? obj.Fee : 0}
-                        onChange={(e) =>
-                          handleShippingFeeChange(e, "Fee", index)
-                        }
-                      ></input>
-                    </TableCell>
-                  ))}
+                  {shippngFee &&
+                    shippingFee.map((obj, index) => (
+                      <TableCell className={classes.tableCell} key={obj.Fee}>
+                        <input
+                          type="text"
+                          id={`fee_${index}`}
+                          className={classes.input}
+                          autoFocus={obj.Fee === onFocus}
+                          value={obj.Fee ? obj.Fee : 0}
+                          onChange={(e) =>
+                            handleShippingFeeChange(e, "Fee", index)
+                          }
+                        ></input>
+                      </TableCell>
+                    ))}
                   <TableCell></TableCell>
                 </TableRow>
               </TableBody>
