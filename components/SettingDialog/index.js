@@ -95,7 +95,7 @@ function SettingDialog({ open, handleClose }) {
 
   const handleShippingFeeChange = (e, property, index) => {
     const temp = [...shippingFee];
-    const value = parseInt(e.target.value);
+    const value = parseInt(e.target.value) || 0;
     temp[index][property] = value;
 
     setOnfocus(value);

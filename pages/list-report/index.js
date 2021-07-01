@@ -22,6 +22,7 @@ import Service from "./services";
 import { getTokenInSS, removeJwt } from "../../utils/handleAuthetication";
 import ErrorCollection from "../../config";
 import { useRouter } from "next/router";
+import clearObject from "../../utils/clearObject";
 
 export async function getServerSideProps({ req, query }) {
   const { page } = query;
@@ -96,7 +97,7 @@ function ListReport({
     setIsOpenDetailDialog(false);
     router.push({
       pathname: "/list-report",
-      query: { page },
+      query: clearObject({ page }),
     });
   };
 

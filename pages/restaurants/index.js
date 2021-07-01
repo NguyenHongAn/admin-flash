@@ -18,7 +18,7 @@ import Service from "./services.js";
 import { useRouter } from "next/router";
 import routers from "../../config/routers";
 import classNames from "classnames";
-import {getTokenInSS, removeJwt} from "../../utils/handleAuthetication";
+import { getTokenInSS, removeJwt } from "../../utils/handleAuthetication";
 
 export async function getServerSideProps({ req, query }) {
   const { city } = query;
@@ -95,7 +95,7 @@ function RestaurantsManagement({ cities, districts, errorMsg }) {
     setIsOpenNewRestaurant(false);
     router.push({
       pathname: "/restaurants",
-      query: { city },
+      query: clearObject({ city }),
     });
   };
 

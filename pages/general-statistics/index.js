@@ -25,6 +25,7 @@ import { ArrowDownward } from "@material-ui/icons";
 import SettingsIcon from "@material-ui/icons/Settings";
 import routers from "../../config/routers";
 import { getTokenInSS, removeJwt } from "../../utils/handleAuthetication";
+import clearObject from "../../utils/clearObject";
 import SettingDialog from "../../components/SettingDialog";
 
 export async function getServerSideProps({ req, query }) {
@@ -119,7 +120,7 @@ function GeneralStatistic({
     setIsOpenSetting(false);
     route.push({
       pathname: "/general-statistics",
-      query: { filter },
+      query: clearObject({ filter }),
     });
   };
   return (
